@@ -11,9 +11,9 @@ const stats = [
 ];
 
 const projects = [
-	{ name: 'Latakia Coastal Residences', tag: 'Coastal / Residential' },
-	{ name: 'Old Damascus Quarter Restoration', tag: 'Heritage / Mixed-Use' },
-	{ name: 'Palmyra Heritage Resort', tag: 'Hospitality / Resort' }
+	{ name: 'Latakia Coastal Residences', tag: 'Coastal / Residential', image: '/images/projects/latakia-coastal.jpg' },
+	{ name: 'Old Damascus Quarter Restoration', tag: 'Heritage / Mixed-Use', image: '/images/projects/old-damascus.jpg' },
+	{ name: 'Palmyra Heritage Resort', tag: 'Hospitality / Resort', image: '/images/projects/palmyra-resort.jpg' }
 ];
 
 const posts = [
@@ -134,7 +134,13 @@ const posts = [
 					{
 						projects.map((project) => (
 							<a href="#" class="group block overflow-hidden rounded-3xl bg-white/60 shadow-sm transition hover:shadow-md">
-								<div class="aspect-[4/3] bg-gradient-to-br from-sand-dark via-gold-light to-gold-dark" />
+								<div class="aspect-[4/3] overflow-hidden">
+									<img
+										src={project.image}
+										alt={project.name}
+										class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+									/>
+								</div>
 								<div class="p-6">
 									<p class="mb-2 text-xs tracking-widest text-gold-dark uppercase">{project.tag}</p>
 									<h3 class="text-xl text-charcoal" style="font-family: var(--font-display-c); font-weight: 600;">
