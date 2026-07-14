@@ -51,25 +51,25 @@ const posts = [
 		<!-- Hero -->
 		<section class="relative overflow-hidden">
 			<div
-				class="pointer-events-none absolute -right-20 -top-10 h-[32rem] w-[32rem] opacity-90 [clip-path:polygon(50%_0%,0%_100%,100%_100%)]"
+				class="animate-float pointer-events-none absolute -right-20 -top-10 h-[32rem] w-[32rem] opacity-90 [clip-path:polygon(50%_0%,0%_100%,100%_100%)]"
 				style="background: linear-gradient(140deg, var(--color-gold-light), var(--color-gold-dark) 60%, var(--color-charcoal));"
 			>
 			</div>
 			<div
-				class="pointer-events-none absolute right-24 top-64 h-56 w-56 opacity-60 [clip-path:polygon(50%_0%,0%_100%,100%_100%)]"
-				style="background: linear-gradient(140deg, var(--color-grey-light), var(--color-charcoal));"
+				class="animate-float pointer-events-none absolute right-24 top-64 h-56 w-56 opacity-60 [clip-path:polygon(50%_0%,0%_100%,100%_100%)]"
+				style="background: linear-gradient(140deg, var(--color-grey-light), var(--color-charcoal)); animation-delay: 1.8s;"
 			>
 			</div>
 			<div class="relative mx-auto max-w-6xl px-6 pb-28 pt-48 md:pt-56">
-				<p class="mb-6 text-xs tracking-[0.4em] text-gold-light uppercase">Tourism &amp; Real Estate Investment</p>
-				<h1 class="max-w-3xl text-6xl leading-[1.05] text-offwhite md:text-7xl" style="font-family: var(--font-display-b); font-weight: 700;">
+				<p class="animate-hero mb-6 text-xs tracking-[0.4em] text-gold-light uppercase" style="animation-delay: 0ms;">Tourism &amp; Real Estate Investment</p>
+				<h1 class="animate-hero max-w-3xl text-6xl leading-[1.05] text-offwhite md:text-7xl" style="font-family: var(--font-display-b); font-weight: 700; animation-delay: 140ms;">
 					Building Syria's <span class="text-gold-light italic">Next Chapter</span>
 				</h1>
-				<p class="mt-8 max-w-xl text-lg text-offwhite/70">
+				<p class="animate-hero mt-8 max-w-xl text-lg text-offwhite/70" style="animation-delay: 320ms;">
 					Auristate identifies, develops, and manages premium tourism and real estate investments across Syria's
 					coast, historic cities, and emerging regions.
 				</p>
-				<div class="mt-10 flex flex-wrap items-center gap-5">
+				<div class="animate-hero mt-10 flex flex-wrap items-center gap-5" style="animation-delay: 460ms;">
 					<a href="#" class="bg-gold px-8 py-3.5 text-sm font-semibold tracking-wide text-nearblack transition hover:bg-gold-light">
 						Explore Our Projects
 					</a>
@@ -84,7 +84,7 @@ const posts = [
 		<section class="bg-charcoal py-24">
 			<div class="mx-auto max-w-6xl px-6">
 				<div class="grid gap-16 md:grid-cols-2">
-					<div>
+					<div class="reveal">
 						<p class="mb-4 text-xs tracking-[0.4em] text-gold-light uppercase">About Auristate</p>
 						<h2 class="mb-6 text-4xl text-offwhite" style="font-family: var(--font-display-b); font-weight: 700;">
 							Unlocking Syria's Potential
@@ -97,8 +97,8 @@ const posts = [
 					</div>
 					<div class="grid grid-cols-2 gap-8">
 						{
-							stats.map((stat) => (
-								<div>
+							stats.map((stat, i) => (
+								<div class="reveal" style={`--reveal-delay: ${i * 100}ms`}>
 									<p class="text-4xl text-gold-light" style="font-family: var(--font-display-b); font-weight: 700;">
 										{stat.value}
 									</p>
@@ -114,7 +114,7 @@ const posts = [
 		<!-- Featured projects -->
 		<section class="py-24">
 			<div class="mx-auto max-w-6xl px-6">
-				<div class="mb-14 flex items-end justify-between">
+				<div class="reveal mb-14 flex items-end justify-between">
 					<div>
 						<p class="mb-4 text-xs tracking-[0.4em] text-gold-light uppercase">Featured Projects</p>
 						<h2 class="text-4xl text-offwhite" style="font-family: var(--font-display-b); font-weight: 700;">
@@ -125,8 +125,8 @@ const posts = [
 				</div>
 				<div class="grid gap-8 md:grid-cols-3">
 					{
-						projects.map((project) => (
-							<a href="#" class="group block border border-offwhite/10 p-1 transition hover:border-gold/60">
+						projects.map((project, i) => (
+							<a href="#" class="reveal group block border border-offwhite/10 p-1 transition hover:border-gold/60" style={`--reveal-delay: ${i * 120}ms`}>
 								<div class="aspect-[4/3] overflow-hidden">
 									<img
 										src={project.image}
@@ -157,8 +157,8 @@ const posts = [
 				</h2>
 				<div class="grid gap-10 md:grid-cols-3">
 					{
-						posts.map((post) => (
-							<a href="#" class="group block border-t-2 border-gold/40 pt-6">
+						posts.map((post, i) => (
+							<a href="#" class="reveal group block border-t-2 border-gold/40 pt-6" style={`--reveal-delay: ${i * 120}ms`}>
 								<p class="mb-3 text-xs text-offwhite/40">{post.date}</p>
 								<h3 class="text-lg leading-snug text-offwhite group-hover:text-gold-light" style="font-family: var(--font-display-b); font-weight: 600;">
 									{post.title}
@@ -172,7 +172,7 @@ const posts = [
 
 		<!-- CTA band -->
 		<section class="bg-gold py-20">
-			<div class="mx-auto max-w-3xl px-6 text-center">
+			<div class="reveal mx-auto max-w-3xl px-6 text-center">
 				<h2 class="mb-6 text-4xl text-nearblack" style="font-family: var(--font-display-b); font-weight: 700;">
 					Ready to Invest in Syria's Future?
 				</h2>
@@ -219,3 +219,7 @@ const posts = [
 		</footer>
 	</div>
 </Layout>
+
+<script>
+	import '../../scripts/reveal.js';
+</script>

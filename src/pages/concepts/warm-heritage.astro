@@ -50,15 +50,15 @@ const posts = [
 		<section class="mx-auto max-w-6xl px-6 py-16 md:py-20">
 			<div class="grid items-center gap-14 md:grid-cols-2">
 				<div>
-					<p class="mb-6 text-xs tracking-[0.3em] text-gold-dark uppercase">Tourism &amp; Real Estate Investment</p>
-					<h1 class="text-5xl leading-tight text-charcoal md:text-6xl" style="font-family: var(--font-display-c); font-weight: 600;">
+					<p class="animate-hero mb-6 text-xs tracking-[0.3em] text-gold-dark uppercase" style="animation-delay: 0ms;">Tourism &amp; Real Estate Investment</p>
+					<h1 class="animate-hero text-5xl leading-tight text-charcoal md:text-6xl" style="font-family: var(--font-display-c); font-weight: 600; animation-delay: 120ms;">
 						Building Syria's Next Chapter
 					</h1>
-					<p class="mt-8 max-w-md text-lg text-charcoal/70">
+					<p class="animate-hero mt-8 max-w-md text-lg text-charcoal/70" style="animation-delay: 260ms;">
 						Auristate identifies, develops, and manages premium tourism and real estate investments across Syria's
 						coast, historic cities, and emerging regions.
 					</p>
-					<div class="mt-10 flex flex-wrap items-center gap-5">
+					<div class="animate-hero mt-10 flex flex-wrap items-center gap-5" style="animation-delay: 380ms;">
 						<a href="#" class="rounded-full bg-gold-dark px-8 py-3.5 text-sm font-medium tracking-wide text-white transition hover:bg-gold">
 							Explore Our Projects
 						</a>
@@ -67,20 +67,20 @@ const posts = [
 						</a>
 					</div>
 				</div>
-				<div class="relative h-80 md:h-96">
+				<div class="animate-hero relative h-80 md:h-96" style="animation-delay: 180ms;">
 					<div
-						class="absolute inset-0 rounded-[2.5rem]"
+						class="animate-float absolute inset-0 rounded-[2.5rem]"
 						style="background: linear-gradient(135deg, var(--color-gold-light), var(--color-gold-dark));"
 					>
 					</div>
 					<div
-						class="absolute -bottom-8 -left-8 h-40 w-40 rounded-[2rem] opacity-90"
-						style="background: linear-gradient(135deg, var(--color-sand-dark), var(--color-grey));"
+						class="animate-float absolute -bottom-8 -left-8 h-40 w-40 rounded-[2rem] opacity-90"
+						style="background: linear-gradient(135deg, var(--color-sand-dark), var(--color-grey)); animation-delay: 1.2s;"
 					>
 					</div>
 					<div
-						class="absolute -right-6 -top-6 h-28 w-28 rounded-full opacity-80"
-						style="background: linear-gradient(135deg, var(--color-grey-light), var(--color-charcoal));"
+						class="animate-float absolute -right-6 -top-6 h-28 w-28 rounded-full opacity-80"
+						style="background: linear-gradient(135deg, var(--color-grey-light), var(--color-charcoal)); animation-delay: 2.4s;"
 					>
 					</div>
 				</div>
@@ -91,7 +91,7 @@ const posts = [
 		<section class="bg-white/50 py-24">
 			<div class="mx-auto max-w-6xl px-6">
 				<div class="grid gap-16 md:grid-cols-2">
-					<div>
+					<div class="reveal">
 						<p class="mb-4 text-xs tracking-[0.3em] text-gold-dark uppercase">About Auristate</p>
 						<h2 class="mb-6 text-3xl text-charcoal" style="font-family: var(--font-display-c); font-weight: 600;">
 							Unlocking Syria's Potential
@@ -104,8 +104,8 @@ const posts = [
 					</div>
 					<div class="grid grid-cols-2 gap-6">
 						{
-							stats.map((stat) => (
-								<div class="rounded-2xl bg-sand p-6">
+							stats.map((stat, i) => (
+								<div class="reveal rounded-2xl bg-sand p-6" style={`--reveal-delay: ${i * 100}ms`}>
 									<p class="text-3xl text-gold-dark" style="font-family: var(--font-display-c); font-weight: 600;">
 										{stat.value}
 									</p>
@@ -121,7 +121,7 @@ const posts = [
 		<!-- Featured projects -->
 		<section class="py-24">
 			<div class="mx-auto max-w-6xl px-6">
-				<div class="mb-14 flex items-end justify-between">
+				<div class="reveal mb-14 flex items-end justify-between">
 					<div>
 						<p class="mb-4 text-xs tracking-[0.3em] text-gold-dark uppercase">Featured Projects</p>
 						<h2 class="text-3xl text-charcoal" style="font-family: var(--font-display-c); font-weight: 600;">
@@ -132,8 +132,8 @@ const posts = [
 				</div>
 				<div class="grid gap-8 md:grid-cols-3">
 					{
-						projects.map((project) => (
-							<a href="#" class="group block overflow-hidden rounded-3xl bg-white/60 shadow-sm transition hover:shadow-md">
+						projects.map((project, i) => (
+							<a href="#" class="reveal group block overflow-hidden rounded-3xl bg-white/60 shadow-sm transition hover:shadow-md" style={`--reveal-delay: ${i * 120}ms`}>
 								<div class="aspect-[4/3] overflow-hidden">
 									<img
 										src={project.image}
@@ -164,8 +164,8 @@ const posts = [
 				</h2>
 				<div class="grid gap-8 md:grid-cols-3">
 					{
-						posts.map((post) => (
-							<a href="#" class="group block rounded-2xl bg-sand p-6">
+						posts.map((post, i) => (
+							<a href="#" class="reveal group block rounded-2xl bg-sand p-6" style={`--reveal-delay: ${i * 120}ms`}>
 								<p class="mb-3 text-xs text-charcoal/50">{post.date}</p>
 								<h3 class="text-lg leading-snug text-charcoal group-hover:text-gold-dark" style="font-family: var(--font-display-c); font-weight: 600;">
 									{post.title}
@@ -180,7 +180,7 @@ const posts = [
 		<!-- CTA band -->
 		<section class="py-20">
 			<div
-				class="mx-auto max-w-4xl rounded-[2.5rem] px-6 py-16 text-center"
+				class="reveal mx-auto max-w-4xl rounded-[2.5rem] px-6 py-16 text-center"
 				style="background: linear-gradient(120deg, var(--color-gold-light), var(--color-gold-dark));"
 			>
 				<h2 class="mb-6 text-3xl text-white" style="font-family: var(--font-display-c); font-weight: 600;">
@@ -227,3 +227,7 @@ const posts = [
 		</footer>
 	</div>
 </Layout>
+
+<script>
+	import '../../scripts/reveal.js';
+</script>
