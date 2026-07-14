@@ -1,0 +1,210 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const nav = ['Home', 'About', 'Projects', 'Blog', 'Contact'];
+
+const stats = [
+	{ value: '12+', label: 'Years Regional Expertise' },
+	{ value: '$150M+', label: 'Under Development' },
+	{ value: '8', label: 'Active Projects' },
+	{ value: '3', label: 'Cities' }
+];
+
+const projects = [
+	{ name: 'Latakia Coastal Residences', tag: 'Coastal / Residential' },
+	{ name: 'Old Damascus Quarter Restoration', tag: 'Heritage / Mixed-Use' },
+	{ name: 'Palmyra Heritage Resort', tag: 'Hospitality / Resort' }
+];
+
+const posts = [
+	{ title: "Why Syria's Coastline Is Emerging for Tourism Investment", date: 'Jun 2026' },
+	{ title: 'A Guide to Real Estate Regulations for Foreign Investors', date: 'May 2026' },
+	{ title: 'Inside Our Latest Development: Latakia Coastal Residences', date: 'Apr 2026' }
+];
+---
+
+<Layout title="Auristate — Concept A: Minimal Luxury" fonts={['--font-display-a', '--font-body-a']}>
+	<div class="bg-offwhite text-charcoal" style="font-family: var(--font-body-a);">
+		<!-- Header -->
+		<header class="border-b border-gold-light/40">
+			<div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
+				<img src="/logo.jpeg" alt="Auristate" class="h-12 w-auto mix-blend-multiply" />
+				<nav class="hidden items-center gap-8 md:flex">
+					{
+						nav.map((item) => (
+							<a href="#" class="text-sm tracking-wide text-charcoal/80 transition hover:text-gold-dark">
+								{item}
+							</a>
+						))
+					}
+				</nav>
+				<div class="flex items-center gap-2 text-xs tracking-widest">
+					<span class="font-semibold text-charcoal">EN</span>
+					<span class="text-grey-light">/</span>
+					<a href="#" class="text-grey hover:text-gold-dark">AR</a>
+				</div>
+			</div>
+		</header>
+
+		<!-- Hero -->
+		<section class="relative overflow-hidden">
+			<div
+				class="pointer-events-none absolute right-[-6rem] top-[-4rem] h-96 w-96 opacity-20 [clip-path:polygon(50%_0%,0%_100%,100%_100%)]"
+				style="background: linear-gradient(135deg, var(--color-gold-light), var(--color-gold-dark));"
+			>
+			</div>
+			<div
+				class="pointer-events-none absolute right-10 top-40 h-40 w-40 opacity-10 [clip-path:polygon(50%_0%,0%_100%,100%_100%)]"
+				style="background: linear-gradient(135deg, var(--color-grey-light), var(--color-charcoal));"
+			>
+			</div>
+			<div class="relative mx-auto max-w-6xl px-6 py-28 md:py-36">
+				<p class="mb-6 text-xs tracking-[0.3em] text-gold-dark uppercase">Tourism &amp; Real Estate Investment</p>
+				<h1 class="max-w-3xl text-5xl leading-tight text-charcoal md:text-6xl" style="font-family: var(--font-display-a); font-weight: 500;">
+					Building Syria's Next Chapter in Tourism &amp; Real Estate
+				</h1>
+				<div class="my-8 h-px w-24 bg-gold"></div>
+				<p class="max-w-xl text-lg text-charcoal/70">
+					Auristate identifies, develops, and manages premium tourism and real estate investments across Syria's
+					coast, historic cities, and emerging regions.
+				</p>
+				<div class="mt-10 flex flex-wrap items-center gap-6">
+					<a href="#" class="border border-gold px-8 py-3 text-sm tracking-wide text-charcoal transition hover:bg-gold hover:text-white">
+						Explore Our Projects
+					</a>
+					<a href="#" class="text-sm tracking-wide text-charcoal/70 underline decoration-gold-light underline-offset-4 hover:text-gold-dark">
+						Get in Touch
+					</a>
+				</div>
+			</div>
+		</section>
+
+		<!-- About teaser -->
+		<section class="mx-auto max-w-6xl px-6 py-24">
+			<div class="grid gap-16 md:grid-cols-2">
+				<div>
+					<p class="mb-4 text-xs tracking-[0.3em] text-gold-dark uppercase">About Auristate</p>
+					<h2 class="mb-6 text-3xl text-charcoal" style="font-family: var(--font-display-a); font-weight: 500;">
+						Unlocking Syria's Potential
+					</h2>
+					<p class="text-charcoal/70 leading-relaxed">
+						Auristate is a tourism and real estate investment firm dedicated to unlocking Syria's potential — from
+						coastal resorts to heritage restorations. We partner with investors and communities to build lasting
+						value.
+					</p>
+				</div>
+				<div class="grid grid-cols-2 gap-8">
+					{
+						stats.map((stat) => (
+							<div class="border-l-2 border-gold-light pl-4">
+								<p class="text-3xl text-gold-dark" style="font-family: var(--font-display-a); font-weight: 600;">
+									{stat.value}
+								</p>
+								<p class="mt-1 text-sm text-charcoal/60">{stat.label}</p>
+							</div>
+						))
+					}
+				</div>
+			</div>
+		</section>
+
+		<!-- Featured projects -->
+		<section class="bg-white py-24">
+			<div class="mx-auto max-w-6xl px-6">
+				<div class="mb-14 flex items-end justify-between">
+					<div>
+						<p class="mb-4 text-xs tracking-[0.3em] text-gold-dark uppercase">Featured Projects</p>
+						<h2 class="text-3xl text-charcoal" style="font-family: var(--font-display-a); font-weight: 500;">
+							Selected Developments
+						</h2>
+					</div>
+					<a href="#" class="hidden text-sm text-charcoal/70 underline decoration-gold-light underline-offset-4 hover:text-gold-dark md:block">
+						View All Projects
+					</a>
+				</div>
+				<div class="grid gap-10 md:grid-cols-3">
+					{
+						projects.map((project) => (
+							<a href="#" class="group block">
+								<div class="mb-5 aspect-[4/3] bg-gradient-to-br from-grey-light via-gold-light to-gold-dark opacity-90 transition group-hover:opacity-100" />
+								<p class="mb-2 text-xs tracking-widest text-gold-dark uppercase">{project.tag}</p>
+								<h3 class="text-xl text-charcoal" style="font-family: var(--font-display-a); font-weight: 500;">
+									{project.name}
+								</h3>
+								<span class="mt-2 inline-block text-sm text-charcoal/60 underline decoration-gold-light underline-offset-4 group-hover:text-gold-dark">
+									View Project
+								</span>
+							</a>
+						))
+					}
+				</div>
+			</div>
+		</section>
+
+		<!-- Blog teaser -->
+		<section class="mx-auto max-w-6xl px-6 py-24">
+			<p class="mb-4 text-xs tracking-[0.3em] text-gold-dark uppercase">From the Journal</p>
+			<h2 class="mb-14 text-3xl text-charcoal" style="font-family: var(--font-display-a); font-weight: 500;">
+				Insights &amp; Updates
+			</h2>
+			<div class="grid gap-10 md:grid-cols-3">
+				{
+					posts.map((post) => (
+						<a href="#" class="group block border-t border-gold-light/50 pt-6">
+							<p class="mb-3 text-xs text-charcoal/50">{post.date}</p>
+							<h3 class="text-lg leading-snug text-charcoal group-hover:text-gold-dark" style="font-family: var(--font-display-a); font-weight: 500;">
+								{post.title}
+							</h3>
+						</a>
+					))
+				}
+			</div>
+		</section>
+
+		<!-- CTA band -->
+		<section class="border-y border-gold-light/40 bg-white py-20">
+			<div class="mx-auto max-w-3xl px-6 text-center">
+				<h2 class="mb-6 text-3xl text-charcoal" style="font-family: var(--font-display-a); font-weight: 500;">
+					Ready to Invest in Syria's Future?
+				</h2>
+				<a href="#" class="inline-block border border-gold px-8 py-3 text-sm tracking-wide text-charcoal transition hover:bg-gold hover:text-white">
+					Contact Our Team
+				</a>
+			</div>
+		</section>
+
+		<!-- Footer -->
+		<footer class="px-6 py-16">
+			<div class="mx-auto grid max-w-6xl gap-12 md:grid-cols-4">
+				<div>
+					<img src="/logo.jpeg" alt="Auristate" class="h-10 w-auto mix-blend-multiply" />
+					<p class="mt-4 text-sm text-charcoal/60">Tourism &amp; real estate investment across Syria.</p>
+				</div>
+				<div>
+					<p class="mb-4 text-xs tracking-widest text-charcoal uppercase">Navigate</p>
+					<ul class="space-y-2 text-sm text-charcoal/60">
+						{nav.map((item) => <li><a href="#" class="hover:text-gold-dark">{item}</a></li>)}
+					</ul>
+				</div>
+				<div>
+					<p class="mb-4 text-xs tracking-widest text-charcoal uppercase">Contact</p>
+					<ul class="space-y-2 text-sm text-charcoal/60">
+						<li>info@auristate.com</li>
+						<li>+963 00 000 0000</li>
+						<li>Damascus, Syria</li>
+					</ul>
+				</div>
+				<div>
+					<p class="mb-4 text-xs tracking-widest text-charcoal uppercase">Follow</p>
+					<ul class="space-y-2 text-sm text-charcoal/60">
+						<li><a href="#" class="hover:text-gold-dark">LinkedIn</a></li>
+						<li><a href="#" class="hover:text-gold-dark">Instagram</a></li>
+					</ul>
+				</div>
+			</div>
+			<div class="mx-auto mt-14 max-w-6xl border-t border-gold-light/30 pt-6 text-xs text-charcoal/40">
+				© 2026 Auristate. All rights reserved.
+			</div>
+		</footer>
+	</div>
+</Layout>

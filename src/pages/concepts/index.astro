@@ -1,0 +1,45 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const concepts = [
+	{
+		href: '/concepts/minimal-luxury',
+		name: 'A — Minimal Luxury',
+		description: 'Light, airy, editorial real-estate-magazine feel. White backgrounds, thin gold rules, generous whitespace.'
+	},
+	{
+		href: '/concepts/bold-editorial',
+		name: 'B — Bold Editorial Dark',
+		description: 'Dramatic dark charcoal backgrounds, high-contrast gold accents, bold serif headlines. 5-star resort prestige.'
+	},
+	{
+		href: '/concepts/warm-heritage',
+		name: 'C — Warm Heritage Contemporary',
+		description: 'Warm gold/sandstone tones in a modern rounded grid. Regional heritage meets contemporary investment.'
+	}
+];
+---
+
+<Layout title="Auristate — Homepage Concepts">
+	<div class="min-h-screen bg-neutral-50 px-6 py-20">
+		<div class="mx-auto max-w-4xl">
+			<img src="/logo.jpeg" alt="Auristate" class="mb-10 h-14 w-auto" />
+			<h1 class="mb-2 text-3xl font-semibold text-neutral-900">Homepage Design Concepts</h1>
+			<p class="mb-12 text-neutral-600">Three directions for the Auristate homepage — pick one to move forward with.</p>
+			<div class="grid gap-6 sm:grid-cols-3">
+				{
+					concepts.map((concept) => (
+						<a
+							href={concept.href}
+							class="block rounded-xl border border-neutral-200 bg-white p-6 transition hover:border-neutral-400 hover:shadow-md"
+						>
+							<h2 class="mb-2 font-semibold text-neutral-900">{concept.name}</h2>
+							<p class="text-sm text-neutral-600">{concept.description}</p>
+							<span class="mt-4 inline-block text-sm font-medium text-neutral-900 underline">View concept →</span>
+						</a>
+					))
+				}
+			</div>
+		</div>
+	</div>
+</Layout>
