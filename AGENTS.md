@@ -18,7 +18,9 @@ The theme lives in:
 - `src/pages/index.astro` — the homepage, and the reference implementation of the style
 - `src/styles/global.css` — brand color tokens (`gold*`, `charcoal`, `sand*`, …) as Tailwind v4 `@theme` values, plus the scroll/entrance animation utilities (`.animate-hero`, `.animate-float`, `.reveal`, all reduced-motion aware)
 - `src/layouts/Layout.astro` — loads the two theme fonts via Astro's Fonts API
-- `astro.config.mjs` — Fraunces as `--font-display` (headings) and Work Sans as `--font-body` (set on `body` in `global.css`)
+- `astro.config.mjs` — Fraunces as `--font-display` (headings) and Work Sans as `--font-body`
+
+Note on the fonts: both CSS variables are emitted into `:root` by Astro's `<Font>` component, *not* by Tailwind's `@theme`, so despite the `--font-*` naming there is no `font-display`/`font-body` utility class. `--font-body` is applied once to `body` in `global.css`; headings opt into the display font with inline `style="font-family: var(--font-display)"`. Follow that pattern on new pages.
 
 Next up: About/Blog/Projects pages and i18n, built on this theme.
 
