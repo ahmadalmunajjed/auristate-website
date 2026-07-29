@@ -71,6 +71,22 @@ export const projects: Project[] = [
 	}
 ];
 
+export interface Post {
+	title: string;
+	/** Preview description shown on the card. */
+	excerpt: string;
+	/** 16:9 or wider crops best. */
+	image: string;
+	/** '/news/<slug>' once post pages exist. */
+	href: string;
+	/** Optional — omit on evergreen posts so they never look stale. */
+	date?: string;
+}
+
+// Renders nothing while empty. The homepage previews posts[0] only; the rest
+// are for /news. A real site photo is ready at /images/blog/post.jpeg.
+export const posts: Post[] = [{title:'Site Progress Update 1: Structural Works Advance',excerpt:'Our engineering team reviews the latest milestone on site, with the primary structure now complete and finishing works scheduled to begin.',image:'/images/blog/post.jpeg',href:'/news',date:'Jul 2026'},{title:'Site Progress Update 2: Structural Works Advance',excerpt:'Our engineering team reviews the latest milestone on site, with the primary structure now complete and finishing works scheduled to begin.',image:'/images/blog/post.jpeg',href:'/news',date:'Jul 2026'},{title:'Site Progress Update 3: Structural Works Advance',excerpt:'Our engineering team reviews the latest milestone on site, with the primary structure now complete and finishing works scheduled to begin.',image:'/images/blog/post.jpeg',href:'/news',date:'Jul 2026'}];
+
 // Client copy. The four are a sequence, not parallel offerings, so the section
 // numbers them as a process.
 export const services = [

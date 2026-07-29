@@ -1,29 +1,59 @@
 ---
 import SectionHeading from './SectionHeading.astro';
 import { posts } from '../data/site';
+
+// The homepage previews a single post; the rest live on /news.
+const featured = posts[0];
 ---
 
-<section id="news" class="bg-white/50 py-24">
-	<div class="mx-auto max-w-6xl px-6">
-		<SectionHeading eyebrow="News" title="Insights &amp; Updates" class="mb-14" />
-		<div class="grid gap-8 md:grid-cols-3">
-			{
-				posts.map((post, i) => (
+{
+	featured && (
+		<section id="news" class="bg-white/50 py-24">
+			<div class="mx-auto max-w-6xl px-6">
+				<div class="reveal mb-14 flex items-end justify-between gap-6">
+					<SectionHeading eyebrow="News" title="Latest from Auristate" />
 					<a
-						href={post.href}
-						class="reveal group block rounded-2xl bg-sand p-6"
-						style={`--reveal-delay: ${i * 120}ms`}
+						href="/news"
+						class="hidden shrink-0 pb-1 text-sm text-ink/75 transition hover:text-gold-deep md:block"
 					>
-						<p class="mb-3 text-xs text-charcoal/50">{post.date}</p>
+						All News →
+					</a>
+				</div>
+
+				<a href={featured.href} class="reveal group grid items-center gap-10 md:grid-cols-2 md:gap-14">
+					<div class="aspect-[4/3] overflow-hidden rounded-3xl bg-sand">
+						<img
+							src={featured.image}
+							alt=""
+							loading="lazy"
+							decoding="async"
+							class="h-full w-full object-cover transition duration-700 ease-out group-hover:scale-105"
+						/>
+					</div>
+					<div>
+						{featured.date && (
+							<p class="mb-4 text-xs tracking-[0.2em] text-gold-deep uppercase">{featured.date}</p>
+						)}
 						<h3
-							class="text-lg leading-snug text-charcoal group-hover:text-gold-dark"
+							class="text-2xl leading-snug text-ink transition group-hover:text-gold-deep md:text-3xl"
 							style="font-family: var(--font-display); font-weight: 600;"
 						>
-							{post.title}
+							{featured.title}
 						</h3>
-					</a>
-				))
-			}
-		</div>
-	</div>
-</section>
+						<p class="mt-5 leading-relaxed text-ink/75">{featured.excerpt}</p>
+						<span class="mt-6 inline-block text-sm text-ink/75 transition group-hover:text-gold-deep">
+							Read More →
+						</span>
+					</div>
+				</a>
+
+				<a
+					href="/news"
+					class="reveal mt-10 block text-sm text-ink/75 transition hover:text-gold-deep md:hidden"
+				>
+					All News →
+				</a>
+			</div>
+		</section>
+	)
+}
