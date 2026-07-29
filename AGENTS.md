@@ -57,11 +57,31 @@ Two knock-on rules, both measured rather than guessed:
 - **Footer** links hover to `ink` + underline rather than gold. Its `sand-dark/60` ground composites to
   `#d9c7a5`, where even `gold-deep` reaches only 3.45:1.
 
+## SEO and social previews
+
+`Layout.astro` takes `title`, plus optional `description`, `image`, and `noindex`. It emits the description,
+canonical, Open Graph, and Twitter card tags; the description and OG image default to the homepage's.
+
+**`site` in `astro.config.mjs` is load-bearing.** Canonical and OG image URLs are built from it with
+`new URL()`, because social platforms reject relative image paths. It currently points at the Cloudflare
+Pages deployment (`https://auristate-website.pages.dev`) — **swap it when the custom domain goes live**, or
+previews and canonicals will point at the wrong host.
+
+`public/og-image.png` is 1200×630 (the size Facebook, LinkedIn, WhatsApp, and X all crop toward): the full
+logo lockup on the brand dark ground with a gold rule. It is generated from `transperate-logo.png` by
+cropping the measured lockup band — the raw logo is a 2362² square that is 93% empty margin and would render
+as a tiny mark lost in a field of white.
+
+Titles pass through `Astro.props` and are **escaped once**. Write a plain `&`, never `&amp;` — the entity
+ships as the literal text "&amp;" in the tab and in every share preview.
+
 ## Content and assets
 
 All homepage copy lives in `src/data/site.ts`. Section components import from it and never hardcode copy.
-Nav entries carry real `href`s; the five routes they point at (`/about`, `/projects`, `/services`, `/news`,
-`/contact`) do not exist yet and 404 until built.
+Four nav entries are in-page anchors into the homepage sections — `/#about`, `/#projects`, `/#services`,
+`/#news` — so they are coupled to the `id` on each section's root element. Root-relative rather than bare
+`#about`, because `Footer.astro` renders the same array and will ship on pages other than `/`. `Contact Us`
+still points at `/contact`, which does not exist yet and 404s until built.
 
 **Only `hero` and `about` are client copy.** `cta`, `contact`, `social`, and `footerTagline` are placeholders
 marked as such in the file — the phone number and email in particular are invented and must be replaced

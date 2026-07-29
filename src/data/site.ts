@@ -2,9 +2,12 @@
 // marked PLACEHOLDER.
 
 // Four of these are in-page anchors into the homepage sections, so they are
-// coupled to the `id` on each section's root element — renaming one there
-// breaks the menu silently. Root-relative, not bare `#about`: the footer
-// renders this same array and will ship on pages other than `/`.
+// coupled to the `id` on each section's root element. Two of those sections
+// self-hide — `#projects` renders only while `projects` is non-empty and
+// `#news` only while `posts` is — so emptying either array leaves its menu
+// item scrolling nowhere. Renaming an id does the same, just as quietly.
+// Root-relative, not bare `#about`: the footer renders this same array and
+// will ship on pages other than `/`.
 export const nav = [
 	{ label: 'About Us', href: '/#about' },
 	{ label: 'Projects', href: '/#projects' },
