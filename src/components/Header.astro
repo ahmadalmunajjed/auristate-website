@@ -1,23 +1,64 @@
 ---
 import { nav } from '../data/site';
+
+interface Props {
+	// `over` lifts the header onto the hero media (white-on-video). Pages
+	// without a media hero render it on sand with the charcoal treatment.
+	over?: boolean;
+}
+
+const { over = false } = Astro.props;
 ---
 
-<header>
+<header class={over ? 'absolute inset-x-0 top-0 z-20' : ''}>
 	<div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
-		<a href="/"><img src="/logo.jpeg" alt="Auristate" class="h-12 w-auto mix-blend-multiply" /></a>
+		<a href="/" class="flex items-center">
+			{
+				over ? (
+					/* logo.jpeg has a baked-in white background, and mix-blend-multiply
+					   (which hides it on sand) would render it as a white block over
+					   video. Until a transparent white logo lands, set the wordmark in
+					   the display face. */
+					<span
+						class="text-2xl tracking-[0.2em] text-white uppercase"
+						style="font-family: var(--font-display); font-weight: 600;"
+					>
+						Auristate
+					</span>
+				) : (
+					<img src="/logo.jpeg" alt="Auristate" class="h-12 w-auto mix-blend-multiply" />
+				)
+			}
+		</a>
 		<nav class="hidden items-center gap-8 md:flex">
 			{
 				nav.map((item) => (
-					<a href={item.href} class="text-sm tracking-wide text-charcoal/80 transition hover:text-gold-dark">
+					<a
+						href={item.href}
+						class:list={[
+							'text-sm tracking-wide transition',
+							over ? 'text-white/85 hover:text-gold-light' : 'text-charcoal/80 hover:text-gold-dark'
+						]}
+					>
 						{item.label}
 					</a>
 				))
 			}
 		</nav>
-		<div class="flex items-center gap-1 rounded-full bg-white/60 px-3 py-1.5 text-xs tracking-widest">
-			<span class="font-semibold text-charcoal">EN</span>
-			<span class="text-charcoal/30">/</span>
-			<a href="#" class="text-charcoal/50 hover:text-gold-dark">AR</a>
+		<div
+			class:list={[
+				'flex items-center gap-1 rounded-full px-3 py-1.5 text-xs tracking-widest',
+				over ? 'bg-white/15 backdrop-blur-sm' : 'bg-white/60'
+			]}
+		>
+			<span class:list={['font-semibold', over ? 'text-white' : 'text-charcoal']}>EN</span>
+			<span class={over ? 'text-white/40' : 'text-charcoal/30'}>/</span>
+			<a
+				href="#"
+				class:list={over ? 'text-white/70 hover:text-gold-light' : 'text-charcoal/50 hover:text-gold-dark'}
+			>
+				AR
+			</a>
 		</div>
 	</div>
 </header>

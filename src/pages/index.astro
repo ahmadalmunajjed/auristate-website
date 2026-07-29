@@ -14,8 +14,12 @@ import Footer from '../components/Footer.astro';
 
 <Layout title="Auristate — Tourism & Real Estate Investment in Syria">
 	<div class="bg-sand text-charcoal">
-		<Header />
-		<Hero />
+		<!-- Header sits over the hero media, so it is positioned relative to this
+		     wrapper rather than stacked above the section. -->
+		<div class="relative">
+			<Header over />
+			<Hero />
+		</div>
 		<About />
 		<Stats />
 		<ProjectsGallery />

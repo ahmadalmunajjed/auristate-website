@@ -1,20 +1,80 @@
 ---
 import { hero } from '../data/site';
+
+// The showreel is a 854x480 CGI render. Presenting it raw at full-bleed would
+// betray the resolution, so the treatment below does the work: a warm grade
+// pulls the cool CGI palette toward the brand gold/sand, a scrim buys text
+// contrast against the blown-out sky, and a grain layer reads as texture so the
+// eye stops parsing compression blocks as artifacts.
+const { showreel, poster, showreelRate } = hero;
 ---
 
-<section class="mx-auto max-w-6xl px-6 py-16 md:py-20">
-	<div class="grid items-center gap-14 md:grid-cols-2">
-		<div>
-			<p class="animate-hero mb-6 text-xs tracking-[0.3em] text-gold-dark uppercase" style="animation-delay: 0ms;">
+<section class="hero relative isolate flex min-h-[88svh] items-center overflow-hidden bg-nearblack">
+	<!-- Backdrop: poster paints immediately and is the LCP element; the video
+	     fades in over it only once it can play through. -->
+	<div class="absolute inset-0 -z-10">
+		<img
+			src={poster}
+			alt=""
+			aria-hidden="true"
+			fetchpriority="high"
+			decoding="async"
+			class="hero-media absolute inset-0 h-full w-full object-cover"
+		/>
+		{
+			showreel && (
+				<video
+					class="hero-media hero-video absolute inset-0 h-full w-full object-cover opacity-0"
+					muted
+					playsinline
+					preload="none"
+					disablePictureInPicture
+					disableRemotePlayback
+					aria-hidden="true"
+					tabindex="-1"
+					data-rate={String(showreelRate)}
+					data-src={showreel}
+				/>
+			)
+		}
+		<!-- Warm grade + vignette. Multiply pulls the cyan pool toward sand;
+		     the radial darkens the edges where 480p artifacts sit. -->
+		<div
+			class="absolute inset-0 mix-blend-multiply"
+			style="background: radial-gradient(115% 85% at 50% 38%, rgba(239,227,206,0.96), rgba(203,180,137,0.82) 52%, rgba(120,88,30,0.72) 100%);"
+		>
+		</div>
+		<div
+			class="absolute inset-0 mix-blend-soft-light"
+			style="background: linear-gradient(180deg, rgba(232,184,75,0.55), rgba(26,26,26,0.30));"
+		>
+		</div>
+		<!-- Legibility scrim, bottom-weighted so it doubles as the handoff into
+		     the sand section below. Symmetric horizontally, so RTL needs no flip. -->
+		<div
+			class="absolute inset-0"
+			style="background: linear-gradient(180deg, rgba(26,26,26,0.62) 0%, rgba(26,26,26,0.38) 38%, rgba(26,26,26,0.55) 72%, var(--color-sand) 100%);"
+		>
+		</div>
+		<div class="hero-grain absolute inset-0"></div>
+	</div>
+
+	<!-- Extra top padding clears the overlaid header. -->
+	<div class="mx-auto w-full max-w-6xl px-6 pt-40 pb-24 md:pt-44 md:pb-28">
+		<div class="max-w-2xl">
+			<p class="animate-hero mb-6 text-xs tracking-[0.3em] text-gold-light uppercase" style="animation-delay: 0ms;">
 				{hero.eyebrow}
 			</p>
 			<h1
-				class="animate-hero text-5xl leading-tight text-charcoal md:text-6xl"
-				style="font-family: var(--font-display); font-weight: 600; animation-delay: 120ms;"
+				class="animate-hero text-5xl leading-tight text-white md:text-7xl"
+				style="font-family: var(--font-display); font-weight: 600; animation-delay: 120ms; text-shadow: 0 2px 24px rgba(26,26,26,0.45);"
 			>
 				{hero.title}
 			</h1>
-			<p class="animate-hero mt-8 max-w-md text-lg text-charcoal/70" style="animation-delay: 260ms;">
+			<p
+				class="animate-hero mt-8 max-w-xl text-lg text-white/85"
+				style="animation-delay: 260ms; text-shadow: 0 1px 12px rgba(26,26,26,0.5);"
+			>
 				{hero.body}
 			</p>
 			<div class="animate-hero mt-10 flex flex-wrap items-center gap-5" style="animation-delay: 380ms;">
@@ -30,7 +90,7 @@ import { hero } from '../data/site';
 						) : (
 							<a
 								href={c.href}
-								class="rounded-full border border-charcoal/20 px-8 py-3.5 text-sm tracking-wide text-charcoal transition hover:border-gold-dark hover:text-gold-dark"
+								class="rounded-full border border-white/40 px-8 py-3.5 text-sm tracking-wide text-white backdrop-blur-sm transition hover:border-gold-light hover:text-gold-light"
 							>
 								{c.label}
 							</a>
@@ -39,22 +99,135 @@ import { hero } from '../data/site';
 				}
 			</div>
 		</div>
-		<div class="animate-hero relative h-80 md:h-96" style="animation-delay: 180ms;">
-			<div
-				class="animate-float absolute inset-0 rounded-[2.5rem]"
-				style="background: linear-gradient(135deg, var(--color-gold-light), var(--color-gold-dark));"
-			>
-			</div>
-			<div
-				class="animate-float absolute -bottom-8 -left-8 h-40 w-40 rounded-[2rem] opacity-90"
-				style="background: linear-gradient(135deg, var(--color-sand-dark), var(--color-grey)); animation-delay: 1.2s;"
-			>
-			</div>
-			<div
-				class="animate-float absolute -right-6 -top-6 h-28 w-28 rounded-full opacity-80"
-				style="background: linear-gradient(135deg, var(--color-grey-light), var(--color-charcoal)); animation-delay: 2.4s;"
-			>
-			</div>
-		</div>
 	</div>
 </section>
+
+<style>
+	.hero-media {
+		/* Nudges the CGI toward the brand palette before the gradient layers
+		   land, and the slight blur/saturate trade hides upscaling mush. */
+		filter: saturate(0.72) contrast(1.04) brightness(0.94) sepia(0.16);
+	}
+
+	.hero-video {
+		transition: opacity 900ms ease;
+	}
+
+	.hero-video.is-ready {
+		opacity: 1;
+	}
+
+	/* Fine grain: the eye reads it as texture rather than as compression
+	   artifacts. Pure CSS, so it costs no extra request. */
+	.hero-grain {
+		pointer-events: none;
+		opacity: 0.07;
+		mix-blend-mode: overlay;
+		background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.hero-video {
+			display: none;
+		}
+	}
+</style>
+
+<script>
+	// Progressive enhancement: the markup ships poster-only, and the video is
+	// attached here. That keeps the video off mobile and off reduced-motion
+	// entirely — no request is made, not merely hidden.
+	const video = document.querySelector<HTMLVideoElement>('.hero-video');
+
+	if (video) {
+		const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+		const wide = matchMedia('(min-width: 768px)');
+		const src = video.dataset.src;
+		const rate = Number(video.dataset.rate) || 1;
+
+		// The clip is a continuous pull-back: its last frame is nowhere near its
+		// first, so a plain `loop` would hard-cut every few seconds. Playing it
+		// forward then backward turns the dolly-out into a dolly-in and the
+		// turnaround reads as a deliberate camera move.
+		let reversing = false;
+		let raf = 0;
+
+		const stopReverse = () => {
+			if (raf) cancelAnimationFrame(raf);
+			raf = 0;
+			reversing = false;
+		};
+
+		const reverse = () => {
+			let last = performance.now();
+			const step = (now: number) => {
+				const dt = (now - last) / 1000;
+				last = now;
+				video.currentTime = Math.max(0, video.currentTime - dt * rate);
+				if (video.currentTime <= 0.03) {
+					stopReverse();
+					void video.play().catch(() => {});
+					return;
+				}
+				raf = requestAnimationFrame(step);
+			};
+			raf = requestAnimationFrame(step);
+		};
+
+		video.addEventListener('timeupdate', () => {
+			if (reversing || !video.duration) return;
+			// Turn around just before the end; `ended` fires too late to be smooth.
+			if (video.currentTime >= video.duration - 0.12) {
+				reversing = true;
+				video.pause();
+				reverse();
+			}
+		});
+
+		const load = () => {
+			if (video.src || !src) return;
+			video.playbackRate = rate;
+			video.src = src;
+			video.addEventListener(
+				'canplay',
+				() => {
+					video.classList.add('is-ready');
+					void video.play().catch(() => {});
+				},
+				{ once: true }
+			);
+		};
+
+		const unload = () => {
+			stopReverse();
+			video.classList.remove('is-ready');
+			video.pause();
+			video.removeAttribute('src');
+			video.load();
+		};
+
+		const sync = () => {
+			if (wide.matches && !reduced.matches) load();
+			else if (video.src) unload();
+		};
+
+		sync();
+		wide.addEventListener('change', sync);
+		reduced.addEventListener('change', sync);
+
+		// Don't decode video the visitor has scrolled past.
+		if ('IntersectionObserver' in window) {
+			new IntersectionObserver(
+				([entry]) => {
+					if (!video.src) return;
+					if (entry.isIntersecting) void video.play().catch(() => {});
+					else {
+						stopReverse();
+						video.pause();
+					}
+				},
+				{ threshold: 0.05 }
+			).observe(video);
+		}
+	}
+</script>

@@ -14,11 +14,18 @@ export const hero = {
 	title: "Building Syria's Next Chapter",
 	body: "Auristate identifies, develops, and manages premium tourism and real estate investments across Syria's coast, historic cities, and emerging regions.",
 	background: '/images/hero/hero-bg.svg',
-	// Drop the real showreel at public/videos/auristate-showreel.mp4 and set
-	// showreel to '/videos/auristate-showreel.mp4'. While it is null the hero
-	// renders the poster as a plain <img> — never a <video> with a dead source.
-	showreel: null as string | null,
-	poster: '/images/hero/video-poster.svg',
+	// Client-supplied showreel: a 6.1s CGI walkthrough of the "365" venue.
+	// Source is only 854x480 with an audible track we never play, so the hero
+	// grades and slows it (see Hero.astro) rather than presenting it raw.
+	// Set to null to fall back to the poster alone — the hero never emits a
+	// <video> with a dead source.
+	showreel: '/videos/hero.mp4' as string | null,
+	// Frame lifted from the end of the clip (the wide, settled shot). The video
+	// opens on a tighter framing, so Hero.astro crossfades in to hide the jump.
+	poster: '/images/hero/placeholder.png',
+	// Playback rate for the showreel. Slower reads as cinematic and gives the
+	// encoder less frame-to-frame change, which softens the 480p blocking.
+	showreelRate: 0.75,
 	ctas: [
 		{ label: 'Explore Our Projects', href: '/projects', primary: true },
 		{ label: 'Get in Touch', href: '/contact', primary: false }
