@@ -26,6 +26,10 @@ export const hero = {
 	// Playback rate for the showreel. Slower reads as cinematic and gives the
 	// encoder less frame-to-frame change, which softens the 480p blocking.
 	showreelRate: 0.75,
+	// Skip the opening seconds: the camera moves fastest there and the framing is
+	// tightest, so it is by far the softest part of an already-480p clip. Playback
+	// loops between this point and the end, where the shot is wide and settled.
+	showreelStart: 2.4,
 	ctas: [
 		{ label: 'Explore Our Projects', href: '/projects', primary: true },
 		{ label: 'Get in Touch', href: '/contact', primary: false }

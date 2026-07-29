@@ -34,14 +34,42 @@ Imagery is placeholder SVG in brand tones. Drop real files at these paths and no
 
 | Path | Replaces |
 | --- | --- |
-| `public/images/hero/hero-bg.svg` | Hero background |
-| `public/images/hero/video-poster.svg` | Showreel poster frame |
+| `public/images/hero/hero-bg.svg` | Unused since the video hero landed; kept for non-video pages |
+| `public/images/hero/video-poster.svg` | Superseded by `placeholder.png` |
 | `public/images/projects/filler-{1,2,3}.svg` | Gallery tiles 4–6 |
 
-The hero showreel is flag-gated: `hero.showreel` is `null`, so the hero renders the poster as a plain `<img>`.
-Drop the video at `public/videos/auristate-showreel.mp4` and set `showreel` to that path to switch on the real
-`<video>`. Never emit a `<video>` with a dead source — Firefox draws an error overlay and `controls` gives a
-dead play button.
+### Hero video
+
+The homepage hero is full-bleed video (`public/videos/hero.mp4`, client-supplied), configured entirely from
+the `hero` object in `site.ts` — `showreel`, `poster`, `showreelRate`, `showreelStart`. Setting `showreel` to
+`null` falls back to the poster alone; the hero never emits a `<video>` with a dead source.
+
+The source is **854×480 with a high-bitrate 4.5 MB encode and `faststart` disabled**, so `moov` sits at the
+end of the file and playback cannot begin until the whole thing downloads. It also carries an audio track
+that is never played. That is why the hero works as hard as it does to disguise the resolution:
+
+- The video is attached **from JS, not markup** — mobile (`<768px`) and `prefers-reduced-motion` never issue
+  the request at all, rather than downloading and hiding it. The poster is the LCP element in every case.
+- `showreelStart: 2.4` skips the opening, where the camera moves fastest and the framing is tightest — by
+  far the softest part of the clip.
+- The clip is a continuous pull-back, so its last frame is nowhere near its first and `loop` would hard-cut.
+  A rAF-driven **ping-pong** plays it forward then backward; the reversed dolly-out reads as a dolly-in.
+- `currentTime` and `playbackRate` are set on `loadedmetadata`, **not** before assigning `src` — both reset
+  when a new source loads.
+- Grade, vignette, scrim, and a CSS grain layer sit above the media. The grain matters: the eye reads it as
+  texture and stops parsing compression blocks as artifacts.
+
+The bottom scrim fades to `#f7f1e6`, **not** `--color-sand`. The section below is `bg-white/50` over sand,
+which composites to that value; fading to the raw token leaves a visible seam.
+
+Re-encoding the source (faststart, drop audio, trim, ~1 MB) would let most of the playback JS go away, and a
+1080p master from the client would retire the disguise work entirely.
+
+The header takes an `over` prop that switches it to the white-on-media treatment and absolutely positions it;
+`index.astro` wraps `<Header over />` and `<Hero />` in a `relative` div so it overlays. Because `logo.jpeg`
+has a baked-in white background (`mix-blend-multiply` hides it on sand but renders a white block on video),
+the `over` variant sets an "AURISTATE" wordmark in the display face. **Swap that for a transparent white
+logo when one is available.**
 
 Images use raw `<img src="/...">`, not `astro:assets` `<Image>`. Stay consistent; migrating is a separate pass.
 

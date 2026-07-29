@@ -6,7 +6,7 @@ import { hero } from '../data/site';
 // pulls the cool CGI palette toward the brand gold/sand, a scrim buys text
 // contrast against the blown-out sky, and a grain layer reads as texture so the
 // eye stops parsing compression blocks as artifacts.
-const { showreel, poster, showreelRate } = hero;
+const { showreel, poster, showreelRate, showreelStart } = hero;
 ---
 
 <section class="hero relative isolate flex min-h-[88svh] items-center overflow-hidden bg-nearblack">
@@ -28,41 +28,52 @@ const { showreel, poster, showreelRate } = hero;
 					muted
 					playsinline
 					preload="none"
-					disablePictureInPicture
+					disablepictureinpicture
 					disableRemotePlayback
 					aria-hidden="true"
 					tabindex="-1"
 					data-rate={String(showreelRate)}
+					data-start={String(showreelStart)}
 					data-src={showreel}
 				/>
 			)
 		}
-		<!-- Warm grade + vignette. Multiply pulls the cyan pool toward sand;
-		     the radial darkens the edges where 480p artifacts sit. -->
-		<div
-			class="absolute inset-0 mix-blend-multiply"
-			style="background: radial-gradient(115% 85% at 50% 38%, rgba(239,227,206,0.96), rgba(203,180,137,0.82) 52%, rgba(120,88,30,0.72) 100%);"
-		>
-		</div>
+		<!-- Warm tint, kept light: enough to pull the cyan pool toward the brand
+		     palette, not so much that the architecture flattens into sepia. -->
 		<div
 			class="absolute inset-0 mix-blend-soft-light"
-			style="background: linear-gradient(180deg, rgba(232,184,75,0.55), rgba(26,26,26,0.30));"
+			style="background: linear-gradient(165deg, rgba(232,184,75,0.60) 0%, rgba(156,111,27,0.42) 55%, rgba(26,26,26,0.30) 100%);"
 		>
 		</div>
-		<!-- Legibility scrim, bottom-weighted so it doubles as the handoff into
-		     the sand section below. Symmetric horizontally, so RTL needs no flip. -->
+		<!-- Vignette: darkens the frame edges, which is also where the 480p
+		     artifacts are most visible. -->
 		<div
 			class="absolute inset-0"
-			style="background: linear-gradient(180deg, rgba(26,26,26,0.62) 0%, rgba(26,26,26,0.38) 38%, rgba(26,26,26,0.55) 72%, var(--color-sand) 100%);"
+			style="background: radial-gradient(120% 90% at 50% 42%, rgba(26,26,26,0) 42%, rgba(26,26,26,0.42) 100%);"
+		>
+		</div>
+		<!-- Legibility scrim, bottom-heavy so it doubles as the handoff into the
+		     next section. Uses no left/right keywords, so the RTL flip needs no
+		     mirroring. The final stop is not --color-sand: the section below is
+		     bg-white/50 *over* sand, which composites to #f7f1e6 — fading to the
+		     raw token instead leaves a visible seam. -->
+		<div
+			class="absolute inset-0"
+			style="background: linear-gradient(180deg, rgba(26,26,26,0.55) 0%, rgba(26,26,26,0.30) 34%, rgba(26,26,26,0.46) 66%, rgba(247,241,230,0.75) 92%, #f7f1e6 100%);"
 		>
 		</div>
 		<div class="hero-grain absolute inset-0"></div>
 	</div>
 
-	<!-- Extra top padding clears the overlaid header. -->
-	<div class="mx-auto w-full max-w-6xl px-6 pt-40 pb-24 md:pt-44 md:pb-28">
+	<!-- Extra top padding clears the overlaid header. Kept tight enough that the
+	     section stays near its 88svh floor, so the next section peeks and cues
+	     the scroll without needing an arrow. -->
+	<div class="mx-auto w-full max-w-6xl px-6 pt-32 pb-20 md:pt-36 md:pb-24">
 		<div class="max-w-2xl">
-			<p class="animate-hero mb-6 text-xs tracking-[0.3em] text-gold-light uppercase" style="animation-delay: 0ms;">
+			<p
+				class="animate-hero mb-6 text-xs font-medium tracking-[0.3em] text-gold-light uppercase"
+				style="animation-delay: 0ms; text-shadow: 0 1px 10px rgba(26,26,26,0.7);"
+			>
 				{hero.eyebrow}
 			</p>
 			<h1
@@ -104,9 +115,9 @@ const { showreel, poster, showreelRate } = hero;
 
 <style>
 	.hero-media {
-		/* Nudges the CGI toward the brand palette before the gradient layers
-		   land, and the slight blur/saturate trade hides upscaling mush. */
-		filter: saturate(0.72) contrast(1.04) brightness(0.94) sepia(0.16);
+		/* Takes the edge off the cyan pool and the blown-out sky before the
+		   gradient layers land. Kept mild — heavy sepia flattens the render. */
+		filter: saturate(0.82) contrast(1.06) brightness(0.9) sepia(0.08);
 	}
 
 	.hero-video {
@@ -123,6 +134,8 @@ const { showreel, poster, showreelRate } = hero;
 		pointer-events: none;
 		opacity: 0.07;
 		mix-blend-mode: overlay;
+		/* Fade the grain out over the sand handoff, or it speckles the seam. */
+		mask-image: linear-gradient(180deg, #000 0%, #000 70%, transparent 96%);
 		background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
 	}
 
@@ -144,6 +157,7 @@ const { showreel, poster, showreelRate } = hero;
 		const wide = matchMedia('(min-width: 768px)');
 		const src = video.dataset.src;
 		const rate = Number(video.dataset.rate) || 1;
+		const start = Number(video.dataset.start) || 0;
 
 		// The clip is a continuous pull-back: its last frame is nowhere near its
 		// first, so a plain `loop` would hard-cut every few seconds. Playing it
@@ -163,9 +177,10 @@ const { showreel, poster, showreelRate } = hero;
 			const step = (now: number) => {
 				const dt = (now - last) / 1000;
 				last = now;
-				video.currentTime = Math.max(0, video.currentTime - dt * rate);
-				if (video.currentTime <= 0.03) {
+				video.currentTime = Math.max(start, video.currentTime - dt * rate);
+				if (video.currentTime <= start + 0.03) {
 					stopReverse();
+					video.playbackRate = rate;
 					void video.play().catch(() => {});
 					return;
 				}
@@ -186,8 +201,17 @@ const { showreel, poster, showreelRate } = hero;
 
 		const load = () => {
 			if (video.src || !src) return;
-			video.playbackRate = rate;
 			video.src = src;
+			video.addEventListener(
+				'loadedmetadata',
+				() => {
+					// Both of these reset when a new source loads, so they have to be
+					// set here rather than before assigning src.
+					video.currentTime = start;
+					video.playbackRate = rate;
+				},
+				{ once: true }
+			);
 			video.addEventListener(
 				'canplay',
 				() => {
