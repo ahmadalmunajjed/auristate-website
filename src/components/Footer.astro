@@ -33,8 +33,20 @@ import { nav, contact, social, footerTagline } from '../data/site';
 		<div>
 			<p class="mb-4 text-xs tracking-widest text-ink uppercase">Contact</p>
 			<ul class="space-y-2 text-sm text-ink/80">
-				<li><a href={`mailto:${contact.email}`} class="transition hover:text-ink hover:underline">{contact.email}</a></li>
-				<li>{contact.phone}</li>
+				<li>
+					<a href={`mailto:${contact.email}`} class="transition hover:text-ink hover:underline">
+						{contact.email}
+					</a>
+				</li>
+				<li>
+					{/* tel: needs the E.164 form; the display string keeps its spacing. */}
+					<a
+						href={`tel:${contact.phone.replace(/\s/g, '')}`}
+						class="transition hover:text-ink hover:underline"
+					>
+						{contact.phone}
+					</a>
+				</li>
 				<li>{contact.address}</li>
 			</ul>
 		</div>

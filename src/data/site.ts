@@ -130,11 +130,10 @@ export const cta = {
 	href: '/contact'
 };
 
-// PLACEHOLDER — email, phone, and address are invented. Replace before launch.
 export const contact = {
-	email: 'info@auristate.com',
-	phone: '+963 00 000 0000',
-	address: 'Damascus, Syria'
+	email: 'Info@auristate.com',
+	phone: '+963 960 702 163',
+	address: 'Kafarsousa, Damascus, Syria'
 };
 
 // PLACEHOLDER — these links point nowhere.
