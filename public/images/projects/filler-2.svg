@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" width="1200" height="900" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Placeholder: covered souk arcade">
+	<defs>
+		<linearGradient id="f2bg" x1="0" y1="0" x2="0.4" y2="1">
+			<stop offset="0%" stop-color="#cbb489" />
+			<stop offset="55%" stop-color="#9c6f1b" />
+			<stop offset="100%" stop-color="#2b2b2b" />
+		</linearGradient>
+		<radialGradient id="f2light" cx="0.5" cy="0.34" r="0.46">
+			<stop offset="0%" stop-color="#e8b84b" stop-opacity="0.9" />
+			<stop offset="100%" stop-color="#e8b84b" stop-opacity="0" />
+		</radialGradient>
+	</defs>
+
+	<rect width="1200" height="900" fill="url(#f2bg)" />
+	<ellipse cx="600" cy="306" rx="560" ry="300" fill="url(#f2light)" />
+
+	<!-- receding arcade arches -->
+	<g fill="none" stroke="#1a1a1a" stroke-opacity="0.55">
+		<path d="M60 900 V430 a540 540 0 0 1 1080 0 V900" stroke-width="26" />
+		<path d="M170 900 V470 a430 430 0 0 1 860 0 V900" stroke-width="22" />
+		<path d="M280 900 V512 a320 320 0 0 1 640 0 V900" stroke-width="18" />
+		<path d="M382 900 V556 a218 218 0 0 1 436 0 V900" stroke-width="15" />
+		<path d="M470 900 V600 a130 130 0 0 1 260 0 V900" stroke-width="12" />
+	</g>
+
+	<!-- lantern shafts of light on the floor -->
+	<g fill="#e8b84b" opacity="0.2">
+		<path d="M470 900 L520 640 L560 640 L540 900 Z" />
+		<path d="M730 900 L680 640 L640 640 L660 900 Z" />
+	</g>
+
+	<!-- hanging lamps -->
+	<g fill="#faf9f6" opacity="0.75">
+		<circle cx="600" cy="352" r="16" />
+		<circle cx="470" cy="420" r="11" />
+		<circle cx="732" cy="420" r="11" />
+	</g>
+	<g stroke="#faf9f6" stroke-opacity="0.35" stroke-width="3">
+		<path d="M600 352 V262" />
+		<path d="M470 420 V330" />
+		<path d="M732 420 V330" />
+	</g>
+
+	<rect y="812" width="1200" height="88" fill="#1a1a1a" opacity="0.45" />
+</svg>

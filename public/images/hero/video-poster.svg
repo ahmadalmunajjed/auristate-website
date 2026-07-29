@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Auristate showreel poster frame">
+	<defs>
+		<linearGradient id="posterBg" x1="0" y1="0" x2="1" y2="1">
+			<stop offset="0%" stop-color="#e8b84b" />
+			<stop offset="55%" stop-color="#c9971c" />
+			<stop offset="100%" stop-color="#9c6f1b" />
+		</linearGradient>
+		<linearGradient id="posterFade" x1="0" y1="0" x2="0" y2="1">
+			<stop offset="0%" stop-color="#1a1a1a" stop-opacity="0" />
+			<stop offset="100%" stop-color="#1a1a1a" stop-opacity="0.42" />
+		</linearGradient>
+	</defs>
+
+	<rect width="1280" height="720" fill="url(#posterBg)" />
+
+	<!-- soft arcs echoing the rounded theme -->
+	<g fill="none" stroke="#faf9f6" stroke-opacity="0.16" stroke-width="2">
+		<circle cx="990" cy="180" r="220" />
+		<circle cx="990" cy="180" r="150" />
+		<circle cx="250" cy="600" r="260" />
+	</g>
+
+	<!-- arched skyline silhouette -->
+	<g fill="#2b2b2b" opacity="0.28">
+		<path d="M0 720 V520 h150 v-70 a75 75 0 0 1 150 0 v70 h120 V470 h130 v250 Z" />
+		<path d="M700 720 V486 a80 80 0 0 1 160 0 v54 h120 v-92 h140 v272 Z" />
+	</g>
+
+	<rect width="1280" height="720" fill="url(#posterFade)" />
+</svg>

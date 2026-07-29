@@ -1,0 +1,60 @@
+---
+import { hero } from '../data/site';
+---
+
+<section class="mx-auto max-w-6xl px-6 py-16 md:py-20">
+	<div class="grid items-center gap-14 md:grid-cols-2">
+		<div>
+			<p class="animate-hero mb-6 text-xs tracking-[0.3em] text-gold-dark uppercase" style="animation-delay: 0ms;">
+				{hero.eyebrow}
+			</p>
+			<h1
+				class="animate-hero text-5xl leading-tight text-charcoal md:text-6xl"
+				style="font-family: var(--font-display); font-weight: 600; animation-delay: 120ms;"
+			>
+				{hero.title}
+			</h1>
+			<p class="animate-hero mt-8 max-w-md text-lg text-charcoal/70" style="animation-delay: 260ms;">
+				{hero.body}
+			</p>
+			<div class="animate-hero mt-10 flex flex-wrap items-center gap-5" style="animation-delay: 380ms;">
+				{
+					hero.ctas.map((c) =>
+						c.primary ? (
+							<a
+								href={c.href}
+								class="rounded-full bg-gold-dark px-8 py-3.5 text-sm font-medium tracking-wide text-white transition hover:bg-gold"
+							>
+								{c.label}
+							</a>
+						) : (
+							<a
+								href={c.href}
+								class="rounded-full border border-charcoal/20 px-8 py-3.5 text-sm tracking-wide text-charcoal transition hover:border-gold-dark hover:text-gold-dark"
+							>
+								{c.label}
+							</a>
+						)
+					)
+				}
+			</div>
+		</div>
+		<div class="animate-hero relative h-80 md:h-96" style="animation-delay: 180ms;">
+			<div
+				class="animate-float absolute inset-0 rounded-[2.5rem]"
+				style="background: linear-gradient(135deg, var(--color-gold-light), var(--color-gold-dark));"
+			>
+			</div>
+			<div
+				class="animate-float absolute -bottom-8 -left-8 h-40 w-40 rounded-[2rem] opacity-90"
+				style="background: linear-gradient(135deg, var(--color-sand-dark), var(--color-grey)); animation-delay: 1.2s;"
+			>
+			</div>
+			<div
+				class="animate-float absolute -right-6 -top-6 h-28 w-28 rounded-full opacity-80"
+				style="background: linear-gradient(135deg, var(--color-grey-light), var(--color-charcoal)); animation-delay: 2.4s;"
+			>
+			</div>
+		</div>
+	</div>
+</section>

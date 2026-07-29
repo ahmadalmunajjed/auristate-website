@@ -1,0 +1,21 @@
+---
+import { visionMission } from '../data/site';
+---
+
+<section id="vision-mission" class="py-24">
+	<div class="mx-auto max-w-6xl px-6">
+		<div class="grid gap-8 md:grid-cols-2">
+			{
+				visionMission.map((item, i) => (
+					<div class="reveal rounded-3xl bg-white/60 p-10" style={`--reveal-delay: ${i * 120}ms`}>
+						<p class="mb-4 text-xs tracking-[0.3em] text-gold-dark uppercase">{item.eyebrow}</p>
+						<h3 class="mb-4 text-2xl text-charcoal" style="font-family: var(--font-display); font-weight: 600;">
+							{item.title}
+						</h3>
+						<p class="leading-relaxed text-charcoal/70">{item.body}</p>
+					</div>
+				))
+			}
+		</div>
+	</div>
+</section>

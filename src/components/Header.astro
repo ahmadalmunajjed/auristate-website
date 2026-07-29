@@ -1,0 +1,23 @@
+---
+import { nav } from '../data/site';
+---
+
+<header>
+	<div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
+		<a href="/"><img src="/logo.jpeg" alt="Auristate" class="h-12 w-auto mix-blend-multiply" /></a>
+		<nav class="hidden items-center gap-8 md:flex">
+			{
+				nav.map((item) => (
+					<a href={item.href} class="text-sm tracking-wide text-charcoal/80 transition hover:text-gold-dark">
+						{item.label}
+					</a>
+				))
+			}
+		</nav>
+		<div class="flex items-center gap-1 rounded-full bg-white/60 px-3 py-1.5 text-xs tracking-widest">
+			<span class="font-semibold text-charcoal">EN</span>
+			<span class="text-charcoal/30">/</span>
+			<a href="#" class="text-charcoal/50 hover:text-gold-dark">AR</a>
+		</div>
+	</div>
+</header>

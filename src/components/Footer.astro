@@ -1,0 +1,35 @@
+---
+import { nav, contact, social } from '../data/site';
+---
+
+<footer class="bg-sand-dark/60 px-6 py-16">
+	<div class="mx-auto grid max-w-6xl gap-12 md:grid-cols-4">
+		<div>
+			<img src="/logo.jpeg" alt="Auristate" class="h-10 w-auto mix-blend-multiply" />
+			<p class="mt-4 text-sm text-charcoal/60">Tourism &amp; real estate investment across Syria.</p>
+		</div>
+		<div>
+			<p class="mb-4 text-xs tracking-widest text-charcoal uppercase">Navigate</p>
+			<ul class="space-y-2 text-sm text-charcoal/60">
+				{nav.map((item) => <li><a href={item.href} class="hover:text-gold-dark">{item.label}</a></li>)}
+			</ul>
+		</div>
+		<div>
+			<p class="mb-4 text-xs tracking-widest text-charcoal uppercase">Contact</p>
+			<ul class="space-y-2 text-sm text-charcoal/60">
+				<li>{contact.email}</li>
+				<li>{contact.phone}</li>
+				<li>{contact.address}</li>
+			</ul>
+		</div>
+		<div>
+			<p class="mb-4 text-xs tracking-widest text-charcoal uppercase">Follow</p>
+			<ul class="space-y-2 text-sm text-charcoal/60">
+				{social.map((s) => <li><a href={s.href} class="hover:text-gold-dark">{s.label}</a></li>)}
+			</ul>
+		</div>
+	</div>
+	<div class="mx-auto mt-14 max-w-6xl border-t border-charcoal/10 pt-6 text-xs text-charcoal/40">
+		© 2026 Auristate. All rights reserved.
+	</div>
+</footer>

@@ -1,0 +1,38 @@
+---
+import SectionHeading from './SectionHeading.astro';
+import { projects } from '../data/site';
+---
+
+<section id="projects" class="bg-white/50 py-24">
+	<div class="mx-auto max-w-6xl px-6">
+		<div class="reveal mb-14 flex items-end justify-between">
+			<SectionHeading eyebrow="Our Projects" title="Selected Developments" />
+			<a href="/projects" class="hidden text-sm text-charcoal/70 hover:text-gold-dark md:block">View All Projects</a>
+		</div>
+		<div class="grid gap-8 md:grid-cols-3">
+			{
+				projects.map((project, i) => (
+					<a
+						href={project.href}
+						class="reveal group block overflow-hidden rounded-3xl bg-white/60 shadow-sm transition hover:shadow-md"
+						style={`--reveal-delay: ${i * 120}ms`}
+					>
+						<div class="aspect-[4/3] overflow-hidden">
+							<img
+								src={project.image}
+								alt={project.name}
+								class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+							/>
+						</div>
+						<div class="p-6">
+							<p class="mb-2 text-xs tracking-widest text-gold-dark uppercase">{project.tag}</p>
+							<h3 class="text-xl text-charcoal" style="font-family: var(--font-display); font-weight: 600;">
+								{project.name}
+							</h3>
+						</div>
+					</a>
+				))
+			}
+		</div>
+	</div>
+</section>

@@ -1,0 +1,20 @@
+---
+import { cta } from '../data/site';
+---
+
+<section class="py-20">
+	<div
+		class="reveal mx-auto max-w-4xl rounded-[2.5rem] px-6 py-16 text-center"
+		style="background: linear-gradient(120deg, var(--color-gold-light), var(--color-gold-dark));"
+	>
+		<h2 class="mb-6 text-3xl text-white" style="font-family: var(--font-display); font-weight: 600;">
+			{cta.title}
+		</h2>
+		<a
+			href={cta.href}
+			class="inline-block rounded-full bg-white px-8 py-3.5 text-sm font-medium tracking-wide text-gold-dark transition hover:bg-offwhite"
+		>
+			{cta.label}
+		</a>
+	</div>
+</section>

@@ -1,0 +1,23 @@
+---
+import SectionHeading from './SectionHeading.astro';
+import { services } from '../data/site';
+---
+
+<section id="services" class="py-24">
+	<div class="mx-auto max-w-6xl px-6">
+		<SectionHeading eyebrow="Our Services" title="What We Do" class="mb-14" />
+		<div class="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+			{
+				services.map((service, i) => (
+					<div class="reveal rounded-3xl bg-white/60 p-8" style={`--reveal-delay: ${i * 120}ms`}>
+						<div class="mb-6 h-12 w-12 rounded-2xl bg-gold-light/30" />
+						<h3 class="mb-3 text-xl text-charcoal" style="font-family: var(--font-display); font-weight: 600;">
+							{service.title}
+						</h3>
+						<p class="text-sm leading-relaxed text-charcoal/70">{service.blurb}</p>
+					</div>
+				))
+			}
+		</div>
+	</div>
+</section>
