@@ -71,6 +71,30 @@ export const projects: Project[] = [
 	}
 ];
 
+// Client copy. The four are a sequence, not parallel offerings, so the section
+// numbers them as a process.
+export const services = [
+	{
+		title: 'Study & Planning',
+		blurb: 'Feasibility study, market analysis, and defining the initial vision.'
+	},
+	{
+		title: 'Design & Development',
+		blurb:
+			"Exclusive architectural and interior designs, with 3D renderings that let you see your project before it's built."
+	},
+	{
+		title: 'Execution & Supervision',
+		blurb:
+			'Project management and strict engineering supervision, connecting you with a trusted network of specialized contractors and suppliers.'
+	},
+	{
+		title: 'Delivery & Operation',
+		blurb:
+			'Complete project handover with world-class quality, adhering to the agreed timeline and budget.'
+	}
+];
+
 // PLACEHOLDER
 export const cta = {
 	title: "Ready to Invest in Syria's Future?",

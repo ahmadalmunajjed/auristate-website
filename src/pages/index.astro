@@ -3,18 +3,15 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Hero from '../components/Hero.astro';
 import About from '../components/About.astro';
-// Mounted permanently but renders nothing while `projects` in site.ts is empty.
-// The section appears on its own the moment real entries land there.
+// Renders nothing while `projects` in site.ts is empty.
 import ProjectsGallery from '../components/ProjectsGallery.astro';
+import Services from '../components/Services.astro';
 import CtaBand from '../components/CtaBand.astro';
 import Footer from '../components/Footer.astro';
 
-// Awaiting client content. The components exist in src/components/ with their
-// layout built, but every word in them was invented — fabricated blog posts,
-// service blurbs, and stats ("12+ years" for a company founded in 2025).
-// Uncomment each one as its real copy lands in src/data/site.ts.
+// Awaiting client copy — the text still in these components was invented.
+// Uncomment each as its real copy lands in src/data/site.ts.
 //
-// import Services from '../components/Services.astro';
 // import News from '../components/News.astro';
 // import VisionMission from '../components/VisionMission.astro';
 ---
@@ -29,7 +26,7 @@ import Footer from '../components/Footer.astro';
 		</div>
 		<About />
 		<ProjectsGallery />
-		<!-- <Services /> -->
+		<Services />
 		<!-- <News /> -->
 		<!-- <VisionMission /> -->
 		<CtaBand />
