@@ -172,18 +172,35 @@ const { showreel, poster, showreelRate, showreelStart } = hero;
 		// the poster across the seam. The eye reads the dip as a blink, and the
 		// jump happens behind it.
 		// Read the dip duration from CSS so the transition and this timer stay in
-		// step if either is retuned.
-		const FADE = parseFloat(getComputedStyle(video).getPropertyValue('--hero-fade')) || 320;
+		// step if either is retuned. Computed values come back normalised — "320ms"
+		// reads as ".32s" — so the unit has to be honoured, not assumed.
+		const readFade = () => {
+			const raw = getComputedStyle(video).getPropertyValue('--hero-fade').trim();
+			const n = parseFloat(raw);
+			if (!Number.isFinite(n)) return 320;
+			return /ms\s*$/.test(raw) ? n : n * 1000;
+		};
+
+		const FADE = readFade();
 		let looping = false;
+		let loopTimer = 0;
+
+		// Leaving a pending dip in flight would strand the video at opacity 0.
+		const cancelLoop = () => {
+			if (loopTimer) window.clearTimeout(loopTimer);
+			loopTimer = 0;
+			looping = false;
+		};
 
 		const armLoop = () => {
 			if (looping || !video.duration) return;
 			looping = true;
 			video.classList.remove('is-ready');
-			window.setTimeout(() => {
+			loopTimer = window.setTimeout(() => {
 				video.currentTime = start;
 				void video.play().catch(() => {});
 				video.classList.add('is-ready');
+				loopTimer = 0;
 				looping = false;
 			}, FADE);
 		};
@@ -227,7 +244,7 @@ const { showreel, poster, showreelRate, showreelStart } = hero;
 		};
 
 		const unload = () => {
-			stopReverse();
+			cancelLoop();
 			video.classList.remove('is-ready');
 			video.pause();
 			video.removeAttribute('src');
@@ -250,7 +267,7 @@ const { showreel, poster, showreelRate, showreelStart } = hero;
 					if (!video.src) return;
 					if (entry.isIntersecting) void video.play().catch(() => {});
 					else {
-						stopReverse();
+						cancelLoop();
 						video.pause();
 					}
 				},
