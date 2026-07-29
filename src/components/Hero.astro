@@ -121,7 +121,11 @@ const { showreel, poster, showreelRate, showreelStart } = hero;
 	}
 
 	.hero-video {
-		transition: opacity 900ms ease;
+		/* --hero-fade is the loop-seam dip; the script reads it so the CSS
+		   transition and the JS timing can never drift apart. The first reveal
+		   uses a slower fade, set inline once the video is ready. */
+		--hero-fade: 320ms;
+		transition: opacity var(--hero-fade) ease;
 	}
 
 	.hero-video.is-ready {
@@ -159,45 +163,41 @@ const { showreel, poster, showreelRate, showreelStart } = hero;
 		const rate = Number(video.dataset.rate) || 1;
 		const start = Number(video.dataset.start) || 0;
 
-		// The clip is a continuous pull-back: its last frame is nowhere near its
-		// first, so a plain `loop` would hard-cut every few seconds. Playing it
-		// forward then backward turns the dolly-out into a dolly-in and the
-		// turnaround reads as a deliberate camera move.
-		let reversing = false;
-		let raf = 0;
+		// The clip is a continuous pull-back, so its last frame is nowhere near its
+		// first and a plain loop hard-cuts every pass. Reverse playback would hide
+		// that, but browsers cannot play backwards — faking it by seeking painted
+		// 6fps against 27.5fps forward, which looked worse than the cut.
+		//
+		// Instead: let it loop natively at full framerate and dip the video out to
+		// the poster across the seam. The eye reads the dip as a blink, and the
+		// jump happens behind it.
+		// Read the dip duration from CSS so the transition and this timer stay in
+		// step if either is retuned.
+		const FADE = parseFloat(getComputedStyle(video).getPropertyValue('--hero-fade')) || 320;
+		let looping = false;
 
-		const stopReverse = () => {
-			if (raf) cancelAnimationFrame(raf);
-			raf = 0;
-			reversing = false;
-		};
-
-		const reverse = () => {
-			let last = performance.now();
-			const step = (now: number) => {
-				const dt = (now - last) / 1000;
-				last = now;
-				video.currentTime = Math.max(start, video.currentTime - dt * rate);
-				if (video.currentTime <= start + 0.03) {
-					stopReverse();
-					video.playbackRate = rate;
-					void video.play().catch(() => {});
-					return;
-				}
-				raf = requestAnimationFrame(step);
-			};
-			raf = requestAnimationFrame(step);
+		const armLoop = () => {
+			if (looping || !video.duration) return;
+			looping = true;
+			video.classList.remove('is-ready');
+			window.setTimeout(() => {
+				video.currentTime = start;
+				void video.play().catch(() => {});
+				video.classList.add('is-ready');
+				looping = false;
+			}, FADE);
 		};
 
 		video.addEventListener('timeupdate', () => {
-			if (reversing || !video.duration) return;
-			// Turn around just before the end; `ended` fires too late to be smooth.
-			if (video.currentTime >= video.duration - 0.12) {
-				reversing = true;
-				video.pause();
-				reverse();
-			}
+			if (looping || !video.duration) return;
+			// Start the dip before the end so the fade covers the seam rather than
+			// trailing it; `ended` fires far too late to be smooth.
+			if (video.currentTime >= video.duration - FADE / 1000 - 0.05) armLoop();
 		});
+
+		// Safety net: if timeupdate is throttled (background tab, slow decode) and
+		// the clip ends outright, recover rather than freezing on the last frame.
+		video.addEventListener('ended', armLoop);
 
 		const load = () => {
 			if (video.src || !src) return;
@@ -215,8 +215,12 @@ const { showreel, poster, showreelRate, showreelStart } = hero;
 			video.addEventListener(
 				'canplay',
 				() => {
+					// Slower fade for the first reveal — this one is a deliberate
+					// transition from the poster, not a seam to hide.
+					video.style.setProperty('--hero-fade', '900ms');
 					video.classList.add('is-ready');
 					void video.play().catch(() => {});
+					window.setTimeout(() => video.style.removeProperty('--hero-fade'), 950);
 				},
 				{ once: true }
 			);

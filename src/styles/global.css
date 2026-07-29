@@ -22,6 +22,56 @@
   }
 }
 
+/* transperate-logo.png is a 2362² square that is 93% empty margin. Measured
+   content bands within it:
+     triangle mark  x 674-1678, y 295-1474  (1005 × 1180)
+     "AURISTATE"    x 558-1793, y 1532-1637 (1236 × 106)
+     tagline        x 557-1796, y 1682-1730 (1240 × 49)
+   The wordmark is only 7.4% of the lockup's height, so a header-sized stacked
+   lockup renders it at ~2px — illegible. Hence two crops: the mark alone for
+   compact placements, the full lockup where there is vertical room.
+   Percentages are 2362/crop-width and -offset/crop-dimension. Re-derive if the
+   asset is re-exported. */
+.logo-crop {
+  position: relative;
+  display: block;
+  overflow: hidden;
+}
+
+.logo-crop img {
+  position: absolute;
+  max-width: none;
+  height: auto;
+}
+
+/* Triangle mark only. */
+.logo-crop--mark {
+  aspect-ratio: 1005 / 1180;
+}
+
+.logo-crop--mark img {
+  top: -25%;
+  left: -67.1%;
+  width: 235%;
+}
+
+/* Mark + wordmark + tagline. */
+.logo-crop--lockup {
+  aspect-ratio: 1240 / 1436;
+}
+
+.logo-crop--lockup img {
+  top: -20.5%;
+  left: -44.9%;
+  width: 190.5%;
+}
+
+/* The mark's mid-grey facets and wordmark hold up on sand but lose their edge
+   against video. A soft dark halo restores it without tinting the gold. */
+.logo-over {
+  filter: drop-shadow(0 1px 3px rgba(26, 26, 26, 0.55)) drop-shadow(0 0 10px rgba(26, 26, 26, 0.35));
+}
+
 @keyframes fade-in-up {
   from {
     opacity: 0;

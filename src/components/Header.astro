@@ -12,23 +12,32 @@ const { over = false } = Astro.props;
 
 <header class={over ? 'absolute inset-x-0 top-0 z-20' : ''}>
 	<div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
-		<a href="/" class="flex items-center">
-			{
-				over ? (
-					/* logo.jpeg has a baked-in white background, and mix-blend-multiply
-					   (which hides it on sand) would render it as a white block over
-					   video. Until a transparent white logo lands, set the wordmark in
-					   the display face. */
-					<span
-						class="text-2xl tracking-[0.2em] text-white uppercase"
-						style="font-family: var(--font-display); font-weight: 600;"
-					>
-						Auristate
-					</span>
-				) : (
-					<img src="/logo.jpeg" alt="Auristate" class="h-12 w-auto mix-blend-multiply" />
-				)
-			}
+		<a href="/" class="flex items-center gap-3" aria-label="Auristate — home">
+			{/* The stacked lockup puts its wordmark at ~7% of its height, which is
+			    illegible at header scale, so the mark is cropped out on its own and
+			    set beside live text. See .logo-crop in global.css. */}
+			<span class:list={['logo-crop logo-crop--mark h-10 md:h-11', over && 'logo-over']}>
+				<img src="/transperate-logo.png" alt="" width="1005" height="1180" />
+			</span>
+			<span class="flex flex-col leading-none">
+				<span
+					class:list={[
+						'text-lg tracking-[0.18em] uppercase md:text-xl',
+						over ? 'text-white' : 'text-charcoal'
+					]}
+					style="font-family: var(--font-display); font-weight: 600;"
+				>
+					Auristate
+				</span>
+				<span
+					class:list={[
+						'mt-1 text-[0.6rem] tracking-[0.22em] uppercase',
+						over ? 'text-white/70' : 'text-charcoal/55'
+					]}
+				>
+					Tourism Investments
+				</span>
+			</span>
 		</a>
 		<nav class="hidden items-center gap-8 md:flex">
 			{

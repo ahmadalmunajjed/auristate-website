@@ -5,7 +5,12 @@ import { nav, contact, social } from '../data/site';
 <footer class="bg-sand-dark/60 px-6 py-16">
 	<div class="mx-auto grid max-w-6xl gap-12 md:grid-cols-4">
 		<div>
-			<img src="/logo.jpeg" alt="Auristate" class="h-10 w-auto mix-blend-multiply" />
+			{/* The footer has the vertical room the header lacks, so it can use the
+			    full lockup and keep the wordmark legible. The transparent PNG needs
+			    no mix-blend-multiply to sit on sand. */}
+			<span class="logo-crop logo-crop--lockup h-24">
+				<img src="/transperate-logo.png" alt="Auristate — Tourism Investments" width="1240" height="1436" />
+			</span>
 			<p class="mt-4 text-sm text-charcoal/60">Tourism &amp; real estate investment across Syria.</p>
 		</div>
 		<div>
