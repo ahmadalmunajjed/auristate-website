@@ -52,8 +52,11 @@ that is never played. That is why the hero works as hard as it does to disguise 
   the request at all, rather than downloading and hiding it. The poster is the LCP element in every case.
 - `showreelStart: 2.4` skips the opening, where the camera moves fastest and the framing is tightest — by
   far the softest part of the clip.
-- The clip is a continuous pull-back, so its last frame is nowhere near its first and `loop` would hard-cut.
-  A rAF-driven **ping-pong** plays it forward then backward; the reversed dolly-out reads as a dolly-in.
+- The clip is a continuous pull-back, so its last frame is nowhere near its first and a plain loop hard-cuts
+  every pass. It loops natively and **dips through the poster across the seam**, which reads as a blink.
+  Reverse playback was tried first and abandoned: browsers cannot play backwards, and faking it by seeking
+  painted 6fps against 27.5fps forward. Don't reintroduce it. The fade duration lives in `--hero-fade` in CSS
+  and the script reads it back, so the transition and the timer cannot drift apart.
 - `currentTime` and `playbackRate` are set on `loadedmetadata`, **not** before assigning `src` — both reset
   when a new source loads.
 - Grade, vignette, scrim, and a CSS grain layer sit above the media. The grain matters: the eye reads it as
@@ -66,10 +69,24 @@ Re-encoding the source (faststart, drop audio, trim, ~1 MB) would let most of th
 1080p master from the client would retire the disguise work entirely.
 
 The header takes an `over` prop that switches it to the white-on-media treatment and absolutely positions it;
-`index.astro` wraps `<Header over />` and `<Hero />` in a `relative` div so it overlays. Because `logo.jpeg`
-has a baked-in white background (`mix-blend-multiply` hides it on sand but renders a white block on video),
-the `over` variant sets an "AURISTATE" wordmark in the display face. **Swap that for a transparent white
-logo when one is available.**
+`index.astro` wraps `<Header over />` and `<Hero />` in a `relative` div so it overlays.
+
+### Logo
+
+`public/transperate-logo.png` is the real mark — genuinely transparent, and with no pure-dark pixels, so it
+survives on video. Two quirks drive how it is used, both handled by `.logo-crop` in `global.css`:
+
+- The artwork occupies **1240×1436 of a 2362² square** — 93% of the file is empty margin. Rendered uncropped
+  it loses about a third of its available height.
+- Its wordmark is only **7.4% of the lockup height**, which is ~2px at header scale.
+
+So there are two crops. `.logo-crop--mark` isolates the triangle for compact placements (the header pairs it
+with live text at a readable size); `.logo-crop--lockup` shows the whole thing where there is vertical room
+(the footer). The measured bands are in `global.css` — re-derive the percentages if the asset is re-exported.
+`.logo-over` adds a soft halo so the mid-grey facets keep their edge on video.
+
+`logo.jpeg` is superseded and no longer referenced; `mix-blend-multiply` existed only to hide its baked-in
+white background.
 
 Images use raw `<img src="/...">`, not `astro:assets` `<Image>`. Stay consistent; migrating is a separate pass.
 
