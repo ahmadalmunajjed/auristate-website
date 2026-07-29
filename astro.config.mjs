@@ -9,43 +9,10 @@ export default defineConfig({
     plugins: [tailwindcss()]
   },
   fonts: [
-    // Concept A — Minimal Luxury
-    {
-      provider: fontProviders.google(),
-      name: 'Cormorant Garamond',
-      cssVariable: '--font-display-a',
-      weights: [400, 500, 600],
-      styles: ['normal', 'italic'],
-      fallbacks: ['Georgia', 'serif']
-    },
-    {
-      provider: fontProviders.google(),
-      name: 'Inter',
-      cssVariable: '--font-body-a',
-      weights: [400, 500, 600],
-      fallbacks: ['system-ui', 'sans-serif']
-    },
-    // Concept B — Bold Editorial Dark
-    {
-      provider: fontProviders.google(),
-      name: 'Bodoni Moda',
-      cssVariable: '--font-display-b',
-      weights: [500, 700],
-      styles: ['normal', 'italic'],
-      fallbacks: ['Georgia', 'serif']
-    },
-    {
-      provider: fontProviders.google(),
-      name: 'Manrope',
-      cssVariable: '--font-body-b',
-      weights: [400, 500, 600],
-      fallbacks: ['system-ui', 'sans-serif']
-    },
-    // Concept C — Warm Heritage Contemporary
     {
       provider: fontProviders.google(),
       name: 'Fraunces',
-      cssVariable: '--font-display-c',
+      cssVariable: '--font-display',
       weights: ['300 700'],
       styles: ['normal', 'italic'],
       fallbacks: ['Georgia', 'serif']
@@ -53,7 +20,7 @@ export default defineConfig({
     {
       provider: fontProviders.google(),
       name: 'Work Sans',
-      cssVariable: '--font-body-c',
+      cssVariable: '--font-body',
       weights: [400, 500, 600],
       fallbacks: ['system-ui', 'sans-serif']
     }

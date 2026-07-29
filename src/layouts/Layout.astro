@@ -4,10 +4,9 @@ import '../styles/global.css';
 
 interface Props {
 	title: string;
-	fonts?: string[];
 }
 
-const { title, fonts = [] } = Astro.props;
+const { title } = Astro.props;
 ---
 
 <!doctype html>
@@ -19,7 +18,8 @@ const { title, fonts = [] } = Astro.props;
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
-		{fonts.map((cssVariable, i) => <Font cssVariable={cssVariable} preload={i === 0} />)}
+		<Font cssVariable="--font-display" preload />
+		<Font cssVariable="--font-body" />
 	</head>
 	<body>
 		<slot />
