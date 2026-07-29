@@ -1,11 +1,15 @@
 // Single source of truth for homepage content. Client-supplied except where
 // marked PLACEHOLDER.
 
+// Four of these are in-page anchors into the homepage sections, so they are
+// coupled to the `id` on each section's root element — renaming one there
+// breaks the menu silently. Root-relative, not bare `#about`: the footer
+// renders this same array and will ship on pages other than `/`.
 export const nav = [
-	{ label: 'About Us', href: '/about' },
-	{ label: 'Projects', href: '/projects' },
-	{ label: 'Our Services', href: '/services' },
-	{ label: 'News', href: '/news' },
+	{ label: 'About Us', href: '/#about' },
+	{ label: 'Projects', href: '/#projects' },
+	{ label: 'Our Services', href: '/#services' },
+	{ label: 'News', href: '/#news' },
 	{ label: 'Contact Us', href: '/contact' }
 ];
 

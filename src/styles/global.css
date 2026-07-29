@@ -38,6 +38,16 @@
   body {
     font-family: var(--font-body);
   }
+
+  /* In-page nav (/#about, /#projects, …) — a hash jump should read as travel
+     down the page, not a teleport. Declared under no-preference rather than
+     unset in the reduce block below: browsers do not reliably suppress
+     scroll-behavior for reduced-motion users. */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
 }
 
 /* transperate-logo.png is a 2362² square that is 93% empty margin. Measured
