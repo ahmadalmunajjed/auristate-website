@@ -1,10 +1,5 @@
-// Single source of truth for homepage content.
-// Section components import from here — they never hardcode copy.
-//
-// Everything below is client-supplied except where marked PLACEHOLDER. Sections
-// whose content has not arrived yet (Projects, Services, News, Vision & Mission)
-// have no export here and are commented out of index.astro — a page that shows
-// nothing beats a page that shows invented projects and fabricated articles.
+// Single source of truth for homepage content. Client-supplied except where
+// marked PLACEHOLDER.
 
 export const nav = [
 	{ label: 'About Us', href: '/about' },
@@ -19,21 +14,11 @@ export const hero = {
 	title: 'World-Class Destinations',
 	body: 'Auristate Tourism Investment builds world-class destinations that embody elegance, opportunity, and cultural connection.',
 	background: '/images/hero/hero-bg.svg',
-	// Client-supplied showreel: a 6.1s CGI walkthrough of the "365" venue.
-	// Source is only 854x480 with an audible track we never play, so the hero
-	// grades and slows it (see Hero.astro) rather than presenting it raw.
-	// Set to null to fall back to the poster alone — the hero never emits a
-	// <video> with a dead source.
+	// null falls back to the poster alone — the hero never emits a <video> with
+	// a dead source. AGENTS.md explains why the 480p source needs the tuning.
 	showreel: '/videos/hero.mp4' as string | null,
-	// Frame lifted from the end of the clip (the wide, settled shot). The video
-	// opens on a tighter framing, so Hero.astro crossfades in to hide the jump.
 	poster: '/images/hero/placeholder.png',
-	// Playback rate for the showreel. Slower reads as cinematic and gives the
-	// encoder less frame-to-frame change, which softens the 480p blocking.
 	showreelRate: 0.75,
-	// Skip the opening seconds: the camera moves fastest there and the framing is
-	// tightest, so it is by far the softest part of an already-480p clip. Playback
-	// loops between this point and the end, where the shot is wide and settled.
 	showreelStart: 2.4,
 	ctas: [
 		{ label: 'Explore Our Projects', href: '/projects', primary: true },
@@ -41,8 +26,6 @@ export const hero = {
 	]
 };
 
-// Client copy, verbatim. Split at sentence boundaries for the two-column layout;
-// the only edit is "high end" -> "high-end".
 export const about = {
 	eyebrow: 'About Us',
 	title: 'Who We Are',
@@ -55,22 +38,18 @@ export const about = {
 
 export interface Project {
 	name: string;
-	/** e.g. 'Hospitality / Resort' — renders as the gold eyebrow above the name. */
+	/** Renders as the pill above the name. */
 	tag: string;
-	/** /images/projects/<file>. Cards crop to 4:3, so 4:3 or wider works best. */
+	/** 16:9 or wider crops best. */
 	image: string;
 	/** '/projects/<slug>' once project pages exist. */
 	href: string;
-	/** Optional one-liner. Shown in the 1- and 4+-project layouts only. */
+	/** Shown in the 1- and 4+-project layouts only. */
 	summary?: string;
 }
 
-// Real client projects. Images are client-supplied renders; the file name
-// follows the project name.
-//
-// `tag` values are read off the renders themselves (THE MARK's gatehouse
-// signage reads "luxury villas compound") and from 365 being the venue in the
-// hero video. Correct them if the client's own wording differs.
+// `tag` values are inferred from the renders, not given by the client — THE
+// MARK's gatehouse signage reads "luxury villas compound". Correct if wrong.
 export const projects: Project[] = [
 	{
 		name: '365',
@@ -92,27 +71,25 @@ export const projects: Project[] = [
 	}
 ];
 
-// PLACEHOLDER — not client copy. Makes no factual claim, so it ships, but it
-// should be replaced when the client sends closing copy.
+// PLACEHOLDER
 export const cta = {
 	title: "Ready to Invest in Syria's Future?",
 	label: 'Contact Our Team',
 	href: '/contact'
 };
 
-// PLACEHOLDER — the email, phone, and address are all invented. Replace before
-// launch; a wrong phone number is worse than none.
+// PLACEHOLDER — email, phone, and address are invented. Replace before launch.
 export const contact = {
 	email: 'info@auristate.com',
 	phone: '+963 00 000 0000',
 	address: 'Damascus, Syria'
 };
 
-// PLACEHOLDER — real profile URLs needed; these point nowhere.
+// PLACEHOLDER — these links point nowhere.
 export const social = [
 	{ label: 'LinkedIn', href: '#' },
 	{ label: 'Instagram', href: '#' }
 ];
 
-// PLACEHOLDER — footer tagline, not client copy.
+// PLACEHOLDER
 export const footerTagline = 'Tourism & real estate investment across Syria.';

@@ -14,15 +14,10 @@ interface Props {
 
 const { project, index, variant = 'default' } = Astro.props;
 
-// Overlay cards: the image is the card, and the type pill and title sit on top
-// of it. Nothing renders in a panel below, so every variant differs only in how
-// much grid it occupies and how the image is cropped.
 const span = variant === 'wide' ? 'md:col-span-2' : '';
 
-// The default tile is 4:5, not the 9:10 the reference design uses. Every client
-// render is a 16:9 wide shot — a taller crop throws away most of the frame, and
-// these are architectural compositions where the surroundings are the point.
-// 4:5 keeps the editorial portrait feel while showing appreciably more width.
+// Client renders are all 16:9. A taller default tile throws away most of the
+// frame, so 4:5 rather than the reference design's 9:10.
 const aspect =
 	variant === 'feature' ? 'aspect-[16/9]' : variant === 'wide' ? 'aspect-[16/10]' : 'aspect-[4/5]';
 ---
@@ -40,11 +35,9 @@ const aspect =
 		class="absolute inset-0 h-full w-full object-cover transition duration-700 ease-out group-hover:scale-115 group-focus-visible:scale-115"
 	/>
 
-	{/* Bottom-weighted scrim. The title sits on photography nobody has seen yet,
-	    so it cannot assume a dark subject. Sampled against the brightest pixel
-	    behind the title on a sunlit render, this holds white text at ~6:1; the
-	    earlier, lighter ramp fell to 4.37 there. Architectural renders are
-	    typically brighter than these stock photos, hence the margin. */}
+	{/* Scrim tuned by sampling the brightest pixel behind the title: holds white
+	    text above 9:1 on the current renders. Lightening it risks failing AA on
+	    a brighter image. */}
 	<div
 		class="absolute inset-0"
 		style="background: linear-gradient(180deg, rgba(26,26,26,0.38) 0%, rgba(26,26,26,0) 30%, rgba(26,26,26,0.30) 52%, rgba(26,26,26,0.72) 78%, rgba(26,26,26,0.88) 100%);"
@@ -80,8 +73,6 @@ const aspect =
 </a>
 
 <style>
-	/* The whole card is one link, so the focus ring has to be visible against
-	   both the photo and the dark section around it. */
 	.project-card:focus-visible {
 		outline: 2px solid var(--color-gold-light);
 		outline-offset: 3px;

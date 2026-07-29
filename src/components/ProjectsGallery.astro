@@ -2,31 +2,20 @@
 import ProjectCard from './ProjectCard.astro';
 import { projects } from '../data/site';
 
-// Renders nothing until real projects exist, so index.astro can leave this
-// mounted permanently — the section appears the moment site.ts gains entries,
-// with no second edit and no empty heading over a blank grid in the meantime.
+// Renders nothing when empty, so index.astro can leave this mounted permanently.
 const count = projects.length;
 
-// A mosaic built for six tiles looks broken at two, and a lone card marooned in
-// a three-column grid looks like a loading failure. Pick the shape from the
-// count instead of forcing one grid to cover every case.
 const layout = count === 1 ? 'feature' : count < 4 ? 'row' : 'mosaic';
 
 const gridCols = layout === 'row' && count === 2 ? 'md:grid-cols-2' : 'md:grid-cols-3';
-
-// The grid is items-start, not the default stretch: the mosaic's wide first
-// tile is taller than its row-mates, and stretching the shorter cards to match
-// pads them with dead space.
 ---
 
 {
 	count > 0 && (
 		<section id="projects" class="bg-nearblack py-24">
-			{/* This section inverts: dark ground, white type, gold-light accents.
-			    SectionHeading is built for the light sections — its text-ink title
-			    would be invisible here and its gold-deep eyebrow measures 3.04:1 on
-			    nearblack — so the heading is inlined rather than the shared
-			    component being bent to cover both grounds. */}
+			{/* Heading is inlined, not SectionHeading: that component's text-ink
+			    title is invisible on this dark ground and its gold-deep eyebrow
+			    measures 3.04:1 here. */}
 			<div class="mx-auto max-w-6xl px-6">
 				<div class="reveal mb-12 flex items-end justify-between gap-6">
 					<div>
@@ -47,14 +36,14 @@ const gridCols = layout === 'row' && count === 2 ? 'md:grid-cols-2' : 'md:grid-c
 				</div>
 			</div>
 
-			{/* Tight gutters and a full-bleed grid: the reference runs the cards
-			    edge to edge with a thin dark seam between them, so the images read
-			    as one band rather than as three separate boxes on a page. */}
+			{/* Full-bleed with thin seams, per the reference design. */}
 			<div class="px-3">
 				{
 					layout === 'feature' ? (
 						<ProjectCard project={projects[0]} index={0} variant="feature" />
 					) : (
+						// items-start: the mosaic's wide tile is taller than its
+						// row-mates, and stretch would pad the others with dead space.
 						<div class:list={['grid items-start gap-3', gridCols]}>
 							{projects.map((project, i) => (
 								<ProjectCard
