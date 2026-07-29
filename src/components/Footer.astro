@@ -1,7 +1,10 @@
 ---
-import { nav, contact, social } from '../data/site';
+import { nav, contact, social, footerTagline } from '../data/site';
 ---
 
+{/* Text here sits on sand-dark/60 (#d9c7a5) — the darkest light surface on the
+    page. Measured: gold-deep only reaches 3.45:1 on it, so link hover shifts to
+    ink + underline rather than gold. Gold stays for non-text accents. */}
 <footer class="bg-sand-dark/60 px-6 py-16">
 	<div class="mx-auto grid max-w-6xl gap-12 md:grid-cols-4">
 		<div>
@@ -11,30 +14,46 @@ import { nav, contact, social } from '../data/site';
 			<span class="logo-crop logo-crop--lockup h-24">
 				<img src="/transperate-logo.png" alt="Auristate — Tourism Investments" width="1240" height="1436" />
 			</span>
-			<p class="mt-4 text-sm text-charcoal/60">Tourism &amp; real estate investment across Syria.</p>
+			<p class="mt-4 text-sm text-ink/75">{footerTagline}</p>
 		</div>
 		<div>
-			<p class="mb-4 text-xs tracking-widest text-charcoal uppercase">Navigate</p>
-			<ul class="space-y-2 text-sm text-charcoal/60">
-				{nav.map((item) => <li><a href={item.href} class="hover:text-gold-dark">{item.label}</a></li>)}
+			<p class="mb-4 text-xs tracking-widest text-ink uppercase">Navigate</p>
+			<ul class="space-y-2 text-sm text-ink/80">
+				{
+					nav.map((item) => (
+						<li>
+							<a href={item.href} class="transition hover:text-ink hover:underline">
+								{item.label}
+							</a>
+						</li>
+					))
+				}
 			</ul>
 		</div>
 		<div>
-			<p class="mb-4 text-xs tracking-widest text-charcoal uppercase">Contact</p>
-			<ul class="space-y-2 text-sm text-charcoal/60">
-				<li>{contact.email}</li>
+			<p class="mb-4 text-xs tracking-widest text-ink uppercase">Contact</p>
+			<ul class="space-y-2 text-sm text-ink/80">
+				<li><a href={`mailto:${contact.email}`} class="transition hover:text-ink hover:underline">{contact.email}</a></li>
 				<li>{contact.phone}</li>
 				<li>{contact.address}</li>
 			</ul>
 		</div>
 		<div>
-			<p class="mb-4 text-xs tracking-widest text-charcoal uppercase">Follow</p>
-			<ul class="space-y-2 text-sm text-charcoal/60">
-				{social.map((s) => <li><a href={s.href} class="hover:text-gold-dark">{s.label}</a></li>)}
+			<p class="mb-4 text-xs tracking-widest text-ink uppercase">Follow</p>
+			<ul class="space-y-2 text-sm text-ink/80">
+				{
+					social.map((s) => (
+						<li>
+							<a href={s.href} class="transition hover:text-ink hover:underline">
+								{s.label}
+							</a>
+						</li>
+					))
+				}
 			</ul>
 		</div>
 	</div>
-	<div class="mx-auto mt-14 max-w-6xl border-t border-charcoal/10 pt-6 text-xs text-charcoal/40">
+	<div class="mx-auto mt-14 max-w-6xl border-t border-ink/15 pt-6 text-xs text-ink/70">
 		© 2026 Auristate. All rights reserved.
 	</div>
 </footer>

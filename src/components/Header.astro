@@ -32,7 +32,7 @@ const { over = false } = Astro.props;
 				<span
 					class:list={[
 						'mt-1 text-[0.6rem] tracking-[0.22em] uppercase',
-						over ? 'text-white/70' : 'text-charcoal/55'
+						over ? 'text-white/70' : 'text-ink/75'
 					]}
 				>
 					Tourism Investments
@@ -46,7 +46,7 @@ const { over = false } = Astro.props;
 						href={item.href}
 						class:list={[
 							'text-sm tracking-wide transition',
-							over ? 'text-white/85 hover:text-gold-light' : 'text-charcoal/80 hover:text-gold-dark'
+							over ? 'text-white/85 hover:text-gold-light' : 'text-ink/80 hover:text-gold-deep'
 						]}
 					>
 						{item.label}
@@ -60,11 +60,11 @@ const { over = false } = Astro.props;
 				over ? 'bg-white/15 backdrop-blur-sm' : 'bg-white/60'
 			]}
 		>
-			<span class:list={['font-semibold', over ? 'text-white' : 'text-charcoal']}>EN</span>
-			<span class={over ? 'text-white/40' : 'text-charcoal/30'}>/</span>
+			<span class:list={['font-semibold', over ? 'text-white' : 'text-ink']}>EN</span>
+			<span class={over ? 'text-white/40' : 'text-ink/30'}>/</span>
 			<a
 				href="#"
-				class:list={over ? 'text-white/70 hover:text-gold-light' : 'text-charcoal/50 hover:text-gold-dark'}
+				class:list={over ? 'text-white/70 hover:text-gold-light' : 'text-ink/75 hover:text-gold-deep'}
 			>
 				AR
 			</a>

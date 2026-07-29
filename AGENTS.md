@@ -23,12 +23,56 @@ The theme lives in:
 
 Note on the fonts: both CSS variables are emitted into `:root` by Astro's `<Font>` component, *not* by Tailwind's `@theme`, so despite the `--font-*` naming there is no `font-display`/`font-body` utility class. `--font-body` is applied once to `body` in `global.css`; headings opt into the display font with inline `style="font-family: var(--font-display)"`. Follow that pattern on new pages.
 
+The brand's specified typefaces are **BankGothic Md BT Medium** (headlines) and **Bauhaus Std Light** (body).
+Both are commercial and available from neither the repo nor Google Fonts, the only provider configured in
+`astro.config.mjs`. Fraunces and Work Sans stand in until the licensed files land in `public/fonts/`.
+
+### Brand palette
+
+The client supplied four colors, which are exactly the logo's. They map onto the existing token names, with
+the client's own semantic notes recorded in `global.css`:
+
+| Token | Value | Client's note |
+| --- | --- | --- |
+| `gold-dark` | `#b47c27` | Symbol of prestige and excellence |
+| `gold-light` | `#e1b145` | Foundation of elegance and contrast |
+| `charcoal` | `#565656` | Balance and clarity in design |
+| `grey-light` | `#a19f97` | To add balance and writings |
+
+`sand`, `sand-dark`, `offwhite`, and `nearblack` are unchanged — they are the substrate the palette sits on,
+not accents.
+
+**Two tokens exist purely for contrast and are not brand colors.** The palette is light: measured on `sand`,
+`gold-dark` is 2.83:1 and `charcoal` at `/70` is 3.09:1, both well under the 4.5:1 AA threshold for body text.
+
+- `--color-ink: #2b2b2b` — body copy that needs opacity modifiers. `text-ink/75` is 5.9:1 where
+  `text-charcoal/70` would be 3.3:1. Use `charcoal` at **full opacity only**, for genuinely secondary text.
+- `--color-gold-deep: #885e1d` — any gold text below ~24px, notably the `tracking-[0.3em]` eyebrows.
+  Reserve `gold-dark` for fills, rules, and large display type.
+
+Two knock-on rules, both measured rather than guessed:
+
+- The **CTA band** heading is `text-ink`, not white. White on the gradient's light end (`#e1b145`) is 1.99:1;
+  ink gives 7.13:1 there and 3.95:1 on the dark end.
+- **Footer** links hover to `ink` + underline rather than gold. Its `sand-dark/60` ground composites to
+  `#d9c7a5`, where even `gold-deep` reaches only 3.45:1.
+
 ## Content and assets
 
-All homepage copy lives in `src/data/site.ts` — a single module exporting `nav`, `hero`, `about`, `stats`,
-`projects`, `services`, `posts`, `visionMission`, `cta`, `contact`, `social`. Section components import from
-it and never hardcode copy. Nav entries carry real `href`s; the five routes they point at (`/about`,
-`/projects`, `/services`, `/news`, `/contact`) do not exist yet and 404 until built.
+All homepage copy lives in `src/data/site.ts`. Section components import from it and never hardcode copy.
+Nav entries carry real `href`s; the five routes they point at (`/about`, `/projects`, `/services`, `/news`,
+`/contact`) do not exist yet and 404 until built.
+
+**Only `hero` and `about` are client copy.** `cta`, `contact`, `social`, and `footerTagline` are placeholders
+marked as such in the file — the phone number and email in particular are invented and must be replaced
+before launch.
+
+`ProjectsGallery`, `Services`, `News`, and `VisionMission` are **built but commented out of `index.astro`**,
+and their data is deleted. Everything they contained was invented: fabricated project names, blog posts,
+service blurbs, and stats claiming "12+ years" for a company founded in 2025. A page that shows nothing beats
+one that shows fiction. Uncomment each as its real copy arrives.
+
+The live page is therefore: Header → Hero → About → CTA band → Footer.
 
 Imagery is placeholder SVG in brand tones. Drop real files at these paths and nothing else needs to change:
 
@@ -48,8 +92,12 @@ The source is **854×480 with a high-bitrate 4.5 MB encode and `faststart` disab
 end of the file and playback cannot begin until the whole thing downloads. It also carries an audio track
 that is never played. That is why the hero works as hard as it does to disguise the resolution:
 
-- The video is attached **from JS, not markup** — mobile (`<768px`) and `prefers-reduced-motion` never issue
-  the request at all, rather than downloading and hiding it. The poster is the LCP element in every case.
+- The video is attached **from JS, not markup**, so `prefers-reduced-motion` never issues the request at all
+  rather than downloading and hiding it. The poster is the LCP element in every case.
+- **All viewports load the video, including phones.** A `(min-width: 768px)` gate previously kept it off
+  mobile; it was removed deliberately. The cost is real and worth restating: with `faststart` disabled a
+  phone visitor downloads all 4.5 MB before the first frame, and a 854×480 landscape clip crops hard to a
+  portrait viewport. Restore the gate, or ship a portrait-cropped mobile source, if that trade sours.
 - `showreelStart: 2.4` skips the opening, where the camera moves fastest and the framing is tightest — by
   far the softest part of the clip.
 - The clip is a continuous pull-back, so its last frame is nowhere near its first and a plain loop hard-cuts

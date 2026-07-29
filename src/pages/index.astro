@@ -3,17 +3,22 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Hero from '../components/Hero.astro';
 import About from '../components/About.astro';
-import Stats from '../components/Stats.astro';
-import ProjectsGallery from '../components/ProjectsGallery.astro';
-import Services from '../components/Services.astro';
-import News from '../components/News.astro';
-import VisionMission from '../components/VisionMission.astro';
 import CtaBand from '../components/CtaBand.astro';
 import Footer from '../components/Footer.astro';
+
+// Awaiting client content. The components exist in src/components/ with their
+// layout built, but every word in them was invented — fabricated project names,
+// blog posts, service blurbs, and stats ("12+ years" for a company founded in
+// 2025). Uncomment each one as its real copy lands in src/data/site.ts.
+//
+// import ProjectsGallery from '../components/ProjectsGallery.astro';
+// import Services from '../components/Services.astro';
+// import News from '../components/News.astro';
+// import VisionMission from '../components/VisionMission.astro';
 ---
 
-<Layout title="Auristate — Tourism & Real Estate Investment in Syria">
-	<div class="bg-sand text-charcoal">
+<Layout title="Auristate — Tourism Investment">
+	<div class="bg-sand text-ink">
 		<!-- Header sits over the hero media, so it is positioned relative to this
 		     wrapper rather than stacked above the section. -->
 		<div class="relative">
@@ -21,11 +26,10 @@ import Footer from '../components/Footer.astro';
 			<Hero />
 		</div>
 		<About />
-		<Stats />
-		<ProjectsGallery />
-		<Services />
-		<News />
-		<VisionMission />
+		<!-- <ProjectsGallery /> -->
+		<!-- <Services /> -->
+		<!-- <News /> -->
+		<!-- <VisionMission /> -->
 		<CtaBand />
 		<Footer />
 	</div>

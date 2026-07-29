@@ -1,17 +1,35 @@
 @import "tailwindcss";
 
+/* Brand palette. The four client-specified colors are exactly the logo's, with
+   the client's own semantic notes recorded beside each. */
 @theme {
-  --color-gold-dark: #9c6f1b;
-  --color-gold: #c9971c;
-  --color-gold-light: #e8b84b;
+  /* "Symbol of prestige and excellence" — the primary gold. Fills, rules, and
+     large display text only: at 2.83:1 on sand it fails AA for body copy. */
+  --color-gold-dark: #b47c27;
+  --color-gold: #c99736;
+  /* "Foundation of elegance and contrast" — highlights and on-dark text. */
+  --color-gold-light: #e1b145;
+  /* Not a brand color: gold-dark darkened until it clears 4.5:1 on sand
+     (measured 4.51). Small gold text — eyebrows, links — uses this. Without it
+     every 12px gold label on the page would fail AA. */
+  --color-gold-deep: #885e1d;
 
-  --color-charcoal: #2b2b2b;
+  /* "Balance and clarity in design" — secondary text, at full opacity only.
+     6.53:1 on the section background, but 3.28:1 at /70, so it cannot carry
+     the opacity modifiers the old near-black charcoal did. */
+  --color-charcoal: #565656;
+  /* Not a brand color: the previous charcoal, kept for body copy that needs
+     opacity modifiers. text-ink/70 = 5.09:1; text-charcoal/70 = 3.28:1. */
+  --color-ink: #2b2b2b;
   --color-grey: #6e6e6e;
-  --color-grey-light: #b8b8b8;
+  /* "To add balance and writings" — decorative and on-dark use. 2.09:1 on
+     sand, so never for text on a light background. */
+  --color-grey-light: #a19f97;
 
   --color-offwhite: #faf9f6;
   --color-nearblack: #1a1a1a;
 
+  /* Substrate, not accents: the warm ground the palette sits on. */
   --color-sand: #efe3ce;
   --color-sand-dark: #cbb489;
 }

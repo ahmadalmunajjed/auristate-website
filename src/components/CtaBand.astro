@@ -2,17 +2,21 @@
 import { cta } from '../data/site';
 ---
 
+{/* The band keeps the full brand gradient, so the text has to adapt to it
+    rather than the reverse: white on #e1b145 measures 1.99:1, while ink gives
+    7.13:1 on the light end and 3.95:1 on the dark end — both clear the 3:1
+    large-text threshold this 30px display heading sits under. */}
 <section class="py-20">
 	<div
 		class="reveal mx-auto max-w-4xl rounded-[2.5rem] px-6 py-16 text-center"
 		style="background: linear-gradient(120deg, var(--color-gold-light), var(--color-gold-dark));"
 	>
-		<h2 class="mb-6 text-3xl text-white" style="font-family: var(--font-display); font-weight: 600;">
+		<h2 class="mb-6 text-3xl text-ink" style="font-family: var(--font-display); font-weight: 600;">
 			{cta.title}
 		</h2>
 		<a
 			href={cta.href}
-			class="inline-block rounded-full bg-white px-8 py-3.5 text-sm font-medium tracking-wide text-gold-dark transition hover:bg-offwhite"
+			class="inline-block rounded-full bg-white px-8 py-3.5 text-sm font-medium tracking-wide text-gold-deep transition hover:bg-offwhite"
 		>
 			{cta.label}
 		</a>

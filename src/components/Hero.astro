@@ -42,7 +42,7 @@ const { showreel, poster, showreelRate, showreelStart } = hero;
 		     palette, not so much that the architecture flattens into sepia. -->
 		<div
 			class="absolute inset-0 mix-blend-soft-light"
-			style="background: linear-gradient(165deg, rgba(232,184,75,0.60) 0%, rgba(156,111,27,0.42) 55%, rgba(26,26,26,0.30) 100%);"
+			style="background: linear-gradient(165deg, rgba(225,177,69,0.60) 0%, rgba(180,124,39,0.42) 55%, rgba(26,26,26,0.30) 100%);"
 		>
 		</div>
 		<!-- Vignette: darkens the frame edges, which is also where the 480p
@@ -152,13 +152,20 @@ const { showreel, poster, showreelRate, showreelStart } = hero;
 
 <script>
 	// Progressive enhancement: the markup ships poster-only, and the video is
-	// attached here. That keeps the video off mobile and off reduced-motion
-	// entirely — no request is made, not merely hidden.
+	// attached here, so prefers-reduced-motion never issues the request at all
+	// rather than downloading and hiding it.
+	//
+	// The width gate that also kept this off mobile is deliberately removed: all
+	// viewports now load the video. That means every phone visitor downloads the
+	// full 4.5 MB before the first frame — the file has faststart disabled, so
+	// playback cannot start until the whole thing arrives — and sees a 854x480
+	// landscape clip cropped hard to a portrait viewport. Restore the
+	// `(min-width: 768px)` check, or ship a portrait-cropped mobile source, if
+	// that trade stops being worth it.
 	const video = document.querySelector<HTMLVideoElement>('.hero-video');
 
 	if (video) {
 		const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-		const wide = matchMedia('(min-width: 768px)');
 		const src = video.dataset.src;
 		const rate = Number(video.dataset.rate) || 1;
 		const start = Number(video.dataset.start) || 0;
@@ -252,12 +259,11 @@ const { showreel, poster, showreelRate, showreelStart } = hero;
 		};
 
 		const sync = () => {
-			if (wide.matches && !reduced.matches) load();
+			if (!reduced.matches) load();
 			else if (video.src) unload();
 		};
 
 		sync();
-		wide.addEventListener('change', sync);
 		reduced.addEventListener('change', sync);
 
 		// Don't decode video the visitor has scrolled past.

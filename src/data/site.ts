@@ -1,5 +1,10 @@
 // Single source of truth for homepage content.
 // Section components import from here — they never hardcode copy.
+//
+// Everything below is client-supplied except where marked PLACEHOLDER. Sections
+// whose content has not arrived yet (Projects, Services, News, Vision & Mission)
+// have no export here and are commented out of index.astro — a page that shows
+// nothing beats a page that shows invented projects and fabricated articles.
 
 export const nav = [
 	{ label: 'About Us', href: '/about' },
@@ -10,9 +15,9 @@ export const nav = [
 ];
 
 export const hero = {
-	eyebrow: 'Tourism & Real Estate Investment',
-	title: "Building Syria's Next Chapter",
-	body: "Auristate identifies, develops, and manages premium tourism and real estate investments across Syria's coast, historic cities, and emerging regions.",
+	eyebrow: 'Tourism Investment',
+	title: 'World-Class Destinations',
+	body: 'Auristate Tourism Investment builds world-class destinations that embody elegance, opportunity, and cultural connection.',
 	background: '/images/hero/hero-bg.svg',
 	// Client-supplied showreel: a 6.1s CGI walkthrough of the "365" venue.
 	// Source is only 854x480 with an audible track we never play, so the hero
@@ -36,120 +41,39 @@ export const hero = {
 	]
 };
 
+// Client copy, verbatim. Split at sentence boundaries for the two-column layout;
+// the only edit is "high end" -> "high-end".
 export const about = {
-	eyebrow: 'About Auristate',
-	title: "Unlocking Syria's Potential",
+	eyebrow: 'About Us',
+	title: 'Who We Are',
+	lead: 'We are a Syrian joint-stock company specialized in real estate and tourism investments, founded in 2025. We combine deep local expertise with a renewed global vision.',
 	paragraphs: [
-		"Auristate is a tourism and real estate investment firm dedicated to unlocking Syria's potential — from coastal resorts to heritage restorations. We partner with investors and communities to build lasting value.",
-		'Our work spans the full investment lifecycle: sourcing and appraising sites, structuring capital, managing development, and operating the assets once they open. Every project is underwritten with the same discipline, whether it is a seafront residence in Latakia or a courtyard house in Old Damascus.',
-		'We build with the places we build in. Local craft, local materials, and local employment are part of the return we measure — because developments that a community is proud of are the ones that hold their value.'
+		'We develop innovative projects that reflect authentic Syrian identity, while leveraging the latest global trends in design, construction, and building technologies.',
+		'Our team brings together accumulated experience in the local market, supported by a wide international network, to offer the high-end investor a partner who understands their ambition and masters its execution.'
 	]
 };
 
-export const stats = [
-	{ value: '12+', label: 'Years Regional Expertise' },
-	{ value: '$150M+', label: 'Under Development' },
-	{ value: '8', label: 'Active Projects' },
-	{ value: '3', label: 'Cities' }
-];
-
-export const projects = [
-	{
-		name: 'Tartus Marina District',
-		tag: 'Waterfront / Mixed-Use',
-		image: '/images/projects/filler-1.svg',
-		href: '/projects'
-	},
-	{
-		name: 'Aleppo Souk Revival',
-		tag: 'Heritage / Retail',
-		image: '/images/projects/filler-2.svg',
-		href: '/projects'
-	},
-	{
-		name: 'Coastal Range Eco Lodges',
-		tag: 'Hospitality / Eco-Tourism',
-		image: '/images/projects/filler-3.svg',
-		href: '/projects'
-	}
-];
-
-// `icon` is a key the Services component maps to an inline SVG path.
-export const services = [
-	{
-		icon: 'advisory',
-		title: 'Investment Advisory',
-		blurb:
-			'Market appraisal, feasibility studies, and deal structuring for investors entering Syrian tourism and real estate.'
-	},
-	{
-		icon: 'development',
-		title: 'Property Development',
-		blurb:
-			'End-to-end delivery — site acquisition, design, permitting, and construction management on coastal and heritage sites.'
-	},
-	{
-		icon: 'management',
-		title: 'Asset & Property Management',
-		blurb:
-			'Leasing, maintenance, and performance reporting that protect yield across the full life of the asset.'
-	},
-	{
-		icon: 'hospitality',
-		title: 'Hospitality Operations',
-		blurb:
-			'Resort and hotel operations, from brand positioning and staffing to guest experience and revenue management.'
-	}
-];
-
-export const posts = [
-	{
-		title: "Why Syria's Coastline Is Emerging for Tourism Investment",
-		date: 'Jun 2026',
-		excerpt:
-			'Three hundred kilometres of Mediterranean shoreline, a reopening travel corridor, and a hospitality supply gap that has not been addressed in a generation.',
-		href: '/news'
-	},
-	{
-		title: 'A Guide to Real Estate Regulations for Foreign Investors',
-		date: 'May 2026',
-		excerpt: 'What ownership structures are available, and how to plan around them.',
-		href: '/news'
-	},
-	{
-		title: 'Inside Our Latest Development: Tartus Marina District',
-		date: 'Apr 2026',
-		excerpt: 'A walkthrough of the masterplan, the materials, and the delivery timeline.',
-		href: '/news'
-	}
-];
-
-export const visionMission = [
-	{
-		eyebrow: 'Our Vision',
-		title: 'A Syria That Investors and Travellers Return To',
-		body: 'To be the partner of record for tourism and real estate investment in Syria — restoring what is historic, building what is needed, and proving that responsible capital and cultural stewardship belong in the same project.'
-	},
-	{
-		eyebrow: 'Our Mission',
-		title: 'Develop With Discipline, Build With the Community',
-		body: 'To source, structure, and deliver developments that hold their value: transparently underwritten, sensitively designed, locally staffed, and operated to a standard that stands comparison with any market in the region.'
-	}
-];
-
+// PLACEHOLDER — not client copy. Makes no factual claim, so it ships, but it
+// should be replaced when the client sends closing copy.
 export const cta = {
 	title: "Ready to Invest in Syria's Future?",
 	label: 'Contact Our Team',
 	href: '/contact'
 };
 
+// PLACEHOLDER — the email, phone, and address are all invented. Replace before
+// launch; a wrong phone number is worse than none.
 export const contact = {
 	email: 'info@auristate.com',
 	phone: '+963 00 000 0000',
 	address: 'Damascus, Syria'
 };
 
+// PLACEHOLDER — real profile URLs needed; these point nowhere.
 export const social = [
 	{ label: 'LinkedIn', href: '#' },
 	{ label: 'Instagram', href: '#' }
 ];
+
+// PLACEHOLDER — footer tagline, not client copy.
+export const footerTagline = 'Tourism & real estate investment across Syria.';
