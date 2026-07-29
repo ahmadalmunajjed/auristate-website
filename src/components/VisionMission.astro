@@ -11,7 +11,7 @@ const [vision, mission] = visionMission;
 <section id="vision-mission" class="py-20">
 	<div class="mx-auto max-w-6xl px-6">
 		<div class="grid gap-6 md:grid-cols-5">
-			<article class="reveal rounded-3xl bg-nearblack p-10 md:col-span-3 md:p-12">
+			<article class="reveal reveal-left rounded-3xl bg-nearblack p-10 md:col-span-3 md:p-12">
 				<p class="mb-6 text-xs tracking-[0.3em] text-gold-light uppercase">{vision.eyebrow}</p>
 				<p
 					class="text-xl leading-relaxed text-white md:text-2xl"
@@ -24,8 +24,8 @@ const [vision, mission] = visionMission;
 			{/* Centered: the mission statement is much shorter than the vision, and
 			    top-aligning it leaves a block of dead space under the text. */}
 			<article
-				class="reveal flex flex-col justify-center rounded-3xl bg-white/60 p-10 md:col-span-2 md:p-12"
-				style="--reveal-delay: 120ms"
+				class="reveal reveal-right flex flex-col justify-center rounded-3xl bg-white/60 p-10 md:col-span-2 md:p-12"
+				style="--reveal-delay: 140ms"
 			>
 				<p class="mb-6 text-xs tracking-[0.3em] text-gold-deep uppercase">{mission.eyebrow}</p>
 				<p class="leading-relaxed text-ink/80">{mission.body}</p>

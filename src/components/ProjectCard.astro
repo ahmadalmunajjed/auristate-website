@@ -24,7 +24,11 @@ const aspect =
 
 <a
 	href={project.href}
-	class:list={['project-card reveal group relative block overflow-hidden bg-nearblack', span, aspect]}
+	class:list={[
+		'project-card reveal reveal-rise group relative block overflow-hidden bg-nearblack',
+		span,
+		aspect
+	]}
 	style={`--reveal-delay: ${index * 120}ms`}
 >
 	<img

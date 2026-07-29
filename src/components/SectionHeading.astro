@@ -4,16 +4,21 @@ interface Props {
 	title: string;
 	align?: 'left' | 'center';
 	class?: string;
+	/** Animate the title line by line. Needs an ancestor with `.reveal`. */
+	splitTitle?: boolean;
 }
 
-const { eyebrow, title, align = 'left', class: className = '' } = Astro.props;
+const { eyebrow, title, align = 'left', class: className = '', splitTitle = false } = Astro.props;
 ---
 
 <div class:list={[align === 'center' && 'text-center', className]}>
 	{/* gold-deep, not gold-dark: at 12px this is small text, and gold-dark
 	    measures 2.83:1 on sand. gold-deep clears 4.5:1. */}
 	<p class="mb-4 text-xs tracking-[0.3em] text-gold-deep uppercase">{eyebrow}</p>
-	<h2 class="text-3xl text-ink" style="font-family: var(--font-display); font-weight: 600;">
+	<h2
+		class:list={['text-3xl text-ink', splitTitle && 'reveal-text']}
+		style="font-family: var(--font-display); font-weight: 600;"
+	>
 		{title}
 	</h2>
 </div>

@@ -120,27 +120,102 @@
   animation: float-slow 7s ease-in-out infinite;
 }
 
+/* Scroll-reveal system.
+   Every variant animates the same two properties — opacity and transform — so
+   the GPU handles them on the compositor. Animating anything else here (height,
+   filter, background) would drop to the main thread and jank.
+   Timing is deliberately long and heavily eased: a luxury-register site reads
+   as expensive when motion decelerates, and as cheap when it snaps. */
 .reveal {
+  --reveal-distance: 48px;
   opacity: 0;
-  transform: translateY(28px);
+  transform: translateY(var(--reveal-distance));
   transition:
-    opacity 0.7s cubic-bezier(0.2, 0.6, 0.2, 1),
-    transform 0.7s cubic-bezier(0.2, 0.6, 0.2, 1);
+    opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 1.05s cubic-bezier(0.16, 1, 0.3, 1);
   transition-delay: var(--reveal-delay, 0ms);
+  will-change: transform, opacity;
 }
 
-.reveal.is-visible {
-  opacity: 1;
+/* Rises further and scales up slightly — for full-bleed media and large cards,
+   where a plain translate is too subtle to register at that size. */
+.reveal-rise {
+  --reveal-distance: 72px;
+  transform: translateY(var(--reveal-distance)) scale(0.96);
+}
+
+/* Enters from the side. Uses a logical property so the RTL build mirrors it
+   without a second rule. */
+.reveal-left {
+  transform: translate3d(calc(var(--reveal-distance) * -1), 0, 0);
+}
+
+.reveal-right {
+  transform: translate3d(var(--reveal-distance), 0, 0);
+}
+
+/* Headings split into lines/words by split-text.js — each part rises on its
+   own short delay so the line assembles rather than appearing whole. */
+.reveal-text .reveal-line {
+  display: block;
+  overflow: hidden;
+}
+
+.reveal-text .reveal-line > span {
+  display: block;
+  transform: translateY(105%);
+  transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: calc(var(--reveal-delay, 0ms) + var(--line-delay, 0ms));
+}
+
+.reveal-text.is-visible .reveal-line > span {
   transform: translateY(0);
 }
 
+.reveal.is-visible,
+.reveal-rise.is-visible,
+.reveal-left.is-visible,
+.reveal-right.is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+}
+
+/* A rule that draws itself left-to-right. transform-origin, not width, so it
+   stays on the compositor. */
+.reveal-rule {
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: calc(var(--reveal-delay, 0ms) + 260ms);
+}
+
+.is-visible .reveal-rule {
+  transform: scaleX(1);
+}
+
+/* Dropped once the entrance finishes: leaving will-change on permanently
+   keeps a compositor layer alive for every revealed element on the page. */
+.reveal.is-settled {
+  will-change: auto;
+}
+
+/* Bold motion has to degrade to no motion, not to less motion. Everything
+   below lands in its final state instantly and stays there — the reveal script
+   still runs and still adds .is-visible, so nothing depends on the transition
+   firing to become readable. */
 @media (prefers-reduced-motion: reduce) {
   .animate-hero,
   .animate-float,
-  .reveal {
+  .reveal,
+  .reveal-rise,
+  .reveal-left,
+  .reveal-right,
+  .reveal-text .reveal-line > span,
+  .reveal-rule {
     animation: none !important;
     transition: none !important;
     opacity: 1 !important;
     transform: none !important;
+    will-change: auto !important;
   }
 }
