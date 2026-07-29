@@ -111,6 +111,18 @@ export const services = [
 	}
 ];
 
+// Client copy. No separate headline — the statement is the content.
+export const visionMission = [
+	{
+		eyebrow: 'Our Vision',
+		body: 'To establish a new benchmark for real estate and tourism development in Syria — one that blends innovation, sustainability, and authenticity to shape vibrant communities and memorable destinations. Our vision is to be a catalyst for the country’s revival, empowering local economies and unlocking long-term value for investors and society.'
+	},
+	{
+		eyebrow: 'Our Mission',
+		body: 'To deliver high-quality projects, based on innovation and international collaboration, creating an urban and touristic environment that meets the aspirations of premium investors, aligns with global standards, and respects local identity.'
+	}
+];
+
 // PLACEHOLDER
 export const cta = {
 	title: "Ready to Invest in Syria's Future?",

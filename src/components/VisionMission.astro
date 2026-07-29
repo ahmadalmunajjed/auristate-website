@@ -1,21 +1,35 @@
 ---
 import { visionMission } from '../data/site';
+
+const [vision, mission] = visionMission;
 ---
 
-<section id="vision-mission" class="py-24">
+{/* Vision takes the dark card and more room — it is the longer, broader
+    statement. Mission answers it on the light card. A gold-gradient card was
+    tried first and dropped: ink body copy measures 3.95:1 on the gradient's
+    dark end, under the 4.5:1 minimum. */}
+<section id="vision-mission" class="py-20">
 	<div class="mx-auto max-w-6xl px-6">
-		<div class="grid gap-8 md:grid-cols-2">
-			{
-				visionMission.map((item, i) => (
-					<div class="reveal rounded-3xl bg-white/60 p-10" style={`--reveal-delay: ${i * 120}ms`}>
-						<p class="mb-4 text-xs tracking-[0.3em] text-gold-dark uppercase">{item.eyebrow}</p>
-						<h3 class="mb-4 text-2xl text-charcoal" style="font-family: var(--font-display); font-weight: 600;">
-							{item.title}
-						</h3>
-						<p class="leading-relaxed text-charcoal/70">{item.body}</p>
-					</div>
-				))
-			}
+		<div class="grid gap-6 md:grid-cols-5">
+			<article class="reveal rounded-3xl bg-nearblack p-10 md:col-span-3 md:p-12">
+				<p class="mb-6 text-xs tracking-[0.3em] text-gold-light uppercase">{vision.eyebrow}</p>
+				<p
+					class="text-xl leading-relaxed text-white md:text-2xl"
+					style="font-family: var(--font-display); font-weight: 400;"
+				>
+					{vision.body}
+				</p>
+			</article>
+
+			{/* Centered: the mission statement is much shorter than the vision, and
+			    top-aligning it leaves a block of dead space under the text. */}
+			<article
+				class="reveal flex flex-col justify-center rounded-3xl bg-white/60 p-10 md:col-span-2 md:p-12"
+				style="--reveal-delay: 120ms"
+			>
+				<p class="mb-6 text-xs tracking-[0.3em] text-gold-deep uppercase">{mission.eyebrow}</p>
+				<p class="leading-relaxed text-ink/80">{mission.body}</p>
+			</article>
 		</div>
 	</div>
 </section>
