@@ -5,6 +5,11 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
+  // Current Cloudflare Pages deployment. TODO: swap to the custom domain when
+  // it is live — every absolute URL in Layout.astro (canonical, OG image) is
+  // built from this, and stale values mean broken link previews and canonicals
+  // pointing at the wrong host.
+  site: 'https://auristate-website.pages.dev',
   vite: {
     plugins: [tailwindcss()]
   },
