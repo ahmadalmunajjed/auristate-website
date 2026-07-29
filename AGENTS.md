@@ -67,20 +67,73 @@ Nav entries carry real `href`s; the five routes they point at (`/about`, `/proje
 marked as such in the file — the phone number and email in particular are invented and must be replaced
 before launch.
 
-`ProjectsGallery`, `Services`, `News`, and `VisionMission` are **built but commented out of `index.astro`**,
-and their data is deleted. Everything they contained was invented: fabricated project names, blog posts,
-service blurbs, and stats claiming "12+ years" for a company founded in 2025. A page that shows nothing beats
-one that shows fiction. Uncomment each as its real copy arrives.
+`Services`, `News`, and `VisionMission` are **built but commented out of `index.astro`**, and their data is
+deleted. Everything they contained was invented: fabricated blog posts, service blurbs, and stats claiming
+"12+ years" for a company founded in 2025. A page that shows nothing beats one that shows fiction. Uncomment
+each as its real copy arrives.
+
+`ProjectsGallery` works differently — it is **mounted but self-hiding**. It returns nothing while `projects`
+is empty, so the section appears on its own the moment real entries land in `site.ts`, with no second edit
+and no empty heading shipping over a blank grid.
 
 The live page is therefore: Header → Hero → About → CTA band → Footer.
 
-Imagery is placeholder SVG in brand tones. Drop real files at these paths and nothing else needs to change:
+### Projects data
 
-| Path | Replaces |
+```ts
+interface Project {
+  name: string;
+  tag: string;       // 'Hospitality / Resort' — the gold eyebrow
+  image: string;     // cards crop to 4:3, so 4:3 or wider is best
+  href: string;      // '/projects/<slug>' once project pages exist
+  summary?: string;  // shown in the feature and mosaic layouts
+}
+```
+
+`ProjectsGallery` picks its layout from the count, because one grid cannot serve every case — a mosaic built
+for six tiles looks broken at two, and a lone card in a three-column grid reads as a loading failure:
+
+| Count | Layout | Crop |
+| --- | --- | --- |
+| 1 | Feature — full width | 16:9 |
+| 2–3 | Equal cards in a 2- or 3-column row | 9:10 portrait |
+| 4+ | Mosaic — first tile spans two columns | 16:10 wide, 9:10 rest |
+
+`ProjectCard.astro` renders all three via a `variant` prop (`feature` / `wide` / `default`).
+
+**This section deliberately inverts the theme.** Per the client's reference design it is `bg-nearblack` with
+square corners, tight 12px gutters, and near-full-bleed cards — everywhere else on the site is warm sand with
+`rounded-3xl`. Cards are overlays: the image *is* the card, with a white type pill top-left and the title in
+white over the photo, nothing in a panel beneath.
+
+Consequences worth knowing before editing it:
+
+- `SectionHeading.astro` is **not** used here. Its `text-ink` title would be invisible on black and its
+  `gold-deep` eyebrow measures 3.04:1 there. The heading is inlined with `text-white` / `gold-light`
+  (8.77:1). The palette inverts on dark — `gold-light` is the accessible gold, `gold-deep` is not.
+- The title sits on photography nobody has vetted, so legibility comes from a **bottom-weighted scrim**, not
+  from assuming a dark image. It was tuned by rendering each card to canvas and sampling the brightest pixel
+  behind the title: the first ramp left a sunlit render at 4.37:1, the current one holds ≥8:1. Architectural
+  renders run brighter than stock photography, so keep the margin if you retune it.
+- The grid is `items-start`. The default stretch pads shorter cards to match the tall wide tile.
+
+### Imagery
+
+| Path | Status |
 | --- | --- |
 | `public/images/hero/hero-bg.svg` | Unused since the video hero landed; kept for non-video pages |
 | `public/images/hero/video-poster.svg` | Superseded by `placeholder.png` |
-| `public/images/projects/filler-{1,2,3}.svg` | Gallery tiles 4–6 |
+| `public/images/projects/filler-{1,2,3}.svg` | Abstract brand-toned art; safe as a placeholder anywhere |
+| `public/images/projects/stock-*.jpg` | **Stock photos — never usable as a project.** See below |
+
+The three `stock-*.jpg` files arrived as layout filler for the design concepts and depict no Auristate
+development. One was named `latakia-coastal.jpg` but is actually **Ortigia, Syracuse** — a stock photo of
+Sicily. They were renamed so the filenames stop asserting a location, and
+`public/images/projects/README.md` records the provenance. Use them for mockups; never caption them as a
+project. In a projects gallery a wrong image stops being a placeholder and becomes a false claim about what
+the company has built.
+
+The only genuine client imagery in the repo is the "365" venue render in `hero.mp4` and its poster frame.
 
 ### Hero video
 

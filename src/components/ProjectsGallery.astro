@@ -1,38 +1,81 @@
 ---
-import SectionHeading from './SectionHeading.astro';
+import ProjectCard from './ProjectCard.astro';
 import { projects } from '../data/site';
+
+// Renders nothing until real projects exist, so index.astro can leave this
+// mounted permanently — the section appears the moment site.ts gains entries,
+// with no second edit and no empty heading over a blank grid in the meantime.
+const count = projects.length;
+
+// A mosaic built for six tiles looks broken at two, and a lone card marooned in
+// a three-column grid looks like a loading failure. Pick the shape from the
+// count instead of forcing one grid to cover every case.
+const layout = count === 1 ? 'feature' : count < 4 ? 'row' : 'mosaic';
+
+const gridCols = layout === 'row' && count === 2 ? 'md:grid-cols-2' : 'md:grid-cols-3';
+
+// The grid is items-start, not the default stretch: the mosaic's wide first
+// tile is taller than its row-mates, and stretching the shorter cards to match
+// pads them with dead space.
 ---
 
-<section id="projects" class="bg-white/50 py-24">
-	<div class="mx-auto max-w-6xl px-6">
-		<div class="reveal mb-14 flex items-end justify-between">
-			<SectionHeading eyebrow="Our Projects" title="Selected Developments" />
-			<a href="/projects" class="hidden text-sm text-charcoal/70 hover:text-gold-dark md:block">View All Projects</a>
-		</div>
-		<div class="grid gap-8 md:grid-cols-3">
-			{
-				projects.map((project, i) => (
+{
+	count > 0 && (
+		<section id="projects" class="bg-nearblack py-24">
+			{/* This section inverts: dark ground, white type, gold-light accents.
+			    SectionHeading is built for the light sections — its text-ink title
+			    would be invisible here and its gold-deep eyebrow measures 3.04:1 on
+			    nearblack — so the heading is inlined rather than the shared
+			    component being bent to cover both grounds. */}
+			<div class="mx-auto max-w-6xl px-6">
+				<div class="reveal mb-12 flex items-end justify-between gap-6">
+					<div>
+						<p class="mb-4 text-xs tracking-[0.3em] text-gold-light uppercase">Our Projects</p>
+						<h2
+							class="text-3xl text-white"
+							style="font-family: var(--font-display); font-weight: 600;"
+						>
+							Selected Developments
+						</h2>
+					</div>
 					<a
-						href={project.href}
-						class="reveal group block overflow-hidden rounded-3xl bg-white/60 shadow-sm transition hover:shadow-md"
-						style={`--reveal-delay: ${i * 120}ms`}
+						href="/projects"
+						class="hidden shrink-0 pb-1 text-sm text-white/80 transition hover:text-gold-light md:block"
 					>
-						<div class="aspect-[4/3] overflow-hidden">
-							<img
-								src={project.image}
-								alt={project.name}
-								class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-							/>
-						</div>
-						<div class="p-6">
-							<p class="mb-2 text-xs tracking-widest text-gold-dark uppercase">{project.tag}</p>
-							<h3 class="text-xl text-charcoal" style="font-family: var(--font-display); font-weight: 600;">
-								{project.name}
-							</h3>
-						</div>
+						View All Projects →
 					</a>
-				))
-			}
-		</div>
-	</div>
-</section>
+				</div>
+			</div>
+
+			{/* Tight gutters and a full-bleed grid: the reference runs the cards
+			    edge to edge with a thin dark seam between them, so the images read
+			    as one band rather than as three separate boxes on a page. */}
+			<div class="px-3">
+				{
+					layout === 'feature' ? (
+						<ProjectCard project={projects[0]} index={0} variant="feature" />
+					) : (
+						<div class:list={['grid items-start gap-3', gridCols]}>
+							{projects.map((project, i) => (
+								<ProjectCard
+									project={project}
+									index={i}
+									variant={layout === 'mosaic' && i === 0 ? 'wide' : 'default'}
+								/>
+							))}
+						</div>
+					)
+				}
+			</div>
+
+			<div class="mx-auto max-w-6xl px-6">
+				<a
+					href="/projects"
+					class="reveal mt-10 block text-sm text-white/80 transition hover:text-gold-light md:hidden"
+				>
+					View All Projects →
+				</a>
+			</div>
+		</section>
+	)
+}

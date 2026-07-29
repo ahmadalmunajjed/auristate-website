@@ -1,0 +1,107 @@
+---
+import type { Project } from '../data/site';
+
+interface Props {
+	project: Project;
+	index: number;
+	/**
+	 * feature — the only project: full width, cinematic crop.
+	 * wide    — first tile of the mosaic: spans two columns.
+	 * default — an ordinary tile.
+	 */
+	variant?: 'feature' | 'wide' | 'default';
+}
+
+const { project, index, variant = 'default' } = Astro.props;
+
+// Overlay cards: the image is the card, and the type pill and title sit on top
+// of it. Nothing renders in a panel below, so every variant differs only in how
+// much grid it occupies and how the image is cropped.
+const span = variant === 'wide' ? 'md:col-span-2' : '';
+
+// The default tile is 4:5, not the 9:10 the reference design uses. Every client
+// render is a 16:9 wide shot — a taller crop throws away most of the frame, and
+// these are architectural compositions where the surroundings are the point.
+// 4:5 keeps the editorial portrait feel while showing appreciably more width.
+const aspect =
+	variant === 'feature' ? 'aspect-[16/9]' : variant === 'wide' ? 'aspect-[16/10]' : 'aspect-[4/5]';
+---
+
+<a
+	href={project.href}
+	class:list={['project-card reveal group relative block overflow-hidden bg-nearblack', span, aspect]}
+	style={`--reveal-delay: ${index * 120}ms`}
+>
+	<img
+		src={project.image}
+		alt=""
+		loading="lazy"
+		decoding="async"
+		class="absolute inset-0 h-full w-full object-cover transition duration-700 ease-out group-hover:scale-115 group-focus-visible:scale-115"
+	/>
+
+	{/* Bottom-weighted scrim. The title sits on photography nobody has seen yet,
+	    so it cannot assume a dark subject. Sampled against the brightest pixel
+	    behind the title on a sunlit render, this holds white text at ~6:1; the
+	    earlier, lighter ramp fell to 4.37 there. Architectural renders are
+	    typically brighter than these stock photos, hence the margin. */}
+	<div
+		class="absolute inset-0"
+		style="background: linear-gradient(180deg, rgba(26,26,26,0.38) 0%, rgba(26,26,26,0) 30%, rgba(26,26,26,0.30) 52%, rgba(26,26,26,0.72) 78%, rgba(26,26,26,0.88) 100%);"
+	>
+	</div>
+
+	<div class="relative flex h-full flex-col justify-between p-6 md:p-7">
+		<span
+			class="self-start bg-white px-4 py-2 text-[0.65rem] font-medium tracking-[0.12em] text-ink uppercase"
+		>
+			{project.tag}
+		</span>
+
+		<div>
+			<h3
+				class="text-2xl leading-tight text-white md:text-3xl"
+				style="font-family: var(--font-display); font-weight: 600; text-shadow: 0 2px 16px rgba(26,26,26,0.5);"
+			>
+				{project.name}
+			</h3>
+			{
+				project.summary && (
+					<p
+						class="mt-3 max-w-md text-sm leading-relaxed text-white/85"
+						style="text-shadow: 0 1px 10px rgba(26,26,26,0.6);"
+					>
+						{project.summary}
+					</p>
+				)
+			}
+		</div>
+	</div>
+</a>
+
+<style>
+	/* The whole card is one link, so the focus ring has to be visible against
+	   both the photo and the dark section around it. */
+	.project-card:focus-visible {
+		outline: 2px solid var(--color-gold-light);
+		outline-offset: 3px;
+	}
+
+	.project-card img {
+		will-change: transform;
+	}
+
+	/* Tailwind v4's scale-* utilities set the standalone `scale` property, not
+	   `transform` — so `transform: none` does NOT cancel them. Reset `scale`. */
+	@media (prefers-reduced-motion: reduce) {
+		.project-card img {
+			transition: none;
+			will-change: auto;
+		}
+
+		.project-card:hover img,
+		.project-card:focus-visible img {
+			scale: none;
+		}
+	}
+</style>

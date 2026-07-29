@@ -53,6 +53,45 @@ export const about = {
 	]
 };
 
+export interface Project {
+	name: string;
+	/** e.g. 'Hospitality / Resort' — renders as the gold eyebrow above the name. */
+	tag: string;
+	/** /images/projects/<file>. Cards crop to 4:3, so 4:3 or wider works best. */
+	image: string;
+	/** '/projects/<slug>' once project pages exist. */
+	href: string;
+	/** Optional one-liner. Shown in the 1- and 4+-project layouts only. */
+	summary?: string;
+}
+
+// Real client projects. Images are client-supplied renders; the file name
+// follows the project name.
+//
+// `tag` values are read off the renders themselves (THE MARK's gatehouse
+// signage reads "luxury villas compound") and from 365 being the venue in the
+// hero video. Correct them if the client's own wording differs.
+export const projects: Project[] = [
+	{
+		name: '365',
+		tag: 'Hospitality / Venue',
+		image: '/images/projects/365-photo.jpg',
+		href: '/projects'
+	},
+	{
+		name: 'Hameh',
+		tag: 'Residential',
+		image: '/images/projects/hameh.jpg',
+		href: '/projects'
+	},
+	{
+		name: 'THE MARK',
+		tag: 'Luxury Villas Compound',
+		image: '/images/projects/the-mark.jpg',
+		href: '/projects'
+	}
+];
+
 // PLACEHOLDER — not client copy. Makes no factual claim, so it ships, but it
 // should be replaced when the client sends closing copy.
 export const cta = {
