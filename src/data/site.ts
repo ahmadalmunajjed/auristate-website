@@ -81,7 +81,7 @@ export interface Project {
 	image: string;
 	/** '/projects/<slug>' once project pages exist. */
 	href: string;
-	/** Shown in the 1- and 4+-project layouts only. */
+	/** Optional second line under the name. Renders in every layout. */
 	summary?: string;
 }
 

@@ -42,19 +42,23 @@ import { visionMission } from '../data/site';
 
 		{/* Two peers, so two equal halves — the asymmetric 3/2 split was there to
 		    give the longer vision statement more room on a dark card. Content is
-		    vertically centred inside each frame: mission is ~15 words shorter, and
-		    top-aligning it leaves a block of dead space under the text. */}
+		    top-aligned, not centred: the panels stretch to a common height, and
+		    centring each stack within that pushed the shorter mission's emblem and
+		    eyebrow ~44px below the vision's, which reads as a misalignment rather
+		    than as balance. Trailing space under the shorter statement is the
+		    cheaper cost. */}
 		<div class="mt-14 grid gap-8 md:mt-16 md:grid-cols-2 md:gap-10">
 			{
 				visionMission.map((item, i) => (
 					<article
-						class="vm-panel reveal relative flex flex-col justify-center rounded-3xl border border-gold-dark/20 bg-white/70 p-8 text-center md:p-12"
+						class="vm-panel reveal relative rounded-3xl border border-gold-dark/20 bg-white/70 p-8 text-center md:p-12"
 						style={`--reveal-delay: ${140 + i * 120}ms`}
 					>
 						{/* Double rule — the inner hairline is what makes it read as a
 						    frame rather than a card. */}
 						<span class="vm-frame" aria-hidden="true" />
 
+						{/* The logo's triangle mark, echoed at panel scale. */}
 						<svg viewBox="0 0 32 28" class="vm-emblem mx-auto h-7 w-8 text-gold-dark" aria-hidden="true">
 							<path
 								d="M16 2 L30 26 H2 Z"
@@ -81,23 +85,36 @@ import { visionMission } from '../data/site';
 
 <style>
 	/* Ambient warmth behind the panels. Negative z-index inside the section's
-	   own stacking context, so it paints over bg-sand but under the content. */
+	   own stacking context, so it paints over bg-sand but under the content.
+
+	   It starts at 32% — below the heading — and that is a contrast constraint,
+	   not a taste one. The eyebrow is 12px gold-deep, which measures 4.51:1 on
+	   bare sand: one hundredth over the 4.5 minimum. Any tint at all spends
+	   margin the token does not have — the gold lobe at even 0.10 alpha drops it
+	   to 4.32, and the original full-bleed version measured 3.67. Dimming cannot
+	   recover it, so the glow stays off the heading instead. Panels are white/70
+	   over the glow, which lifts the same eyebrow back to 5.05:1 inside them.
+	   Keep the top offset ahead of the drift if you retune either. */
 	.vm-glow {
 		position: absolute;
-		inset: -25% -10%;
+		inset: 32% -10% -25%;
 		z-index: -1;
 		background:
-			radial-gradient(45% 40% at 20% 20%, rgba(225, 177, 69, 0.3), transparent 70%),
-			radial-gradient(42% 38% at 82% 80%, rgba(180, 124, 39, 0.22), transparent 72%);
+			radial-gradient(50% 45% at 18% 22%, rgba(225, 177, 69, 0.3), transparent 70%),
+			radial-gradient(46% 42% at 84% 78%, rgba(180, 124, 39, 0.22), transparent 72%);
 		animation: vm-drift 22s ease-in-out infinite alternate;
 	}
 
+	/* Grows downward only — scaling from the default centre would walk the top
+	   edge back up into the heading and undo the offset above. */
 	@keyframes vm-drift {
 		from {
-			transform: translate3d(-2%, -1.5%, 0) scale(1);
+			transform: translate3d(-2%, 0, 0) scale(1);
+			transform-origin: 50% 100%;
 		}
 		to {
-			transform: translate3d(2%, 1.5%, 0) scale(1.08);
+			transform: translate3d(2%, 0, 0) scale(1.08);
+			transform-origin: 50% 100%;
 		}
 	}
 

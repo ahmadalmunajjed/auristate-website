@@ -98,10 +98,28 @@ second follows the link. Below 768px the nav is hidden entirely and there is sti
 marked as such in the file — the phone number and email in particular are invented and must be replaced
 before launch.
 
-`Services`, `News`, and `VisionMission` are **built but commented out of `index.astro`**, and their data is
-deleted. Everything they contained was invented: fabricated blog posts, service blurbs, and stats claiming
-"12+ years" for a company founded in 2025. A page that shows nothing beats one that shows fiction. Uncomment
-each as its real copy arrives.
+The footer's `social` entries render as **icons only**, so `label` never appears on screen and serves as the
+link's `aria-label`. `icon` selects a glyph from `SocialIcon.astro`, whose path table is typed
+`Record<SocialIconName, string>` against the union in `site.ts` — adding a network to one side fails the
+build until the other catches up. Those paths are simple-icons@13 (CC0) copied verbatim, not redrawn; the
+component header records where to re-fetch them. LinkedIn, Instagram, and Facebook still point at `#`.
+**WhatsApp is the first live outbound link on the site** — it is built from `contact.phone`, which AGENTS.md
+flags as invented, so confirm the number before launch or it delivers visitors to a stranger.
+
+Icons hover to `gold-deep`, which the text links two columns over cannot do: at 3.45:1 on `#d9c7a5` gold
+fails the 4.5:1 text threshold but clears the 3:1 one that applies to non-text content.
+
+`Services`, `News`, and `VisionMission` were once commented out of `index.astro` because everything in them
+was invented. All three are **live now**, carrying real client copy. The principle that put them behind a
+comment still holds: a page that shows nothing beats one that shows fiction.
+
+`Services` renders its four steps as a numbered sequence, and the ordinal is what carries that — the
+connecting rule between badges is decorative and hidden from assistive tech. Each step's photo sits **above**
+the badge so every badge in the row shares one baseline and that rule stays straight. The photos are
+decorative and take an empty `alt`: the title beside one already names the step. All four are
+**PLACEHOLDER** — genuine client renders and one real site photo, reused as decoration. None depicts the
+service it sits above, which is only safe because nothing captions them; see the note in `site.ts` before
+swapping them.
 
 `ProjectsGallery` works differently — it is **mounted but self-hiding**. It returns nothing while `projects`
 is empty, so the section appears on its own the moment real entries land in `site.ts`, with no second edit
@@ -117,20 +135,62 @@ interface Project {
   tag: string;       // 'Hospitality / Resort' — the gold eyebrow
   image: string;     // cards crop to 4:3, so 4:3 or wider is best
   href: string;      // '/projects/<slug>' once project pages exist
-  summary?: string;  // shown in the feature and mosaic layouts
+  summary?: string;  // optional second line; renders in every layout
 }
 ```
 
-`ProjectsGallery` picks its layout from the count, because one grid cannot serve every case — a mosaic built
-for six tiles looks broken at two, and a lone card in a three-column grid reads as a loading failure:
+The fourth entry, `TEMP FOURTH`, is **PLACEHOLDER** and exists only to push the count past three so the
+carousel renders its arrows. Delete it, or replace it with a real project, and the section falls back to the
+static three-card coverflow.
+
+`ProjectsGallery` picks its layout from the count, because one arrangement cannot serve every case — a
+coverflow needs a middle and two shoulders, and a lone card in a three-column grid reads as a loading
+failure:
 
 | Count | Layout | Crop |
 | --- | --- | --- |
 | 1 | Feature — full width | 16:9 |
-| 2–3 | Equal cards in a 2- or 3-column row | 9:10 portrait |
-| 4+ | Mosaic — first tile spans two columns | 16:10 wide, 9:10 rest |
+| 2 | Two equal cards | 4:5 portrait |
+| 3+ | Coverflow carousel | 4:5 portrait |
 
-`ProjectCard.astro` renders all three via a `variant` prop (`feature` / `wide` / `default`).
+`ProjectCard.astro` renders the first via a `variant` prop (`feature` / `default`).
+
+#### The coverflow
+
+The centred card sits at full size; its neighbours shrink to `scale: 0.84` and dim to 50%. **The shrink is
+the standalone `scale` property, never `transform`** — `.reveal` owns transform and `.reveal.is-visible`
+resets it to `none`, which would wipe out any transform-based scaling on the same element. The layout box
+also stays full size, so shrinking a neighbour can never shove the centred card off-centre.
+
+The active card is whichever one's centre is nearest the track's, recomputed on scroll. Measurements come
+from `getBoundingClientRect` because centres are scale-proof — but **arrow steps use `offsetLeft`**, which
+transforms do not touch. A rect-based step reads a scaled neighbour's edge ~8% of a card too far in and
+overshoots every click; scroll-snap quietly corrects it, which is exactly why the bug survives casual
+testing.
+
+Two layouts hide behind one component, switched at 1024px:
+
+- **Three cards on desktop** fit, so the track drops its padding, centres with `justify-content`, and never
+  scrolls. The middle card is the focus and stays that way.
+- **Everything else** — any count on mobile, four or more anywhere — scrolls, with
+  `padding-inline: calc(50% - var(--cf-w) / 2)` so the first and last cards can still reach the centre
+  instead of stopping at the track's edge.
+
+`--cf-w` is **a length, never a percentage**: the track's own padding is derived from it, so a percentage
+would resolve against a box that depends on it.
+
+Arrows appear only above three projects, and only once the script has run — they do nothing without it, so
+the script adds `.cf-ready` to unhide them. They use `aria-disabled`, not the `disabled` attribute, because
+a real disable drops focus to the body the moment a keyboard user reaches the last slide. **Below four
+projects there are no arrows at all, including on mobile, where the track still scrolls** — swiping is the
+only way through. That follows the spec as asked; revisit it if mobile discoverability matters.
+
+A `focusin` handler centres whatever card receives focus. Without it, tabbing to a card the browser judges
+"partly visible" scrolls nothing and focus lands on a sliver clipped by the track.
+
+`ProjectCard` takes `reveal={false}` here and the track carries one reveal instead. A per-card scroll-in
+reveal never fires for slides parked outside the track's overflow box, so they would sit at opacity 0 until
+an arrow dragged them in and then fade up mid-slide.
 
 **This section deliberately inverts the theme.** Per the client's reference design it is `bg-nearblack` with
 square corners, tight 12px gutters, and near-full-bleed cards — everywhere else on the site is warm sand with
