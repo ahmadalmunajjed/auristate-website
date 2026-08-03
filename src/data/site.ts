@@ -106,6 +106,11 @@ export const projects: Project[] = [
 		image: '/images/projects/the-mark.jpg',
 		href: '/projects'
 	},
+	// PLACEHOLDER — not a real development. It exists so the carousel crosses the
+	// three-project threshold and renders its arrows; its image is 365's, reused.
+	// Kept deliberately unshippable-looking: replace it with a real project or
+	// delete it, and the section falls back to the static three-card coverflow.
+	// Its `tag` has no entry in the Projects dropdown above, by design.
 	{
 		name: 'TEMP FOURTH',
 		tag: 'Temporary',
@@ -130,27 +135,43 @@ export interface Post {
 // are for /news. A real site photo is ready at /images/blog/post.jpeg.
 export const posts: Post[] = [{title:'Site Progress Update 1: Structural Works Advance',excerpt:'Our engineering team reviews the latest milestone on site, with the primary structure now complete and finishing works scheduled to begin.',image:'/images/blog/post.jpeg',href:'/news',date:'Jul 2026'},{title:'Site Progress Update 2: Structural Works Advance',excerpt:'Our engineering team reviews the latest milestone on site, with the primary structure now complete and finishing works scheduled to begin.',image:'/images/blog/post.jpeg',href:'/news',date:'Jul 2026'},{title:'Site Progress Update 3: Structural Works Advance',excerpt:'Our engineering team reviews the latest milestone on site, with the primary structure now complete and finishing works scheduled to begin.',image:'/images/blog/post.jpeg',href:'/news',date:'Jul 2026'}];
 
+export interface Service {
+	title: string;
+	blurb: string;
+	/** Decorative, cropped to 4:3. Omit and the step renders as text alone. */
+	image?: string;
+}
+
 // Client copy. The four are a sequence, not parallel offerings, so the section
 // numbers them as a process.
-export const services = [
+//
+// The four `image` values are PLACEHOLDER: genuine client renders and one real
+// site photo, reused here as decoration. None of them depicts the service it
+// sits above — they are captioned by nothing and claim nothing, which is the
+// only reason reuse is safe. Replace them with real service photography.
+export const services: Service[] = [
 	{
 		title: 'Study & Planning',
-		blurb: 'Feasibility study, market analysis, and defining the initial vision.'
+		blurb: 'Feasibility study, market analysis, and defining the initial vision.',
+		image: '/images/projects/the-mark.jpg'
 	},
 	{
 		title: 'Design & Development',
 		blurb:
-			"Exclusive architectural and interior designs, with 3D renderings that let you see your project before it's built."
+			"Exclusive architectural and interior designs, with 3D renderings that let you see your project before it's built.",
+		image: '/images/projects/hameh.jpg'
 	},
 	{
 		title: 'Execution & Supervision',
 		blurb:
-			'Project management and strict engineering supervision, connecting you with a trusted network of specialized contractors and suppliers.'
+			'Project management and strict engineering supervision, connecting you with a trusted network of specialized contractors and suppliers.',
+		image: '/images/blog/post.jpeg'
 	},
 	{
 		title: 'Delivery & Operation',
 		blurb:
-			'Complete project handover with world-class quality, adhering to the agreed timeline and budget.'
+			'Complete project handover with world-class quality, adhering to the agreed timeline and budget.',
+		image: '/images/projects/365-photo.jpg'
 	}
 ];
 
@@ -172,14 +193,25 @@ export const contact = {
 	address: 'Kafarsousa, Damascus, Syria'
 };
 
+// The footer renders these as icons only, so `label` never appears on screen —
+// it is the link's accessible name. `icon` picks the glyph in SocialIcon.astro,
+// which types its path table as Record<SocialIconName, …> — so adding a network
+// to this union is a type error there until its path lands.
+export type SocialIconName = 'linkedin' | 'instagram' | 'facebook' | 'whatsapp';
+
+
 // LinkedIn, Instagram, and Facebook are PLACEHOLDER — no profile URLs supplied,
 // so all three point nowhere. WhatsApp is real: wa.me wants the number as bare
 // digits, and it is derived from `contact.phone` above so the two cannot drift.
-export const social = [
-	{ label: 'LinkedIn', href: '#' },
-	{ label: 'Instagram', href: '#' },
-	{ label: 'Facebook', href: '#' },
-	{ label: 'WhatsApp', href: `https://wa.me/${contact.phone.replace(/\D/g, '')}` }
+export const social: { label: string; href: string; icon: SocialIconName }[] = [
+	{ label: 'LinkedIn', href: '#', icon: 'linkedin' },
+	{ label: 'Instagram', href: '#', icon: 'instagram' },
+	{ label: 'Facebook', href: '#', icon: 'facebook' },
+	{
+		label: 'WhatsApp',
+		href: `https://wa.me/${contact.phone.replace(/\D/g, '')}`,
+		icon: 'whatsapp'
+	}
 ];
 
 // PLACEHOLDER

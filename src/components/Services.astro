@@ -15,6 +15,21 @@ import { services } from '../data/site';
 			{
 				services.map((service, i) => (
 					<li class="reveal relative" style={`--reveal-delay: ${i * 120}ms`}>
+						{/* Decorative: the title beside it already names the step, so an
+						    alt here would only repeat it to a screen reader. Sits above
+						    the ordinal so every badge in the row still shares one
+						    baseline and the connecting rule stays straight. */}
+						{service.image && (
+							<div class="mb-6 overflow-hidden rounded-3xl">
+								<img
+									src={service.image}
+									alt=""
+									loading="lazy"
+									decoding="async"
+									class="aspect-[4/3] w-full object-cover"
+								/>
+							</div>
+						)}
 						<div class="mb-5 flex items-center gap-4">
 							<span
 								class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gold-deep text-sm text-white"
@@ -28,7 +43,7 @@ import { services } from '../data/site';
 							)}
 						</div>
 						<h3
-							class="mb-3 text-xl text-ink"
+							class="mb-3 text-2xl text-ink lg:text-[1.75rem]"
 							style="font-family: var(--font-display); font-weight: 600;"
 						>
 							{service.title}
