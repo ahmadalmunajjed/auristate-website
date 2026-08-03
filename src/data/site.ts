@@ -26,7 +26,21 @@ export const nav: NavItem[] = [
 			{ label: 'Mission and Vision', href: '/#vision-mission' }
 		]
 	},
-	{ label: 'Projects', href: '/#projects' },
+	// The three children are the `tag` values on `projects` below, shortened for
+	// menu width ('Luxury Villas Compound' → 'Luxury Villas'), so the menu never
+	// advertises a type with nothing in it. Nothing derives this — a project with
+	// a new tag needs a new entry here. The trigger still points at the homepage
+	// section; only the types leave for `/projects`, which does not exist yet and
+	// 404s until built, along with the anchors these expect it to expose.
+	{
+		label: 'Projects',
+		href: '/#projects',
+		children: [
+			{ label: 'Hospitality', href: '/projects#hospitality' },
+			{ label: 'Residential', href: '/projects#residential' },
+			{ label: 'Luxury Villas', href: '/projects#luxury-villas' }
+		]
+	},
 	{ label: 'Our Services', href: '/#services' },
 	{ label: 'News', href: '/#news' },
 	{ label: 'Contact Us', href: '/contact' }

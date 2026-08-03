@@ -78,10 +78,21 @@ ships as the literal text "&amp;" in the tab and in every share preview.
 ## Content and assets
 
 All homepage copy lives in `src/data/site.ts`. Section components import from it and never hardcode copy.
-Four nav entries are in-page anchors into the homepage sections — `/#about`, `/#projects`, `/#services`,
+Most nav entries are in-page anchors into the homepage sections — `/#about`, `/#projects`, `/#services`,
 `/#news` — so they are coupled to the `id` on each section's root element. Root-relative rather than bare
 `#about`, because `Footer.astro` renders the same array and will ship on pages other than `/`. `Contact Us`
 still points at `/contact`, which does not exist yet and 404s until built.
+
+A nav entry with a `children` array renders as a dropdown **in the header only** — `Footer.astro` reads the
+same array and stays flat. `About Us` uses it for `Who We Are` (`/#about`) and `Mission and Vision`
+(`/#vision-mission`), so it now depends on a third section id. `Projects` uses it for the three project
+types, which are the `tag` values on `projects` shortened for menu width — nothing derives that list, so a
+project with a new tag needs a matching entry. Those three are the only nav links pointing **off** the
+homepage besides `Contact Us`: they expect `/projects` to expose `#hospitality`, `#residential`, and
+`#luxury-villas`, and 404 with the rest of `/projects` until that page is built. Each trigger keeps its own
+`href`, so no item is a dead end. The panel opens on `:hover` and `:focus-within` in CSS; the small script in
+`Header.astro` covers touch, where neither fires — under `(hover: none)` the first tap opens the menu and the
+second follows the link. Below 768px the nav is hidden entirely and there is still no mobile menu.
 
 **Only `hero` and `about` are client copy.** `contact`, `social`, and `footerTagline` are placeholders
 marked as such in the file — the phone number and email in particular are invented and must be replaced
