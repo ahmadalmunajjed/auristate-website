@@ -73,9 +73,10 @@ import { visionMission } from '../data/site';
 						<p class="mt-6 text-xs tracking-[0.3em] text-gold-deep uppercase">{item.eyebrow}</p>
 						<span class="vm-underline" aria-hidden="true" />
 
-						{/* Left-aligned under the centred ornament: 45–60 words of centred
-						    body copy has no stable left edge to read down. */}
-						<p class="vm-body mt-7 text-left leading-[1.9] text-ink/85 md:text-lg">{item.body}</p>
+						{/* Ranged under the centred ornament: 45–60 words of centred body
+						    copy has no stable edge to read down. `text-start`, not
+						    `text-left` — the Arabic build flips this. */}
+						<p class="vm-body mt-7 text-start leading-[1.9] text-ink/85 md:text-lg">{item.body}</p>
 					</article>
 				))
 			}

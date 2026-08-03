@@ -47,9 +47,10 @@ export const nav: NavItem[] = [
 ];
 
 export const hero = {
-	eyebrow: 'Tourism Investment',
-	title: 'World-Class Destinations',
-	body: 'Auristate Tourism Investment builds world-class destinations that embody elegance, opportunity, and cultural connection.',
+	// The hero carries this line alone — no eyebrow, no supporting paragraph.
+	// Set in caps here rather than with `uppercase`, so the copy on screen is the
+	// copy in this file.
+	title: 'INVESTING IN VISION',
 	background: '/images/hero/hero-bg.svg',
 	// null falls back to the poster alone — the hero never emits a <video> with
 	// a dead source. AGENTS.md explains why the 480p source needs the tuning.
