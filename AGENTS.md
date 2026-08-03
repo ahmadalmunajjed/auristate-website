@@ -52,8 +52,8 @@ not accents.
 
 Two knock-on rules, both measured rather than guessed:
 
-- The **CTA band** heading is `text-ink`, not white. White on the gradient's light end (`#e1b145`) is 1.99:1;
-  ink gives 7.13:1 there and 3.95:1 on the dark end.
+- Type on the **gold gradient** (`gold-light` → `gold-dark`) is `text-ink`, not white. White on the light end
+  (`#e1b145`) is 1.99:1; ink gives 7.13:1 there and 3.95:1 on the dark end.
 - **Footer** links hover to `ink` + underline rather than gold. Its `sand-dark/60` ground composites to
   `#d9c7a5`, where even `gold-deep` reaches only 3.45:1.
 

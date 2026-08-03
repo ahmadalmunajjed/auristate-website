@@ -10,7 +10,9 @@ interface Props {
 const { over = false } = Astro.props;
 ---
 
-<header class={over ? 'absolute inset-x-0 top-0 z-20' : ''}>
+{/* Both branches need a stacking context — without one, the dropdown panel
+    paints under the sections that follow the header. */}
+<header class={over ? 'absolute inset-x-0 top-0 z-20' : 'relative z-20'}>
 	<div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
 		<a href="/" class="flex items-center gap-3" aria-label="Auristate — home">
 			{/* The stacked lockup puts its wordmark at ~7% of its height, which is
@@ -41,17 +43,66 @@ const { over = false } = Astro.props;
 		</a>
 		<nav class="hidden items-center gap-8 md:flex">
 			{
-				nav.map((item) => (
-					<a
-						href={item.href}
-						class:list={[
-							'text-sm tracking-wide transition',
-							over ? 'text-white/85 hover:text-gold-light' : 'text-ink/80 hover:text-gold-deep'
-						]}
-					>
-						{item.label}
-					</a>
-				))
+				nav.map((item) =>
+					item.children ? (
+						<div class="group relative" data-dropdown>
+							{/* The trigger stays a real link to the section — hover or focus
+							    opens the menu, but the item is never a dead end. */}
+							<a
+								href={item.href}
+								data-dropdown-trigger
+								class:list={[
+									'flex items-center gap-1.5 text-sm tracking-wide transition',
+									over ? 'text-white/85 hover:text-gold-light' : 'text-ink/80 hover:text-gold-deep'
+								]}
+							>
+								{item.label}
+								<svg
+									class="h-2 w-2.5 transition-transform group-hover:rotate-180 group-focus-within:rotate-180 group-[.is-open]:rotate-180"
+									viewBox="0 0 10 6"
+									fill="none"
+									aria-hidden="true"
+								>
+									<path
+										d="M1 1l4 4 4-4"
+										stroke="currentColor"
+										stroke-width="1.5"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+									/>
+								</svg>
+							</a>
+							{/* pt-3 on the wrapper rather than a top offset on the panel: the
+							    padding keeps the hover area touching the trigger, so the cursor
+							    cannot fall through a dead gap on the way down. `invisible` also
+							    keeps the links out of the tab order until the menu opens. */}
+							<div class="invisible absolute top-full left-0 z-30 pt-3 opacity-0 transition duration-200 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100 group-[.is-open]:visible group-[.is-open]:opacity-100">
+								<ul class="min-w-52 rounded-2xl bg-offwhite/95 p-2 shadow-xl shadow-nearblack/10 ring-1 ring-ink/10 backdrop-blur-sm">
+									{item.children.map((child) => (
+										<li>
+											<a
+												href={child.href}
+												class="block rounded-xl px-4 py-2.5 text-sm whitespace-nowrap text-ink/80 transition hover:bg-sand hover:text-gold-deep"
+											>
+												{child.label}
+											</a>
+										</li>
+									))}
+								</ul>
+							</div>
+						</div>
+					) : (
+						<a
+							href={item.href}
+							class:list={[
+								'text-sm tracking-wide transition',
+								over ? 'text-white/85 hover:text-gold-light' : 'text-ink/80 hover:text-gold-deep'
+							]}
+						>
+							{item.label}
+						</a>
+					)
+				)
 			}
 		</nav>
 		<div
@@ -71,3 +122,26 @@ const { over = false } = Astro.props;
 		</div>
 	</div>
 </header>
+
+{/* Hover and focus open the menu on their own. Touch has neither: a tap on the
+    trigger would follow the link and the submenu would never appear, leaving
+    "Mission and Vision" unreachable on tablets (the nav itself is hidden below
+    768px). So on hover-less pointers the first tap opens instead of navigating,
+    and a second tap follows the link as usual. */}
+<script>
+	const hoverless = window.matchMedia('(hover: none)');
+
+	document.querySelectorAll<HTMLElement>('[data-dropdown]').forEach((menu) => {
+		menu.querySelector('[data-dropdown-trigger]')?.addEventListener('click', (event) => {
+			if (!hoverless.matches || menu.classList.contains('is-open')) return;
+			event.preventDefault();
+			menu.classList.add('is-open');
+		});
+	});
+
+	document.addEventListener('click', (event) => {
+		document.querySelectorAll('[data-dropdown].is-open').forEach((menu) => {
+			if (!menu.contains(event.target as Node)) menu.classList.remove('is-open');
+		});
+	});
+</script>
