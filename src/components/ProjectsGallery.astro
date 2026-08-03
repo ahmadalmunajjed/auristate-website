@@ -14,9 +14,16 @@ const layout = count === 1 ? 'feature' : count === 2 ? 'row' : 'coverflow';
 // At exactly three the row fits its container there and never scrolls.
 const scrolls = count > 3;
 
-// The no-JS active slide, and the one JS lands on anyway. Three cards sit
-// centred, so the focus is the middle; four or more open scrolled hard left,
-// where the track's scroll-padding centres the first.
+// The slide the carousel opens on: the second, not the first. Index 1 always
+// exists here — a coverflow needs three cards to start.
+const focusIndex = 1;
+
+// The **no-JS** active slide, which is a different question: with no script
+// there is nothing to scroll the track, so the emphasised card has to be the one
+// the resting scroll position already centres. Three cards sit centred, so that
+// is the middle; four or more open scrolled hard left, where the track's
+// scroll-padding centres the first. Marking `focusIndex` here instead would
+// leave a full-size card sitting off-centre for anyone without JS.
 const initialActive = scrolls ? 0 : Math.floor(count / 2);
 ---
 
@@ -49,7 +56,11 @@ const initialActive = scrolls ? 0 : Math.floor(count / 2);
 			{layout === 'coverflow' ? (
 				// One reveal for the whole track. Per-card reveals cannot work here
 				// — see the `reveal` prop on ProjectCard.
-				<div class:list={['cf reveal mx-auto w-full max-w-page', !scrolls && 'cf--fits']} data-cf>
+				<div
+					class:list={['cf reveal mx-auto w-full max-w-page', !scrolls && 'cf--fits']}
+					data-cf
+					data-cf-focus={String(focusIndex)}
+				>
 					<div class="cf-track" id="projects-track" data-cf-track>
 						{projects.map((project, i) => (
 							<div class:list={['cf-slide', i === initialActive && 'is-active']} data-cf-slide>
@@ -338,12 +349,10 @@ const initialActive = scrolls ? 0 : Math.floor(count / 2);
 			scrollBy(1);
 		});
 
-		/** Tabbing to a card the browser judges "partly visible" scrolls nothing,
-		 *  so keyboard focus lands on a sliver of a card clipped by the track.
-		 *  Centre it ourselves. Rect centres are scale-proof: the slides shrink
-		 *  about their own centre, so only their size changes. */
-		track.addEventListener('focusin', (event) => {
-			const slide = (event.target as HTMLElement).closest<HTMLElement>('[data-cf-slide]');
+		/** Rect centres are scale-proof: the slides shrink about their own centre,
+		 *  so only their size changes, never their middle. */
+		const centre = (index: number, behavior: ScrollBehavior) => {
+			const slide = slides[index];
 			if (!slide) return;
 
 			const bounds = track.getBoundingClientRect();
@@ -351,7 +360,16 @@ const initialActive = scrolls ? 0 : Math.floor(count / 2);
 			const delta = rect.left + rect.width / 2 - (bounds.left + bounds.width / 2);
 			if (Math.abs(delta) < 1) return;
 
-			track.scrollBy({ left: delta, behavior: reduceMotion.matches ? 'auto' : 'smooth' });
+			track.scrollBy({ left: delta, behavior });
+		};
+
+		/** Tabbing to a card the browser judges "partly visible" scrolls nothing,
+		 *  so keyboard focus lands on a sliver of a card clipped by the track. */
+		track.addEventListener('focusin', (event) => {
+			const slide = (event.target as HTMLElement).closest<HTMLElement>('[data-cf-slide]');
+			if (!slide) return;
+
+			centre(slides.indexOf(slide), reduceMotion.matches ? 'auto' : 'smooth');
 		});
 
 		track.addEventListener('scroll', queueSync, { passive: true });
@@ -359,6 +377,16 @@ const initialActive = scrolls ? 0 : Math.floor(count / 2);
 		// model, so every measurement above goes stale on resize.
 		new ResizeObserver(queueSync).observe(track);
 
+		// Open on the requested slide rather than wherever scrollLeft 0 lands.
+		// `instant`, not `smooth`: the section is usually below the fold, and a
+		// carousel caught mid-animation on arrival reads as the page moving by
+		// itself. Where the track cannot scroll — three cards on desktop — the
+		// delta is zero and this is a no-op, which is correct: the middle card is
+		// already the second one.
+		centre(Number(root.dataset.cfFocus) || 0, 'instant');
+
+		// After the scroll, never before: sync() derives the active slide from the
+		// resting scroll position, so calling it first would mark the wrong card.
 		sync();
 	});
 </script>
