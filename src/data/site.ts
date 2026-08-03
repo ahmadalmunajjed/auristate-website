@@ -172,10 +172,14 @@ export const contact = {
 	address: 'Kafarsousa, Damascus, Syria'
 };
 
-// PLACEHOLDER — these links point nowhere.
+// LinkedIn, Instagram, and Facebook are PLACEHOLDER — no profile URLs supplied,
+// so all three point nowhere. WhatsApp is real: wa.me wants the number as bare
+// digits, and it is derived from `contact.phone` above so the two cannot drift.
 export const social = [
 	{ label: 'LinkedIn', href: '#' },
-	{ label: 'Instagram', href: '#' }
+	{ label: 'Instagram', href: '#' },
+	{ label: 'Facebook', href: '#' },
+	{ label: 'WhatsApp', href: `https://wa.me/${contact.phone.replace(/\D/g, '')}` }
 ];
 
 // PLACEHOLDER
