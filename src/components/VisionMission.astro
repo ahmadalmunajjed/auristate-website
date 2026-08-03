@@ -241,6 +241,11 @@ import { visionMission } from '../data/site';
 	   every case — but it renders whatever the copy starts with, and a statement
 	   opening on a quote or digit would set that instead. */
 	.vm-body::first-letter {
+		/* Physical value first as the fallback: an engine without `inline-start`
+		   drops that line and keeps `left`, which is correct for the LTR build
+		   shipping today. Without it the cap would not float at all and would set
+		   as a 3em letter inline. */
+		float: left;
 		float: inline-start;
 		margin-block-start: 0.06em;
 		margin-inline: 0 0.1em;

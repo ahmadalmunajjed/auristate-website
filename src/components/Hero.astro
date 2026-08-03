@@ -70,8 +70,17 @@ const { showreel, poster, showreelRate, showreelStart } = hero;
 	     the scroll without needing an arrow. -->
 	<div class="mx-auto w-full max-w-6xl px-6 pt-32 pb-20 md:pt-36 md:pb-24">
 		<div class="max-w-2xl">
+			<!-- The headline is the whole hero — no eyebrow, no supporting line — so
+			     it wraps rather than fits, and where it wraps is the design. The
+			     wrapper's max-w-2xl (672px) holds it to "INVESTING IN / VISION" at
+			     every size above 360px; the caps get a little tracking because a
+			     display serif set solid in caps reads tight.
+			     text-4xl is the floor, not text-5xl: at 48px "INVESTING" alone
+			     measures 296px against the 272px a 320px viewport leaves inside
+			     px-6, and a single unbreakable word overflows into a horizontal
+			     scrollbar. 36px clears it. -->
 			<h1
-				class="animate-hero text-5xl leading-tight tracking-[0.04em] text-white md:text-7xl"
+				class="animate-hero text-4xl leading-tight tracking-[0.04em] text-white sm:text-5xl md:text-7xl"
 				style="font-family: var(--font-display); font-weight: 600; animation-delay: 0ms; text-shadow: 0 2px 24px rgba(26,26,26,0.45);"
 			>
 				{hero.title}
