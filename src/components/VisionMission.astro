@@ -1,35 +1,245 @@
 ---
+import SectionHeading from './SectionHeading.astro';
 import { visionMission } from '../data/site';
-
-const [vision, mission] = visionMission;
 ---
 
-{/* Vision takes the dark card and more room — it is the longer, broader
-    statement. Mission answers it on the light card. A gold-gradient card was
-    tried first and dropped: ink body copy measures 3.95:1 on the gradient's
-    dark end, under the 4.5:1 minimum. */}
-<section id="vision-mission" class="py-20">
-	<div class="mx-auto max-w-6xl px-6">
-		<div class="grid gap-6 md:grid-cols-5">
-			<article class="reveal rounded-3xl bg-nearblack p-10 md:col-span-3 md:p-12">
-				<p class="mb-6 text-xs tracking-[0.3em] text-gold-light uppercase">{vision.eyebrow}</p>
-				<p
-					class="text-xl leading-relaxed text-white md:text-2xl"
-					style="font-family: var(--font-display); font-weight: 400;"
-				>
-					{vision.body}
-				</p>
-			</article>
+{/* Classic framed panels on the warm ground, not the old dark/light card pair.
+    A gold-gradient card was tried before either version and dropped: ink body
+    copy measures 3.95:1 on the gradient's dark end, under the 4.5:1 minimum.
+    bg-sand is deliberate — News above is bg-white/50, so the bare ground is
+    what separates the two. Keep id="vision-mission": the header's About Us
+    dropdown anchors to it. */}
+<section id="vision-mission" class="relative isolate overflow-hidden bg-sand py-24">
+	<!-- Classic band rule closing off the white section above. -->
+	<div
+		class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold-dark/35 to-transparent"
+		aria-hidden="true"
+	>
+	</div>
+	<div class="vm-glow" aria-hidden="true"></div>
 
-			{/* Centered: the mission statement is much shorter than the vision, and
-			    top-aligning it leaves a block of dead space under the text. */}
-			<article
-				class="reveal flex flex-col justify-center rounded-3xl bg-white/60 p-10 md:col-span-2 md:p-12"
-				style="--reveal-delay: 120ms"
-			>
-				<p class="mb-6 text-xs tracking-[0.3em] text-gold-deep uppercase">{mission.eyebrow}</p>
-				<p class="leading-relaxed text-ink/80">{mission.body}</p>
-			</article>
+	<div class="mx-auto max-w-6xl px-6">
+		<div class="reveal text-center">
+			<SectionHeading eyebrow="Our Purpose" title="Vision & Mission" align="center" />
+
+			<!-- Ornamental divider: the two rules draw outward from the diamond
+			     once the heading reveals. -->
+			<div class="mt-7 flex items-center justify-center gap-4" aria-hidden="true">
+				<span class="vm-rule vm-rule--left"></span>
+				<svg viewBox="0 0 16 16" class="h-2.5 w-2.5 text-gold-dark">
+					<rect
+						x="3"
+						y="3"
+						width="10"
+						height="10"
+						transform="rotate(45 8 8)"
+						fill="currentColor"
+						opacity="0.75"></rect>
+				</svg>
+				<span class="vm-rule vm-rule--right"></span>
+			</div>
+		</div>
+
+		{/* Two peers, so two equal halves — the asymmetric 3/2 split was there to
+		    give the longer vision statement more room on a dark card. Content is
+		    vertically centred inside each frame: mission is ~15 words shorter, and
+		    top-aligning it leaves a block of dead space under the text. */}
+		<div class="mt-14 grid gap-8 md:mt-16 md:grid-cols-2 md:gap-10">
+			{
+				visionMission.map((item, i) => (
+					<article
+						class="vm-panel reveal relative flex flex-col justify-center rounded-3xl border border-gold-dark/20 bg-white/70 p-8 text-center md:p-12"
+						style={`--reveal-delay: ${140 + i * 120}ms`}
+					>
+						{/* Double rule — the inner hairline is what makes it read as a
+						    frame rather than a card. */}
+						<span class="vm-frame" aria-hidden="true" />
+
+						<svg viewBox="0 0 32 28" class="vm-emblem mx-auto h-7 w-8 text-gold-dark" aria-hidden="true">
+							<path
+								d="M16 2 L30 26 H2 Z"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="1.4"
+								stroke-linejoin="round"
+							/>
+							<path d="M16 11.5 L22.5 22.5 H9.5 Z" fill="currentColor" opacity="0.5" />
+						</svg>
+
+						<p class="mt-6 text-xs tracking-[0.3em] text-gold-deep uppercase">{item.eyebrow}</p>
+						<span class="vm-underline" aria-hidden="true" />
+
+						{/* Left-aligned under the centred ornament: 45–60 words of centred
+						    body copy has no stable left edge to read down. */}
+						<p class="vm-body mt-7 text-left leading-[1.9] text-ink/85 md:text-lg">{item.body}</p>
+					</article>
+				))
+			}
 		</div>
 	</div>
 </section>
+
+<style>
+	/* Ambient warmth behind the panels. Negative z-index inside the section's
+	   own stacking context, so it paints over bg-sand but under the content. */
+	.vm-glow {
+		position: absolute;
+		inset: -25% -10%;
+		z-index: -1;
+		background:
+			radial-gradient(45% 40% at 20% 20%, rgba(225, 177, 69, 0.3), transparent 70%),
+			radial-gradient(42% 38% at 82% 80%, rgba(180, 124, 39, 0.22), transparent 72%);
+		animation: vm-drift 22s ease-in-out infinite alternate;
+	}
+
+	@keyframes vm-drift {
+		from {
+			transform: translate3d(-2%, -1.5%, 0) scale(1);
+		}
+		to {
+			transform: translate3d(2%, 1.5%, 0) scale(1.08);
+		}
+	}
+
+	/* --- Heading ornament ------------------------------------------------- */
+
+	.vm-rule {
+		display: block;
+		height: 1px;
+		width: clamp(2.5rem, 12vw, 6rem);
+		transform: scaleX(0);
+		transition: transform 0.9s cubic-bezier(0.2, 0.6, 0.2, 1) 0.2s;
+	}
+
+	.vm-rule--left {
+		transform-origin: right center;
+		background: linear-gradient(to right, transparent, var(--color-gold-dark));
+	}
+
+	.vm-rule--right {
+		transform-origin: left center;
+		background: linear-gradient(to left, transparent, var(--color-gold-dark));
+	}
+
+	.reveal.is-visible .vm-rule {
+		transform: scaleX(1);
+	}
+
+	/* --- Panel ------------------------------------------------------------ */
+
+	.vm-panel {
+		transition:
+			opacity 0.7s cubic-bezier(0.2, 0.6, 0.2, 1),
+			transform 0.7s cubic-bezier(0.2, 0.6, 0.2, 1),
+			border-color 0.4s ease,
+			box-shadow 0.4s ease;
+		transition-delay: var(--reveal-delay, 0ms), var(--reveal-delay, 0ms), 0ms, 0ms;
+	}
+
+	.vm-panel:hover {
+		border-color: rgba(180, 124, 39, 0.45);
+		box-shadow: 0 20px 45px -28px rgba(180, 124, 39, 0.55);
+	}
+
+	.vm-frame {
+		position: absolute;
+		inset: 0.75rem;
+		border: 1px solid rgba(180, 124, 39, 0.16);
+		border-radius: 1.35rem;
+		opacity: 0;
+		transform: scale(1.025);
+		transition:
+			opacity 0.8s ease 0.25s,
+			transform 0.8s cubic-bezier(0.2, 0.6, 0.2, 1) 0.25s,
+			inset 0.4s ease;
+		pointer-events: none;
+	}
+
+	.vm-panel.is-visible .vm-frame {
+		opacity: 1;
+		transform: scale(1);
+	}
+
+	.vm-panel:hover .vm-frame {
+		inset: 0.6rem;
+	}
+
+	/* Entrance holds via `both` until the breathe picks it up at 1.2s — the two
+	   never overlap, so the transform hands over cleanly. */
+	.vm-panel.is-visible .vm-emblem {
+		animation:
+			vm-emblem-in 0.8s cubic-bezier(0.2, 0.6, 0.2, 1) 0.3s both,
+			vm-breathe 7s ease-in-out 1.2s infinite;
+	}
+
+	.vm-emblem {
+		opacity: 0;
+	}
+
+	@keyframes vm-emblem-in {
+		from {
+			opacity: 0;
+			transform: scale(0.6) rotate(-8deg);
+		}
+		to {
+			opacity: 1;
+			transform: scale(1) rotate(0);
+		}
+	}
+
+	@keyframes vm-breathe {
+		0%,
+		100% {
+			opacity: 1;
+			transform: scale(1);
+		}
+		50% {
+			opacity: 0.82;
+			transform: scale(1.09);
+		}
+	}
+
+	.vm-underline {
+		display: block;
+		height: 1px;
+		width: 3.5rem;
+		margin: 1.15rem auto 0;
+		background: linear-gradient(to right, transparent, var(--color-gold-dark), transparent);
+		transform: scaleX(0);
+		transition: transform 0.8s cubic-bezier(0.2, 0.6, 0.2, 1) 0.4s;
+	}
+
+	.vm-panel.is-visible .vm-underline {
+		transform: scaleX(1);
+	}
+
+	/* Serif drop cap against the sans body is the classic pairing — and gold-dark
+	   clears 3:1 on the panel at this size, where it would fail as body copy. */
+	.vm-body::first-letter {
+		float: left;
+		margin: 0.06em 0.1em 0 0;
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-size: 3.1em;
+		line-height: 0.82;
+		color: var(--color-gold-dark);
+	}
+
+	/* The global reduce block only covers .reveal / .animate-* . Everything above
+	   waits on .is-visible, which reveal.js adds regardless of motion preference,
+	   so without this the ornament would still animate — or stay invisible. */
+	@media (prefers-reduced-motion: reduce) {
+		.vm-glow,
+		.vm-rule,
+		.vm-panel,
+		.vm-frame,
+		.vm-emblem,
+		.vm-panel.is-visible .vm-emblem,
+		.vm-underline {
+			animation: none !important;
+			transition: none !important;
+			opacity: 1 !important;
+			transform: none !important;
+		}
+	}
+</style>
