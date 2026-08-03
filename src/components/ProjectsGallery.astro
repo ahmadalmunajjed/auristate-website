@@ -5,9 +5,19 @@ import { projects } from '../data/site';
 // Renders nothing when empty, so index.astro can leave this mounted permanently.
 const count = projects.length;
 
-const layout = count === 1 ? 'feature' : count < 4 ? 'row' : 'mosaic';
+// A coverflow needs a middle and two shoulders, so it starts at three. Below
+// that the old layouts still serve: one card cannot have neighbours, and two
+// centred with one dimmed just reads as a broken pair.
+const layout = count === 1 ? 'feature' : count === 2 ? 'row' : 'coverflow';
 
-const gridCols = layout === 'row' && count === 2 ? 'md:grid-cols-2' : 'md:grid-cols-3';
+// Arrows only earn their place once the track has somewhere to go on desktop.
+// At exactly three the row fits its container there and never scrolls.
+const scrolls = count > 3;
+
+// The no-JS active slide, and the one JS lands on anyway. Three cards sit
+// centred, so the focus is the middle; four or more open scrolled hard left,
+// where the track's scroll-padding centres the first.
+const initialActive = scrolls ? 0 : Math.floor(count / 2);
 ---
 
 {
@@ -36,26 +46,77 @@ const gridCols = layout === 'row' && count === 2 ? 'md:grid-cols-2' : 'md:grid-c
 				</div>
 			</div>
 
-			{/* Full-bleed with thin seams, per the reference design. */}
-			<div class="px-3">
-				{
-					layout === 'feature' ? (
+			{layout === 'coverflow' ? (
+				// One reveal for the whole track. Per-card reveals cannot work here
+				// — see the `reveal` prop on ProjectCard.
+				<div class:list={['cf reveal', !scrolls && 'cf--fits']} data-cf>
+					<div class="cf-track" id="projects-track" data-cf-track>
+						{projects.map((project, i) => (
+							<div class:list={['cf-slide', i === initialActive && 'is-active']} data-cf-slide>
+								<ProjectCard project={project} index={i} reveal={false} />
+							</div>
+						))}
+					</div>
+
+					{scrolls && (
+						<Fragment>
+							<button
+								type="button"
+								class="cf-nav cf-nav--prev"
+								aria-label="Previous project"
+								aria-controls="projects-track"
+								data-cf-prev
+							>
+								<svg
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="1.5"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									aria-hidden="true"
+									class="h-5 w-5"
+								>
+									<path d="m15 5-7 7 7 7" />
+								</svg>
+							</button>
+							<button
+								type="button"
+								class="cf-nav cf-nav--next"
+								aria-label="Next project"
+								aria-controls="projects-track"
+								data-cf-next
+							>
+								<svg
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="1.5"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									aria-hidden="true"
+									class="h-5 w-5"
+								>
+									<path d="m9 5 7 7-7 7" />
+								</svg>
+							</button>
+						</Fragment>
+					)}
+				</div>
+			) : (
+				/* Full-bleed with thin seams, per the reference design. */
+				<div class="px-3">
+					{layout === 'feature' ? (
 						<ProjectCard project={projects[0]} index={0} variant="feature" />
 					) : (
-						// items-start: the mosaic's wide tile is taller than its
-						// row-mates, and stretch would pad the others with dead space.
-						<div class:list={['grid items-start gap-3', gridCols]}>
+						<div class="grid items-start gap-3 md:grid-cols-2">
 							{projects.map((project, i) => (
-								<ProjectCard
-									project={project}
-									index={i}
-									variant={layout === 'mosaic' && i === 0 ? 'wide' : 'default'}
-								/>
+								<ProjectCard project={project} index={i} />
 							))}
 						</div>
-					)
-				}
-			</div>
+					)}
+				</div>
+			)}
 
 			<div class="mx-auto max-w-6xl px-6">
 				<a
@@ -68,3 +129,220 @@ const gridCols = layout === 'row' && count === 2 ? 'md:grid-cols-2' : 'md:grid-c
 		</section>
 	)
 }
+
+<style>
+	.cf {
+		position: relative;
+		/* A length, never a percentage: the track's own padding is derived from
+		   this, so a percentage here would resolve against a box that depends on
+		   it. Capped in rem so the cards stop growing on wide monitors — three at
+		   24rem plus seams lands on the 72rem the heading above uses. */
+		--cf-w: min(78vw, 20rem);
+	}
+
+	.cf-track {
+		display: flex;
+		gap: 0.75rem;
+		overflow-x: auto;
+		scroll-snap-type: x proximity;
+		/* Half a viewport minus half a card: lets the first and last slides reach
+		   the centre instead of stopping at the track's edge. */
+		padding-inline: calc(50% - var(--cf-w) / 2);
+		/* The arrows and the peeking neighbours are the affordance. */
+		scrollbar-width: none;
+	}
+
+	.cf-track::-webkit-scrollbar {
+		display: none;
+	}
+
+	.cf-slide {
+		flex: 0 0 var(--cf-w);
+		scroll-snap-align: center;
+		/* `scale`, not `transform`: ProjectCard's .reveal owns transform, and
+		   .reveal.is-visible resets it to none. The layout box stays full size,
+		   so shrinking a neighbour cannot shove the centred card off-centre. */
+		scale: 0.84;
+		opacity: 0.5;
+		transition:
+			scale 0.6s cubic-bezier(0.2, 0.6, 0.2, 1),
+			opacity 0.6s cubic-bezier(0.2, 0.6, 0.2, 1);
+	}
+
+	.cf-slide.is-active {
+		scale: 1;
+		opacity: 1;
+	}
+
+	.cf-nav {
+		position: absolute;
+		top: 50%;
+		/* Standalone `translate` so it cannot collide with a transform. */
+		translate: 0 -50%;
+		z-index: 2;
+		display: none;
+		align-items: center;
+		justify-content: center;
+		width: 2.75rem;
+		height: 2.75rem;
+		color: #fff;
+		border: 1px solid rgb(255 255 255 / 0.25);
+		/* Square, like the type pill and the section's seams — this section
+		   deliberately drops the site's rounded language. */
+		background: rgb(26 26 26 / 0.7);
+		backdrop-filter: blur(6px);
+		transition:
+			background-color 0.3s ease,
+			color 0.3s ease,
+			opacity 0.3s ease;
+	}
+
+	/* Arrows do nothing without the script, so the script reveals them. */
+	.cf-ready .cf-nav {
+		display: flex;
+	}
+
+	.cf-nav--prev {
+		left: 0.75rem;
+	}
+
+	.cf-nav--next {
+		right: 0.75rem;
+	}
+
+	.cf-nav:hover {
+		background: #fff;
+		color: var(--color-nearblack);
+	}
+
+	.cf-nav:focus-visible {
+		outline: 2px solid var(--color-gold-light);
+		outline-offset: 3px;
+	}
+
+	/* aria-disabled, not the disabled attribute: a real disable drops focus to
+	   the body the moment a keyboard user reaches the last slide. */
+	.cf-nav[aria-disabled='true'] {
+		opacity: 0.35;
+		cursor: default;
+	}
+
+	.cf-nav[aria-disabled='true']:hover {
+		background: rgb(26 26 26 / 0.7);
+		color: #fff;
+	}
+
+	@media (min-width: 1024px) {
+		.cf {
+			--cf-w: min(30vw, 24rem);
+		}
+
+		/* Three cards fit the viewport here, so drop the centring padding and let
+		   them sit as a row with the middle one carrying the focus. */
+		.cf--fits .cf-track {
+			padding-inline: 0;
+			justify-content: center;
+		}
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		.cf-track {
+			scroll-behavior: smooth;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.cf-slide {
+			transition: none;
+		}
+	}
+</style>
+
+<script>
+	const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+	document.querySelectorAll<HTMLElement>('[data-cf]').forEach((root) => {
+		const track = root.querySelector<HTMLElement>('[data-cf-track]');
+		if (!track) return;
+
+		const slides = Array.from(root.querySelectorAll<HTMLElement>('[data-cf-slide]'));
+		if (!slides.length) return;
+
+		const prev = root.querySelector<HTMLElement>('[data-cf-prev]');
+		const next = root.querySelector<HTMLElement>('[data-cf-next]');
+
+		// Only now do the arrows exist as far as CSS is concerned.
+		root.classList.add('cf-ready');
+
+		/** Nearest slide centre to the track's centre wins. Rects rather than
+		 *  offsetLeft: a scaled slide reports a smaller rect but the same centre,
+		 *  and this needs no assumption about which element is the offsetParent. */
+		const sync = () => {
+			const bounds = track.getBoundingClientRect();
+			const middle = bounds.left + bounds.width / 2;
+
+			let active = 0;
+			let shortest = Infinity;
+
+			slides.forEach((slide, i) => {
+				const rect = slide.getBoundingClientRect();
+				const distance = Math.abs(rect.left + rect.width / 2 - middle);
+				if (distance < shortest) {
+					shortest = distance;
+					active = i;
+				}
+			});
+
+			slides.forEach((slide, i) => slide.classList.toggle('is-active', i === active));
+
+			if (!prev || !next) return;
+			const furthest = track.scrollWidth - track.clientWidth;
+			// 1px of slack: smooth scrolling and fractional layout widths mean
+			// scrollLeft rarely lands exactly on 0 or the maximum.
+			prev.setAttribute('aria-disabled', String(track.scrollLeft <= 1));
+			next.setAttribute('aria-disabled', String(track.scrollLeft >= furthest - 1));
+		};
+
+		let queued = false;
+		const queueSync = () => {
+			if (queued) return;
+			queued = true;
+			requestAnimationFrame(() => {
+				queued = false;
+				sync();
+			});
+		};
+
+		/** One card plus its seam, measured rather than assumed — the width is a
+		 *  min() of a viewport unit and a cap, so it changes with the breakpoint.
+		 *  offsetLeft, not getBoundingClientRect: rects are scaled, so an inactive
+		 *  neighbour's left edge reads ~8% of a card too far in and every click
+		 *  would overshoot. Layout positions ignore `scale`. */
+		const step = () =>
+			slides.length > 1 ? slides[1].offsetLeft - slides[0].offsetLeft : slides[0].offsetWidth;
+
+		const scrollBy = (direction: number) => {
+			track.scrollBy({
+				left: direction * step(),
+				behavior: reduceMotion.matches ? 'auto' : 'smooth'
+			});
+		};
+
+		prev?.addEventListener('click', () => {
+			if (prev.getAttribute('aria-disabled') === 'true') return;
+			scrollBy(-1);
+		});
+
+		next?.addEventListener('click', () => {
+			if (next.getAttribute('aria-disabled') === 'true') return;
+			scrollBy(1);
+		});
+
+		track.addEventListener('scroll', queueSync, { passive: true });
+		// The breakpoint swaps --cf-w and, at three cards, the whole padding
+		// model, so every measurement above goes stale on resize.
+		new ResizeObserver(queueSync).observe(track);
+
+		sync();
+	});
+</script>

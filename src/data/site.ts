@@ -105,6 +105,12 @@ export const projects: Project[] = [
 		tag: 'Luxury Villas Compound',
 		image: '/images/projects/the-mark.jpg',
 		href: '/projects'
+	},
+	{
+		name: 'TEMP FOURTH',
+		tag: 'Temporary',
+		image: '/images/projects/365-photo.jpg',
+		href: '/projects'
 	}
 ];
 

@@ -6,26 +6,32 @@ interface Props {
 	index: number;
 	/**
 	 * feature — the only project: full width, cinematic crop.
-	 * wide    — first tile of the mosaic: spans two columns.
 	 * default — an ordinary tile.
 	 */
-	variant?: 'feature' | 'wide' | 'default';
+	variant?: 'feature' | 'default';
+	/**
+	 * Off inside the carousel: a scroll-in reveal never fires for slides parked
+	 * outside the track's overflow box, so they would sit at opacity 0 until an
+	 * arrow drags them in and then fade up mid-slide. The track reveals instead.
+	 */
+	reveal?: boolean;
 }
 
-const { project, index, variant = 'default' } = Astro.props;
-
-const span = variant === 'wide' ? 'md:col-span-2' : '';
+const { project, index, variant = 'default', reveal = true } = Astro.props;
 
 // Client renders are all 16:9. A taller default tile throws away most of the
 // frame, so 4:5 rather than the reference design's 9:10.
-const aspect =
-	variant === 'feature' ? 'aspect-[16/9]' : variant === 'wide' ? 'aspect-[16/10]' : 'aspect-[4/5]';
+const aspect = variant === 'feature' ? 'aspect-[16/9]' : 'aspect-[4/5]';
 ---
 
 <a
 	href={project.href}
-	class:list={['project-card reveal group relative block overflow-hidden bg-nearblack', span, aspect]}
-	style={`--reveal-delay: ${index * 120}ms`}
+	class:list={[
+		'project-card group relative block overflow-hidden bg-nearblack',
+		reveal && 'reveal',
+		aspect
+	]}
+	style={reveal ? `--reveal-delay: ${index * 120}ms` : undefined}
 >
 	<img
 		src={project.image}
