@@ -3,27 +3,29 @@ import { nav, contact, social, footerTagline } from '../data/site';
 import SocialIcon from './SocialIcon.astro';
 ---
 
-{/* Text here sits on sand-dark/60 (#d9c7a5) — the darkest light surface on the
-    page. Measured: gold-deep only reaches 3.45:1 on it, so link hover shifts to
-    ink + underline rather than gold. Gold stays for non-text accents. */}
-<footer class="bg-sand-dark/60 px-6 py-12">
-	<div class="mx-auto grid max-w-6xl gap-8 md:grid-cols-4">
+{/* The page ends on the same dark ground the projects section uses mid-scroll.
+    The palette inverts here exactly as it does there: gold-light is the
+    accessible gold on dark (8.77:1) where gold-deep is not (3.04:1), and `ink`
+    is unusable at 1.23:1 — every text color below is white at some opacity. */}
+<footer class="bg-nearblack px-6 py-12">
+	<div class="mx-auto grid max-w-page gap-8 md:grid-cols-4">
 		<div>
 			{/* The footer has the vertical room the header lacks, so it can use the
-			    full lockup and keep the wordmark legible. The transparent PNG needs
-			    no mix-blend-multiply to sit on sand. */}
+			    full lockup and keep the wordmark legible. The logo is transparent
+			    with no pure-dark pixels, so it reads on this ground unmodified —
+			    the same property that lets it sit over the hero video. */}
 			<span class="logo-crop logo-crop--lockup h-24">
 				<img src="/transperate-logo.png" alt="Auristate — Tourism Investments" width="1240" height="1436" />
 			</span>
-			<p class="mt-4 text-sm text-ink/75">{footerTagline}</p>
+			<p class="mt-4 text-sm text-white/75">{footerTagline}</p>
 		</div>
 		<div>
-			<p class="mb-4 text-xs tracking-widest text-ink uppercase">Navigate</p>
-			<ul class="space-y-2 text-sm text-ink/80">
+			<p class="mb-4 text-xs tracking-widest text-gold-light uppercase">Navigate</p>
+			<ul class="space-y-2 text-sm text-white/75">
 				{
 					nav.map((item) => (
 						<li>
-							<a href={item.href} class="transition hover:text-ink hover:underline">
+							<a href={item.href} class="transition hover:text-gold-light">
 								{item.label}
 							</a>
 						</li>
@@ -32,10 +34,10 @@ import SocialIcon from './SocialIcon.astro';
 			</ul>
 		</div>
 		<div>
-			<p class="mb-4 text-xs tracking-widest text-ink uppercase">Contact</p>
-			<ul class="space-y-2 text-sm text-ink/80">
+			<p class="mb-4 text-xs tracking-widest text-gold-light uppercase">Contact</p>
+			<ul class="space-y-2 text-sm text-white/75">
 				<li>
-					<a href={`mailto:${contact.email}`} class="transition hover:text-ink hover:underline">
+					<a href={`mailto:${contact.email}`} class="transition hover:text-gold-light">
 						{contact.email}
 					</a>
 				</li>
@@ -43,7 +45,7 @@ import SocialIcon from './SocialIcon.astro';
 					{/* tel: needs the E.164 form; the display string keeps its spacing. */}
 					<a
 						href={`tel:${contact.phone.replace(/\s/g, '')}`}
-						class="transition hover:text-ink hover:underline"
+						class="transition hover:text-gold-light"
 					>
 						{contact.phone}
 					</a>
@@ -52,12 +54,10 @@ import SocialIcon from './SocialIcon.astro';
 			</ul>
 		</div>
 		<div>
-			<p class="mb-4 text-xs tracking-widest text-ink uppercase">Follow</p>
+			<p class="mb-4 text-xs tracking-widest text-gold-light uppercase">Follow</p>
 			{/* Icon-only, so each link carries its name in aria-label — the glyph is
-			    aria-hidden inside SocialIcon. Gold comes back here where it cannot in
-			    the text links above: icons are non-text content, judged at 3:1 rather
-			    than 4.5:1, and gold-deep measures 3.45:1 on this ground. The 40px
-			    button is the touch target; the glyph inside is 18px. */}
+			    aria-hidden inside SocialIcon. The 40px button is the touch target;
+			    the glyph inside is 18px. */}
 			<ul class="flex flex-wrap items-center gap-2">
 				{
 					social.map((s) => (
@@ -65,7 +65,7 @@ import SocialIcon from './SocialIcon.astro';
 							<a
 								href={s.href}
 								aria-label={s.label}
-								class="flex h-10 w-10 items-center justify-center rounded-full text-ink/80 ring-1 ring-ink/15 transition hover:bg-white/40 hover:text-gold-deep hover:ring-ink/25"
+								class="flex h-10 w-10 items-center justify-center rounded-full text-white/75 ring-1 ring-white/20 transition hover:bg-white/10 hover:text-gold-light hover:ring-white/35"
 							>
 								<SocialIcon name={s.icon} />
 							</a>
@@ -75,8 +75,7 @@ import SocialIcon from './SocialIcon.astro';
 			</ul>
 		</div>
 	</div>
-	{/* /75, not /70: at 12px this needs 4.5:1 and /70 measures 4.13 on #d9c7a5. */}
-	<div class="mx-auto mt-8 max-w-6xl border-t border-ink/15 pt-5 text-xs text-ink/75">
+	<div class="mx-auto mt-8 max-w-page border-t border-white/15 pt-5 text-xs text-white/70">
 		© 2026 Auristate. All rights reserved.
 	</div>
 </footer>

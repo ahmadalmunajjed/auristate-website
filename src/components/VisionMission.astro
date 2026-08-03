@@ -18,7 +18,7 @@ import { visionMission } from '../data/site';
 	</div>
 	<div class="vm-glow" aria-hidden="true"></div>
 
-	<div class="mx-auto max-w-6xl px-6">
+	<div class="mx-auto max-w-page px-6">
 		<div class="reveal text-center">
 			<SectionHeading eyebrow="Our Purpose" title="Vision & Mission" align="center" />
 
@@ -103,19 +103,21 @@ import { visionMission } from '../data/site';
 		background:
 			radial-gradient(50% 45% at 18% 22%, rgba(225, 177, 69, 0.3), transparent 70%),
 			radial-gradient(46% 42% at 84% 78%, rgba(180, 124, 39, 0.22), transparent 72%);
+		/* Origin is the top edge, so scale(1.08) grows the layer downward and
+		   leaves the top where the inset put it. The default centre origin would
+		   split the growth and walk the top edge up into the heading by half of
+		   it; a bottom origin is worse still — measured, it lifted the top 64px
+		   and cut the heading's clearance from 132px to 68px. */
+		transform-origin: 50% 0%;
 		animation: vm-drift 22s ease-in-out infinite alternate;
 	}
 
-	/* Grows downward only — scaling from the default centre would walk the top
-	   edge back up into the heading and undo the offset above. */
 	@keyframes vm-drift {
 		from {
 			transform: translate3d(-2%, 0, 0) scale(1);
-			transform-origin: 50% 100%;
 		}
 		to {
 			transform: translate3d(2%, 0, 0) scale(1.08);
-			transform-origin: 50% 100%;
 		}
 	}
 

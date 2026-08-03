@@ -13,7 +13,7 @@ const { over = false } = Astro.props;
 {/* Both branches need a stacking context — without one, the dropdown panel
     paints under the sections that follow the header. */}
 <header class={over ? 'absolute inset-x-0 top-0 z-20' : 'relative z-20'}>
-	<div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
+	<div class="mx-auto flex max-w-page items-center justify-between px-6 py-6">
 		<a href="/" class="flex items-center gap-3" aria-label="Auristate — home">
 			{/* The stacked lockup puts its wordmark at ~7% of its height, which is
 			    illegible at header scale, so the mark is cropped out on its own and

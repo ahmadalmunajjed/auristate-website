@@ -50,7 +50,11 @@ export const hero = {
 	// The hero carries this line alone — no eyebrow, no supporting paragraph.
 	// Set in caps here rather than with `uppercase`, so the copy on screen is the
 	// copy in this file.
-	title: 'INVESTING IN VISION',
+	//
+	// One array entry per rendered line: the stack is the composition, so the
+	// break is authored here rather than left to whatever the container width
+	// happens to allow. Adding a fourth entry adds a fourth line at every size.
+	titleLines: ['INVESTING', 'IN', 'VISION'],
 	background: '/images/hero/hero-bg.svg',
 	// null falls back to the poster alone — the hero never emits a <video> with
 	// a dead source. AGENTS.md explains why the 480p source needs the tuning.

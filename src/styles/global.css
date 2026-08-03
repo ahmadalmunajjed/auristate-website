@@ -32,6 +32,16 @@
   /* Substrate, not accents: the warm ground the palette sits on. */
   --color-sand: #efe3ce;
   --color-sand-dark: #cbb489;
+
+  /* The one page width, up from the 72rem `max-w-6xl` every section used to
+     hardcode. Every content container is now `max-w-page`, so this is the single
+     knob for how wide the site reads — Tailwind v4 mints the utility from any
+     `--container-*` value. Section *backgrounds* stay full-bleed; only what sits
+     on them is bounded, and the hero media and projects track are deliberately
+     outside it — both are full-bleed by design.
+     One thing does not follow this automatically: the coverflow's `--cf-w`,
+     which is sized against the viewport rather than the container. */
+  --container-page: 80rem;
 }
 
 @layer base {

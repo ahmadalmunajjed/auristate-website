@@ -26,7 +26,7 @@ const initialActive = scrolls ? 0 : Math.floor(count / 2);
 			{/* Heading is inlined, not SectionHeading: that component's text-ink
 			    title is invisible on this dark ground and its gold-deep eyebrow
 			    measures 3.04:1 here. */}
-			<div class="mx-auto max-w-6xl px-6">
+			<div class="mx-auto max-w-page px-6">
 				<div class="reveal mb-12 flex items-end justify-between gap-6">
 					<div>
 						<p class="mb-4 text-xs tracking-[0.3em] text-gold-light uppercase">Our Projects</p>
@@ -49,7 +49,7 @@ const initialActive = scrolls ? 0 : Math.floor(count / 2);
 			{layout === 'coverflow' ? (
 				// One reveal for the whole track. Per-card reveals cannot work here
 				// — see the `reveal` prop on ProjectCard.
-				<div class:list={['cf reveal', !scrolls && 'cf--fits']} data-cf>
+				<div class:list={['cf reveal mx-auto w-full max-w-page', !scrolls && 'cf--fits']} data-cf>
 					<div class="cf-track" id="projects-track" data-cf-track>
 						{projects.map((project, i) => (
 							<div class:list={['cf-slide', i === initialActive && 'is-active']} data-cf-slide>
@@ -118,7 +118,7 @@ const initialActive = scrolls ? 0 : Math.floor(count / 2);
 				</div>
 			)}
 
-			<div class="mx-auto max-w-6xl px-6">
+			<div class="mx-auto max-w-page px-6">
 				<a
 					href="/projects"
 					class="reveal mt-10 block text-sm text-white/80 transition hover:text-gold-light md:hidden"

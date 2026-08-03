@@ -1,4 +1,4 @@
----
+﻿---
 import SectionHeading from './SectionHeading.astro';
 import { about } from '../data/site';
 ---
@@ -6,7 +6,7 @@ import { about } from '../data/site';
 {/* bg-white/50 is load-bearing: the hero's bottom scrim fades to #f7f1e6, which
     is what white/50 composites to over sand. Changing it reopens that seam. */}
 <section id="about" class="bg-white/50 py-24">
-	<div class="mx-auto max-w-6xl px-6">
+	<div class="mx-auto max-w-page px-6">
 		<div class="grid gap-x-16 gap-y-10 md:grid-cols-2">
 			<div class="reveal">
 				<SectionHeading eyebrow={about.eyebrow} title={about.title} />

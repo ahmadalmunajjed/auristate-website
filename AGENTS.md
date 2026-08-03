@@ -54,8 +54,9 @@ Two knock-on rules, both measured rather than guessed:
 
 - Type on the **gold gradient** (`gold-light` → `gold-dark`) is `text-ink`, not white. White on the light end
   (`#e1b145`) is 1.99:1; ink gives 7.13:1 there and 3.95:1 on the dark end.
-- **Footer** links hover to `ink` + underline rather than gold. Its `sand-dark/60` ground composites to
-  `#d9c7a5`, where even `gold-deep` reaches only 3.45:1.
+- The **footer is `bg-nearblack`**, so the palette inverts there exactly as it does in the projects gallery:
+  `gold-light` is the accessible gold (8.77:1) and `gold-deep` is not (3.04:1), while `ink` is unusable at
+  1.23:1. Every text color in it is white at some opacity — `white/75` body copy measures 10.19:1.
 
 ## SEO and social previews
 
@@ -106,8 +107,8 @@ component header records where to re-fetch them. LinkedIn, Instagram, and Facebo
 **WhatsApp is the first live outbound link on the site** — it is built from `contact.phone`, which AGENTS.md
 flags as invented, so confirm the number before launch or it delivers visitors to a stranger.
 
-Icons hover to `gold-deep`, which the text links two columns over cannot do: at 3.45:1 on `#d9c7a5` gold
-fails the 4.5:1 text threshold but clears the 3:1 one that applies to non-text content.
+On the dark ground the icons need no special-casing: `gold-light` clears both the 3:1 non-text threshold and
+the 4.5:1 text one, so glyphs and links share a single hover color.
 
 `Services`, `News`, and `VisionMission` were once commented out of `index.astro` because everything in them
 was invented. All three are **live now**, carrying real client copy. The principle that put them behind a
@@ -120,6 +121,26 @@ decorative and take an empty `alt`: the title beside one already names the step.
 **PLACEHOLDER** — genuine client renders and one real site photo, reused as decoration. None depicts the
 service it sits above, which is only safe because nothing captions them; see the note in `site.ts` before
 swapping them.
+
+`VisionMission` is the two statements as matched framed panels on bare `bg-sand` — the earlier dark/light
+card pair is gone, along with its 3/2 split, since the two are peers rather than a statement and its answer.
+Three things in it are load-bearing:
+
+- **The gold glow starts 32% down the section, below the heading.** That is a measured contrast constraint,
+  not composition. The eyebrow is 12px `gold-deep`, which is 4.51:1 on bare sand — one hundredth over the
+  minimum, so it has no margin for any tint at all. Full-bleed the glow and it reads 3.67:1; dimming does not
+  save it, since even 0.10 alpha gives 4.32. The panels are `white/70` over the glow, which lifts the same
+  eyebrow to 5.05:1 inside them. `vm-drift` scales from `50% 100%` for the same reason — the default centre
+  origin walks the top edge back up into the heading.
+- **Panels are top-aligned, not centred.** They stretch to a common height, and centring each stack within
+  that pushed the shorter mission's emblem ~44px below the vision's, reading as a misalignment. Trailing
+  space under the shorter statement is the cheaper cost.
+- **The ornaments are gated on `.is-visible` but do not depend on JS to appear.** The scoped
+  `prefers-reduced-motion` block is what guarantees that — the global one in `global.css` only covers
+  `.reveal` and `.animate-*`, so without the local override these would stay invisible for reduced-motion
+  users. Verified: under forced reduced motion every ornament computes to `opacity: 1` with `is-visible`
+  never applied. The drop cap ships `float: left` before `float: inline-start` so an engine lacking the
+  logical value still floats it.
 
 `ProjectsGallery` works differently — it is **mounted but self-hiding**. It returns nothing while `projects`
 is empty, so the section appears on its own the moment real entries land in `site.ts`, with no second edit
