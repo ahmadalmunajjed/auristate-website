@@ -16,7 +16,7 @@ const { over = false } = Astro.props;
 			{/* The stacked lockup puts its wordmark at ~7% of its height, which is
 			    illegible at header scale, so the mark is cropped out on its own and
 			    set beside live text. See .logo-crop in global.css. */}
-			<span class:list={['logo-crop logo-crop--mark h-10 md:h-11', over && 'logo-over']}>
+			<span class:list={['logo-crop logo-crop--mark h-14 md:h-16', over && 'logo-over']}>
 				<img src="/transperate-logo.png" alt="" width="1005" height="1180" />
 			</span>
 			<span class="flex flex-col leading-none">
