@@ -83,7 +83,7 @@ Four nav entries are in-page anchors into the homepage sections — `/#about`, `
 `#about`, because `Footer.astro` renders the same array and will ship on pages other than `/`. `Contact Us`
 still points at `/contact`, which does not exist yet and 404s until built.
 
-**Only `hero` and `about` are client copy.** `cta`, `contact`, `social`, and `footerTagline` are placeholders
+**Only `hero` and `about` are client copy.** `contact`, `social`, and `footerTagline` are placeholders
 marked as such in the file — the phone number and email in particular are invented and must be replaced
 before launch.
 
@@ -96,7 +96,7 @@ each as its real copy arrives.
 is empty, so the section appears on its own the moment real entries land in `site.ts`, with no second edit
 and no empty heading shipping over a blank grid.
 
-The live page is therefore: Header → Hero → About → CTA band → Footer.
+The live page is therefore: Header → Hero → About → Projects → Services → News → Vision/Mission → Footer.
 
 ### Projects data
 

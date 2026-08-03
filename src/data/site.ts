@@ -1,15 +1,31 @@
 // Single source of truth for homepage content. Client-supplied except where
 // marked PLACEHOLDER.
 
-// Four of these are in-page anchors into the homepage sections, so they are
+export interface NavItem {
+	label: string;
+	href: string;
+	/** Renders as a dropdown in the header. The footer ignores it and stays flat. */
+	children?: { label: string; href: string }[];
+}
+
+// Most of these are in-page anchors into the homepage sections, so they are
 // coupled to the `id` on each section's root element. Two of those sections
 // self-hide — `#projects` renders only while `projects` is non-empty and
 // `#news` only while `posts` is — so emptying either array leaves its menu
 // item scrolling nowhere. Renaming an id does the same, just as quietly.
 // Root-relative, not bare `#about`: the footer renders this same array and
 // will ship on pages other than `/`.
-export const nav = [
-	{ label: 'About Us', href: '/#about' },
+// `About Us` keeps its own href — the trigger is still a working link to the
+// About section, so the menu never becomes the only way through.
+export const nav: NavItem[] = [
+	{
+		label: 'About Us',
+		href: '/#about',
+		children: [
+			{ label: 'Who We Are', href: '/#about' },
+			{ label: 'Mission and Vision', href: '/#vision-mission' }
+		]
+	},
 	{ label: 'Projects', href: '/#projects' },
 	{ label: 'Our Services', href: '/#services' },
 	{ label: 'News', href: '/#news' },
@@ -129,13 +145,6 @@ export const visionMission = [
 		body: 'To deliver high-quality projects, based on innovation and international collaboration, creating an urban and touristic environment that meets the aspirations of premium investors, aligns with global standards, and respects local identity.'
 	}
 ];
-
-// PLACEHOLDER
-export const cta = {
-	title: "Ready to Invest in Syria's Future?",
-	label: 'Contact Our Team',
-	href: '/contact'
-};
 
 export const contact = {
 	email: 'Info@auristate.com',
