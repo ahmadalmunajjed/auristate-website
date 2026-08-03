@@ -338,6 +338,22 @@ const initialActive = scrolls ? 0 : Math.floor(count / 2);
 			scrollBy(1);
 		});
 
+		/** Tabbing to a card the browser judges "partly visible" scrolls nothing,
+		 *  so keyboard focus lands on a sliver of a card clipped by the track.
+		 *  Centre it ourselves. Rect centres are scale-proof: the slides shrink
+		 *  about their own centre, so only their size changes. */
+		track.addEventListener('focusin', (event) => {
+			const slide = (event.target as HTMLElement).closest<HTMLElement>('[data-cf-slide]');
+			if (!slide) return;
+
+			const bounds = track.getBoundingClientRect();
+			const rect = slide.getBoundingClientRect();
+			const delta = rect.left + rect.width / 2 - (bounds.left + bounds.width / 2);
+			if (Math.abs(delta) < 1) return;
+
+			track.scrollBy({ left: delta, behavior: reduceMotion.matches ? 'auto' : 'smooth' });
+		});
+
 		track.addEventListener('scroll', queueSync, { passive: true });
 		// The breakpoint swaps --cf-w and, at three cards, the whole padding
 		// model, so every measurement above goes stale on resize.
