@@ -232,10 +232,18 @@ import { visionMission } from '../data/site';
 	}
 
 	/* Serif drop cap against the sans body is the classic pairing — and gold-dark
-	   clears 3:1 on the panel at this size, where it would fail as body copy. */
+	   measures 3.16:1 on the panel at this size, clearing the 3:1 large-text
+	   threshold it would fail as body copy.
+
+	   Logical properties throughout (`inline-start`, `margin-inline`) so the cap
+	   moves to the right edge in the Arabic build rather than stranding itself
+	   mid-paragraph. Both statements begin with "To", so the cap is a letter in
+	   every case — but it renders whatever the copy starts with, and a statement
+	   opening on a quote or digit would set that instead. */
 	.vm-body::first-letter {
-		float: left;
-		margin: 0.06em 0.1em 0 0;
+		float: inline-start;
+		margin-block-start: 0.06em;
+		margin-inline: 0 0.1em;
 		font-family: var(--font-display);
 		font-weight: 600;
 		font-size: 3.1em;
