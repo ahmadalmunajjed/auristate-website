@@ -1,5 +1,6 @@
 ---
 import { nav, contact, social, footerTagline } from '../data/site';
+import SocialIcon from './SocialIcon.astro';
 ---
 
 {/* Text here sits on sand-dark/60 (#d9c7a5) — the darkest light surface on the
@@ -52,12 +53,21 @@ import { nav, contact, social, footerTagline } from '../data/site';
 		</div>
 		<div>
 			<p class="mb-4 text-xs tracking-widest text-ink uppercase">Follow</p>
-			<ul class="space-y-2 text-sm text-ink/80">
+			{/* Icon-only, so each link carries its name in aria-label — the glyph is
+			    aria-hidden inside SocialIcon. Gold comes back here where it cannot in
+			    the text links above: icons are non-text content, judged at 3:1 rather
+			    than 4.5:1, and gold-deep measures 3.45:1 on this ground. The 40px
+			    button is the touch target; the glyph inside is 18px. */}
+			<ul class="flex flex-wrap items-center gap-2">
 				{
 					social.map((s) => (
 						<li>
-							<a href={s.href} class="transition hover:text-ink hover:underline">
-								{s.label}
+							<a
+								href={s.href}
+								aria-label={s.label}
+								class="flex h-10 w-10 items-center justify-center rounded-full text-ink/80 ring-1 ring-ink/15 transition hover:bg-white/40 hover:text-gold-deep hover:ring-ink/25"
+							>
+								<SocialIcon name={s.icon} />
 							</a>
 						</li>
 					))
