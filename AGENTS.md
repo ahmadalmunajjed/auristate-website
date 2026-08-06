@@ -442,6 +442,15 @@ There is no custom-domain support on the free hosting without a reverse proxy. S
 `sanity build` would allow one, at the cost of a second deploy to maintain, manual Studio version bumps, and
 adding the new origin to the project's CORS allowlist by hand.
 
+`public/_redirects` gives the Studio a memorable address on the site's own domain — `/admin` and `/studio`
+both 302 to it, wildcards included so deep links survive. Two things about that file:
+
+- **It is a Cloudflare Pages feature, not an Astro one.** Astro copies it into `dist/` untouched and never
+  reads it, so `astro dev` returns 404 on `/admin`. That is expected. It also means the redirect silently
+  stops working if the site ever moves off Pages.
+- **302, not 301.** These point at a hosted Sanity URL that could move; a 301 is cached hard by browsers and
+  would keep sending people to a dead host long after the rule was fixed.
+
 **The Studio URL is publicly reachable but login-gated** — only project members get in. The client is invited
 at sanity.io/manage → project → Members, with the **Editor** role: create, edit, and publish content, but no
 project settings. That invite is what makes this a single-admin CMS.
