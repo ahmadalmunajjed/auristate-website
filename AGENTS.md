@@ -110,6 +110,14 @@ flags as invented, so confirm the number before launch or it delivers visitors t
 On the dark ground the icons need no special-casing: `gold-light` clears both the 3:1 non-text threshold and
 the 4.5:1 text one, so glyphs and links share a single hover color.
 
+`SectionHeading` sets the scale every section title shares — 36px, stepping to 52px at `lg` and 56px above
+it, over a 14px eyebrow. `ProjectsGallery` inlines the same pair by hand for the dark ground, so the two move
+together or not at all. **The top step is capped by the longest title on the page**, Services'
+"From First Study to Final Handover", which must stay on one line (715d43c). It measures 17.1em in Fraunces
+against a container of `max-w-page` minus `px-6`, so the ceiling is ~57px at `lg` and ~72px once the
+container caps at 80rem; 52/56 clear both with room. Re-measure before raising it, and re-measure again if
+the brand's BankGothic ever replaces Fraunces — the cap moves with the metrics.
+
 `Services`, `News`, and `VisionMission` were once commented out of `index.astro` because everything in them
 was invented. All three are **live now**, carrying real client copy. The principle that put them behind a
 comment still holds: a page that shows nothing beats one that shows fiction.
@@ -127,8 +135,8 @@ card pair is gone, along with its 3/2 split, since the two are peers rather than
 Three things in it are load-bearing:
 
 - **The gold glow starts 32% down the section, below the heading.** That is a measured contrast constraint,
-  not composition. The eyebrow is 12px `gold-deep`, which is 4.51:1 on bare sand — one hundredth over the
-  minimum, so it has no margin for any tint at all. Full-bleed the glow and it reads 3.67:1; dimming does not
+  not composition. The eyebrow is 14px `gold-deep`, which is 4.51:1 on bare sand — one hundredth over the
+  minimum, and still normal text by WCAG's measure at that size, so it has no margin for any tint at all. Full-bleed the glow and it reads 3.67:1; dimming does not
   save it, since even 0.10 alpha gives 4.32. The panels are `white/70` over the glow, which lifts the same
   eyebrow to 5.05:1 inside them. `vm-drift` scales from `50% 100%` for the same reason — the default centre
   origin walks the top edge back up into the heading.
