@@ -4,9 +4,9 @@ Auristate is a tourism and real estate investment company operating in Syria (co
 
 Intent for the finished site:
 - Bilingual, served under `/en` and `/ar` (Arabic as RTL) — not yet implemented
-- Static pages (e.g. About, Contact)
-- Blog: index + individual posts
-- Projects: index + individual project pages
+- Static pages (e.g. About, Contact) — `/contact` still 404s
+- Blog: index + individual posts — **done**, `/blog` and `/blog/[slug]`, content from Sanity
+- Projects: index + individual project pages — **done**, `/projects` and `/projects/[slug]`, content from Sanity
 
 ## Design direction
 
@@ -287,19 +287,22 @@ Consequences worth knowing before editing it:
 
 ### Imagery
 
+**Project and blog images now live in Sanity, not the repo.** They are uploaded through the Studio and served
+from Sanity's CDN with the crop baked into the URL. Nothing in `public/images/projects/` is referenced by the
+site any more — those three files were uploaded to Sanity by the seed script and are kept only as the source
+of that import.
+
 | Path | Status |
 | --- | --- |
+| `public/images/hero/placeholder.png` | The hero poster and LCP element. 1.3 MB — the largest thing the site ships |
 | `public/images/hero/hero-bg.svg` | Unused since the video hero landed; kept for non-video pages |
 | `public/images/hero/video-poster.svg` | Superseded by `placeholder.png` |
-| `public/images/projects/filler-{1,2,3}.svg` | Abstract brand-toned art; safe as a placeholder anywhere |
-| `public/images/projects/stock-*.jpg` | **Stock photos — never usable as a project.** See below |
+| `public/images/projects/*.jpg` | Migrated into Sanity. No longer referenced by any component |
+| `public/images/services/*.jpeg` | Still local — `services` remains in `site.ts` |
+| `public/og-image.png` | 1200×630 social card |
 
-The three `stock-*.jpg` files arrived as layout filler for the design concepts and depict no Auristate
-development. One was named `latakia-coastal.jpg` but is actually **Ortigia, Syracuse** — a stock photo of
-Sicily. They were renamed so the filenames stop asserting a location, and
-`public/images/projects/README.md` records the provenance. Use them for mockups; never caption them as a
-project. In a projects gallery a wrong image stops being a placeholder and becomes a false claim about what
-the company has built.
+An earlier version of this table listed `filler-*.svg` and `stock-*.jpg` files that **no longer exist**, along
+with a `README.md` recording their provenance. All were removed before the real client renders landed.
 
 The only genuine client imagery in the repo is the "365" venue render in `hero.mp4` and its poster frame.
 
@@ -361,6 +364,96 @@ white background.
 Images use raw `<img src="/...">`, not `astro:assets` `<Image>`. Stay consistent; migrating is a separate pass.
 
 Next up: About/Blog/Projects pages and i18n, built on this theme.
+
+## Content: Sanity CMS
+
+Projects and blog posts are edited in **Sanity Studio** by the client, not in this repo. Everything else
+(hero, about, services, vision/mission, nav, contact) is still static in `src/data/site.ts`.
+
+**The site stays fully static.** Content is fetched at *build* time — the browser never talks to Sanity, so
+pages load as fast as before and survive a Sanity outage. The cost is that publishing is not instant:
+
+```
+Publish in Studio → Sanity webhook → Cloudflare Pages deploy hook → rebuild (~1 min) → live
+```
+
+### Two apps, one repo
+
+| | |
+| --- | --- |
+| `studio/` | Standalone Sanity Studio. Own `package.json`, own `node_modules`, React + `sanity`. |
+| repo root | The Astro site. Reads Sanity with `@sanity/client`. **No React.** |
+
+They share a repo so a schema change and the query change that depends on it land in the same commit — the
+two are tightly coupled, and across two repos the site can deploy against a schema it no longer matches.
+
+Two things keep them from contaminating each other, both easy to undo by accident:
+
+- **`studio` is in `tsconfig.json`'s `exclude`.** Without it, `include: ["**/*"]` drags the Studio's
+  React/Sanity files into the site's typecheck under `astro/tsconfigs/strict` and produces a wall of errors
+  about dependencies the site does not have.
+- **There are no npm workspaces, deliberately.** Root `npm install` therefore never reads
+  `studio/package.json`, so Cloudflare never installs React or the Studio when building the site.
+
+`@sanity/astro` was tried and removed. It is the officially recommended integration, but it declares `react`,
+`react-dom`, `react-is`, `sanity`, and `styled-components` as **peerDependencies**, which npm auto-installs —
+852 packages in the site's tree, reinstalled on every content publish. Its two benefits are the
+`sanity:client` virtual module and Visual Editing, and a static site with a standalone Studio uses neither.
+Plain `@sanity/client` is ~25 packages. Reach for `@sanity/astro` only if Visual Editing is actually wanted,
+which needs on-demand rendering as well.
+
+### `src/lib/sanity.ts`
+
+The single entry point: client, `urlFor()`, `projectTypeLabel()`, types, GROQ queries, and fetch helpers.
+Four things in it are load-bearing and easy to regress:
+
+- **`perspective: 'published'` is set explicitly.** It is the only thing keeping unpublished drafts off the
+  live site.
+- **`apiVersion` is pinned and must stay ≥ `2025-02-19`.** Below that the client's default perspective is
+  `raw`, which returns drafts — so an innocent-looking version bump downward silently publishes every draft.
+- **`useCdn: false`.** The build is triggered *by* a publish webhook; the CDN can serve a stale response for
+  a short window afterwards, which would make the rebuild ship the very content it was fired to collect.
+- **Every list query filters `defined(slug.current)`.** A document without a slug produces a
+  `getStaticPaths` entry of `undefined`, which either fails the build or silently collides with another route.
+
+Missing env vars **throw at build** rather than degrading. Without that the client constructs fine, every
+query returns nothing, and the site builds "successfully" with an empty blog and no projects — which reads
+as a content problem, not a configuration one.
+
+`scripts/sanity-check.mjs` is the standalone diagnostic; it mirrors the same client config and reports
+whether drafts are being correctly excluded:
+
+```
+node --env-file=.env scripts/sanity-check.mjs
+```
+
+### Rich text
+
+Bodies are **Portable Text**, rendered with `astro-portabletext`. It is structured JSON, not HTML, so an
+editor cannot inject a `<script>` and no sanitizer is needed. There is no typography plugin in this project,
+so the `.prose-auristate` block in the two `[slug].astro` pages supplies the rhythm.
+
+### Ordering
+
+Projects are dragged into order in the Studio via `@sanity/orderable-document-list`, which writes a
+`lexorank` string to `orderRank`. That order is **content, not a Studio convenience** — it decides which
+slide the carousel opens on and which project becomes the full-width feature at a count of one. Queries sort
+by `order(orderRank)`. (The older `sanity-plugin-orderable-document-list` is deprecated and peers React 17;
+do not install it.)
+
+### Env
+
+`PUBLIC_SANITY_PROJECT_ID` and `PUBLIC_SANITY_DATASET`, in `.env` locally and as **build** environment
+variables in the Cloudflare Pages dashboard. Neither is secret. `SANITY_WRITE_TOKEN` is **local only** and
+needed solely by the seed script — the site build never writes, so it must never reach Cloudflare.
+
+### Seeding
+
+`studio/scripts/seed-projects.mjs` imported the three original projects and their images. It lives under
+`studio/` because it needs `lexorank`, which the site has no reason to depend on. It is idempotent — it looks
+each project up by slug first — and it seeds **only** name, type, and photo. `location`, `area`,
+`description`, and `faqs` were left empty rather than invented; a page that shows nothing beats one that
+shows fiction.
 
 ## Development
 
