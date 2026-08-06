@@ -479,9 +479,20 @@ do not install it.)
 
 ### Env
 
-`PUBLIC_SANITY_PROJECT_ID` and `PUBLIC_SANITY_DATASET`, in `.env` locally and as **build** environment
-variables in the Cloudflare Pages dashboard. Neither is secret. `SANITY_WRITE_TOKEN` is **local only** and
-needed solely by the seed script — the site build never writes, so it must never reach Cloudflare.
+`PUBLIC_SANITY_PROJECT_ID` and `PUBLIC_SANITY_DATASET` are **optional**. `src/lib/sanity.ts` defaults to
+`s055z044` / `production` and logs a warning when it falls back, so a build never fails for want of them.
+Neither is a secret — both appear in every image URL the site serves.
+
+They default because Cloudflare Pages keeps **Production and Preview variables as separate sets**, and a new
+Pages project or a fresh Preview environment starts with neither. Requiring them turned a dashboard oversight
+into a hard build failure. Set them only to point a build at a different project or dataset.
+
+Verified both ways: with no `.env` and no environment variables the build produces all 7 pages and warns; with
+them set it builds silently. Astro does surface real `process.env` variables to `import.meta.env` as long as
+they carry the `PUBLIC_` prefix, so the dashboard route works — it is just no longer mandatory.
+
+`SANITY_WRITE_TOKEN` is **local only** and needed solely by the seed script. The site build never writes, so
+it must never reach Cloudflare.
 
 ### Seeding
 

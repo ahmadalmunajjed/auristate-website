@@ -3,16 +3,25 @@ import {createClient} from '@sanity/client';
 import {createImageUrlBuilder, type SanityImageSource} from '@sanity/image-url';
 import {defineQuery} from 'groq';
 
-const projectId = import.meta.env.PUBLIC_SANITY_PROJECT_ID;
-const dataset = import.meta.env.PUBLIC_SANITY_DATASET;
+// Neither value is a secret — both are visible in every image URL the site
+// serves — so they carry defaults rather than being required. A Pages project
+// or Preview environment that has not had its variables set still builds
+// instead of failing, which is the failure this class of config is most prone
+// to. Set the env vars to point a build at a different project or dataset.
+const DEFAULT_PROJECT_ID = 's055z044';
+const DEFAULT_DATASET = 'production';
 
-// Fail loudly at build time. Without this the client constructs fine and every
-// query returns nothing, so the site builds "successfully" with an empty blog
-// and no projects — which looks like a content problem, not a config one.
-if (!projectId || !dataset) {
-	throw new Error(
-		'Missing PUBLIC_SANITY_PROJECT_ID or PUBLIC_SANITY_DATASET. Copy .env.example to .env locally, ' +
-			'and set both as build environment variables in the Cloudflare Pages dashboard.'
+const projectId = import.meta.env.PUBLIC_SANITY_PROJECT_ID || DEFAULT_PROJECT_ID;
+const dataset = import.meta.env.PUBLIC_SANITY_DATASET || DEFAULT_DATASET;
+
+// The cost of defaulting: a deploy that MEANT to use a different dataset but
+// lost its variables now builds against production content silently. Warn so
+// that shows up in the build log rather than only in the rendered output.
+if (!import.meta.env.PUBLIC_SANITY_PROJECT_ID || !import.meta.env.PUBLIC_SANITY_DATASET) {
+	console.warn(
+		`[sanity] PUBLIC_SANITY_PROJECT_ID / PUBLIC_SANITY_DATASET not set — ` +
+			`falling back to ${DEFAULT_PROJECT_ID}/${DEFAULT_DATASET}. ` +
+			`Set them in the Cloudflare Pages dashboard if this build should target something else.`
 	);
 }
 
