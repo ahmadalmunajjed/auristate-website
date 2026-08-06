@@ -69,29 +69,27 @@ const { showreel, poster, showreelRate, showreelStart } = hero;
 	     section stays near its 88svh floor, so the next section peeks and cues
 	     the scroll without needing an arrow. -->
 	<div class="mx-auto w-full max-w-page px-6 pt-32 pb-20 md:pt-36 md:pb-24">
-		<div class="max-w-2xl">
-			<!-- The headline is the whole hero — no eyebrow, no supporting line — so
-			     it is set as an authored stack, one word per line, rather than left
-			     to wrap. Block spans inside a single h1: assistive tech reads the
-			     three as one heading, so the line breaks stay purely visual.
-			     The caps get a little tracking because a display serif set in caps
-			     reads tight, and the leading pulls in below the type's default so
-			     three lines read as one block instead of a list.
-			     text-4xl is the floor, not text-5xl: at 48px "INVESTING" measures
-			     296px against the 272px a 320px viewport leaves inside px-6, and a
-			     single unbreakable word overflows into a horizontal scrollbar.
-			     36px clears it. -->
+		<div>
+			<!-- Sized to hold on one line, which `nowrap` turns into a loud failure
+			     rather than a silent wrap. The string measures 11.9x its font-size at
+			     this tracking and has 100vw - 3rem to sit in, so the widest it can be
+			     is 8.4vw - 4px; 6.4vw - 4px is that with headroom, one step down from
+			     filling the line. Subtracting the padding matters — a bare `Nvw` that
+			     fits on desktop overflows on a phone, where 48px is a much larger
+			     share of the viewport. -->
 			<h1
-				class="animate-hero text-4xl leading-[1.06] tracking-[0.04em] text-white sm:text-5xl md:text-7xl"
-				style="font-family: var(--font-display); font-weight: 600; animation-delay: 0ms; text-shadow: 0 2px 24px rgba(26,26,26,0.45);"
+				class="animate-hero leading-[1.1] tracking-[0.04em] whitespace-nowrap text-white"
+				style="font-family: var(--font-display); font-weight: 600; font-size: clamp(1.25rem, calc(6.4vw - 4px), 3.5rem); animation-delay: 0ms; text-shadow: 0 2px 24px rgba(26,26,26,0.45);"
 			>
-				{/* The trailing space is load-bearing and invisible: without it the
-				    heading's text content runs together as "INVESTINGINVISION" for
-				    anything that reads it as a plain string. A space at the end of a
-				    block line never renders. */}
-				{hero.titleLines.map((line) => <span class="block">{line} </span>)}
+				{hero.title}
 			</h1>
-			<div class="animate-hero mt-10 flex flex-wrap items-center gap-5" style="animation-delay: 160ms;">
+			<p
+				class="animate-hero mt-8 max-w-xl text-lg text-white/85"
+				style="animation-delay: 160ms; text-shadow: 0 1px 12px rgba(26,26,26,0.5);"
+			>
+				{hero.body}
+			</p>
+			<div class="animate-hero mt-10 flex flex-wrap items-center gap-5" style="animation-delay: 280ms;">
 				{
 					hero.ctas.map((c) =>
 						c.primary ? (

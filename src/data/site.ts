@@ -47,14 +47,11 @@ export const nav: NavItem[] = [
 ];
 
 export const hero = {
-	// The hero carries this line alone — no eyebrow, no supporting paragraph.
-	// Set in caps here rather than with `uppercase`, so the copy on screen is the
-	// copy in this file.
-	//
-	// One array entry per rendered line: the stack is the composition, so the
-	// break is authored here rather than left to whatever the container width
-	// happens to allow. Adding a fourth entry adds a fourth line at every size.
-	titleLines: ['INVESTING', 'IN', 'VISION'],
+	// Caps here rather than via `uppercase`, so the copy on screen is the copy in
+	// this file. The hero sizes it to hold on one line at every viewport — a
+	// longer headline does not wrap there, it shrinks.
+	title: 'INVESTING IN VISION',
+	body: 'Auristate Tourism Investment builds world-class destinations that embody elegance, opportunity, and cultural connection.',
 	background: '/images/hero/hero-bg.svg',
 	// null falls back to the poster alone — the hero never emits a <video> with
 	// a dead source. AGENTS.md explains why the 480p source needs the tuning.
