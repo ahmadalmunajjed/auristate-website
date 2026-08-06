@@ -172,16 +172,11 @@ export const services: Service[] = [
 	}
 ];
 
-// Client copy. No separate headline — the statement is the content.
+// Client copy. Vision and mission as one continuous statement rather than a
+// labelled pair — the two paragraphs read as vision, then how it's realised.
 export const visionMission = [
-	{
-		eyebrow: 'Our Vision',
-		body: 'To establish a new benchmark for real estate and tourism development in Syria — one that blends innovation, sustainability, and authenticity to shape vibrant communities and memorable destinations. Our vision is to be a catalyst for the country’s revival, empowering local economies and unlocking long-term value for investors and society.'
-	},
-	{
-		eyebrow: 'Our Mission',
-		body: 'To deliver high-quality projects, based on innovation and international collaboration, creating an urban and touristic environment that meets the aspirations of premium investors, aligns with global standards, and respects local identity.'
-	}
+	'Auristate’s vision is to contribute to building a more prosperous future for Syria’s real estate and tourism investment sectors through the development of pioneering projects that reflect the nation’s identity while adhering to the highest international standards.',
+	'The company brings this vision to life through its commitment to developing high-quality investment opportunities and sustainable projects that create added value for investors and communities, support economic growth, and strengthen Syria’s position as a promising destination for investment and tourism.'
 ];
 
 export const contact = {
