@@ -427,6 +427,33 @@ whether drafts are being correctly excluded:
 node --env-file=.env scripts/sanity-check.mjs
 ```
 
+### Deploying the Studio
+
+```
+cd studio && npm run deploy      # → https://auristate.sanity.studio
+```
+
+Sanity hosts it free. `studioHost` is pinned in `sanity.cli.ts` so the deploy is non-interactive and
+repeatable — the name is claimed globally across all of Sanity, so if it ever conflicts, change it in that
+file rather than passing a one-off flag. `autoUpdates: true` means the hosted Studio pulls Sanity's own
+patches without a redeploy; a redeploy is only needed after **schema** changes.
+
+There is no custom-domain support on the free hosting without a reverse proxy. Self-hosting the output of
+`sanity build` would allow one, at the cost of a second deploy to maintain, manual Studio version bumps, and
+adding the new origin to the project's CORS allowlist by hand.
+
+**The Studio URL is publicly reachable but login-gated** — only project members get in. The client is invited
+at sanity.io/manage → project → Members, with the **Editor** role: create, edit, and publish content, but no
+project settings. That invite is what makes this a single-admin CMS.
+
+Schema changes need **two** commands, and forgetting the second is a common confusion — the Studio shows the
+new field while `sanity schemas deploy` is what makes it visible to the Content Lake tooling:
+
+```
+cd studio && npm run deploy      # the editing UI
+cd studio && npx sanity schemas deploy
+```
+
 ### Rich text
 
 Bodies are **Portable Text**, rendered with `astro-portabletext`. It is structured JSON, not HTML, so an
