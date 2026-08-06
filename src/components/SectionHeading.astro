@@ -13,10 +13,14 @@ const { eyebrow, title, align = 'left', class: className = '' } = Astro.props;
 	{/* gold-deep, not gold-dark: at 14px this is still small text by WCAG's
 	    measure, and gold-dark is 2.83:1 on sand. gold-deep clears 4.5:1. */}
 	<p class="mb-4 text-sm tracking-[0.3em] text-gold-deep uppercase">{eyebrow}</p>
-	{/* One step under About's text-4xl/5xl masthead, deliberately: that section
-	    is the page's opening statement and these are its peers, not its equals. */}
+	{/* The top step is capped by the longest title on the page, "From First Study
+	    to Final Handover", which is 17.1em wide in Fraunces and has to stay on one
+	    line (see 715d43c). Available width is the container minus px-6, so the
+	    ceiling is ~57px at lg and ~72px once max-w-page caps at 80rem — hence 52px
+	    at lg and 56px above it, both with room to spare. Re-measure if the brand's
+	    BankGothic ever replaces Fraunces: the cap moves with the metrics. */}
 	<h2
-		class="text-[2rem] text-ink md:text-[2.5rem]"
+		class="text-[2.25rem] text-ink lg:text-[3.25rem] xl:text-[3.5rem]"
 		style="font-family: var(--font-display); font-weight: 600;"
 	>
 		{title}
