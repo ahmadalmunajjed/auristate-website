@@ -146,34 +146,29 @@ export interface Service {
 
 // Client copy. The four are a sequence, not parallel offerings, so the section
 // numbers them as a process.
-//
-// The four `image` values are PLACEHOLDER: genuine client renders and one real
-// site photo, reused here as decoration. None of them depicts the service it
-// sits above — they are captioned by nothing and claim nothing, which is the
-// only reason reuse is safe. Replace them with real service photography.
 export const services: Service[] = [
 	{
 		title: 'Study & Planning',
 		blurb: 'Feasibility study, market analysis, and defining the initial vision.',
-		image: '/images/projects/the-mark.jpg'
+		image: '/images/services/study-planning.jpeg'
 	},
 	{
 		title: 'Design & Development',
 		blurb:
 			"Exclusive architectural and interior designs, with 3D renderings that let you see your project before it's built.",
-		image: '/images/projects/hameh.jpg'
+		image: '/images/services/design-development.jpeg'
 	},
 	{
 		title: 'Execution & Supervision',
 		blurb:
 			'Project management and strict engineering supervision, connecting you with a trusted network of specialized contractors and suppliers.',
-		image: '/images/blog/post.jpeg'
+		image: '/images/services/execution-supervision.jpeg'
 	},
 	{
 		title: 'Delivery & Operation',
 		blurb:
 			'Complete project handover with world-class quality, adhering to the agreed timeline and budget.',
-		image: '/images/projects/365-photo.jpg'
+		image: '/images/services/delivery-operation.jpeg'
 	}
 ];
 
