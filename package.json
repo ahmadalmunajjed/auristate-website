@@ -19,5 +19,9 @@
     "astro-portabletext": "^0.13.0",
     "groq": "^6.9.0",
     "tailwindcss": "^4.3.2"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "typescript": "^6.0.3"
   }
 }
