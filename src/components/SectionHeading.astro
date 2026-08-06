@@ -10,19 +10,14 @@ const { eyebrow, title, align = 'left', class: className = '' } = Astro.props;
 ---
 
 <div class:list={[align === 'center' && 'text-center', className]}>
-	{/* gold-deep, not gold-dark: at 14px this is still small text by WCAG's
-	    measure, and gold-dark is 2.83:1 on sand. gold-deep clears 4.5:1. */}
-	<p class="mb-4 text-sm tracking-[0.3em] text-gold-deep uppercase">{eyebrow}</p>
-	{/* The top step is capped by the longest title on the page, "From First Study
-	    to Final Handover", which is 17.1em wide in Fraunces and has to stay on one
-	    line (see 715d43c). Available width is the container minus px-6, so the
-	    ceiling is ~57px at lg and ~72px once max-w-page caps at 80rem — hence 52px
-	    at lg and 56px above it, both with room to spare. Re-measure if the brand's
-	    BankGothic ever replaces Fraunces: the cap moves with the metrics. */}
-	<h2
-		class="text-[2.25rem] text-ink lg:text-[3.25rem] xl:text-[3.5rem]"
-		style="font-family: var(--font-display); font-weight: 600;"
-	>
+	{/* The eyebrow is what reads as the section's name, so it carries the size
+	    here rather than the title beneath it.
+	    gold-deep, not gold-dark: 20px is still normal text by WCAG's measure, so
+	    this needs 4.5:1 — gold-dark is 2.83:1 on sand, gold-deep is 4.51:1. Keep
+	    it under 24px or that threshold changes and VisionMission's glow offset
+	    stops being the constraint AGENTS.md says it is. */}
+	<p class="mb-4 text-lg tracking-[0.3em] text-gold-deep uppercase md:text-xl">{eyebrow}</p>
+	<h2 class="text-3xl text-ink" style="font-family: var(--font-display); font-weight: 600;">
 		{title}
 	</h2>
 </div>
