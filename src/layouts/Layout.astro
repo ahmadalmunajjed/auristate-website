@@ -1,6 +1,8 @@
 ---
 import { Font } from 'astro:assets';
 import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
 
 interface Props {
 	title: string;
@@ -9,13 +11,19 @@ interface Props {
 	image?: string;
 	/** Set on pages that should stay out of search results. */
 	noindex?: boolean;
+	/**
+	 * Lifts the header onto the page's first section as white-on-media. Only for
+	 * pages that open on a full-bleed dark hero; anywhere else it renders on sand.
+	 */
+	headerOver?: boolean;
 }
 
 const {
 	title,
 	description = 'Auristate Tourism Investment builds world-class destinations that embody elegance, opportunity, and cultural connection. A Syrian joint-stock company specialized in real estate and tourism investment.',
 	image = '/og-image.png',
-	noindex = false
+	noindex = false,
+	headerOver = false
 } = Astro.props;
 
 // Astro.site comes from `site` in astro.config.mjs. Social platforms reject
@@ -64,7 +72,26 @@ const ogImage = new URL(image, Astro.site);
 		<Font cssVariable="--font-display" preload />
 		<Font cssVariable="--font-body" />
 	</head>
+	{/* The column keeps the footer at the bottom on pages shorter than the
+	    viewport — `body` carries no background of its own, so without it a short
+	    page ends on bare white below the footer. */}
 	<body>
-		<slot />
+		<div class="flex min-h-dvh flex-col bg-sand text-ink">
+			{/* Positioned ancestor for the `headerOver` header, which is out of flow
+			    and pins to the top of this wrapper — i.e. over whatever section
+			    `<main>` opens with. */}
+			<div class="relative flex-1">
+				<Header over={headerOver} />
+				<main>
+					<slot />
+				</main>
+			</div>
+			<Footer />
+		</div>
+
+		{/* Site-wide, so `.reveal` works on every page without the page opting in. */}
+		<script>
+			import '../scripts/reveal.js';
+		</script>
 	</body>
 </html>

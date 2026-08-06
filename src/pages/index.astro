@@ -1,6 +1,5 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Header from '../components/Header.astro';
 import Hero from '../components/Hero.astro';
 import About from '../components/About.astro';
 // Renders nothing while `projects` in site.ts is empty.
@@ -9,28 +8,17 @@ import Services from '../components/Services.astro';
 // Renders nothing while `posts` in site.ts is empty.
 import News from '../components/News.astro';
 import VisionMission from '../components/VisionMission.astro';
-import Footer from '../components/Footer.astro';
 ---
 
 {/* Plain "&" — Astro escapes prop values, so an &amp; entity here would ship
     as the literal text "&amp;" in the title and every share preview. */}
-<Layout title="Auristate — Tourism & Real Estate Investment in Syria">
-	<div class="bg-sand text-ink">
-		<!-- Header sits over the hero media, so it is positioned relative to this
-		     wrapper rather than stacked above the section. -->
-		<div class="relative">
-			<Header over />
-			<Hero />
-		</div>
-		<About />
-		<ProjectsGallery />
-		<Services />
-		<News />
-		<VisionMission />
-		<Footer />
-	</div>
+{/* headerOver: this page opens on the full-bleed hero video, so the header
+    rides over it. Pages without a media hero omit it. */}
+<Layout title="Auristate — Tourism & Real Estate Investment in Syria" headerOver>
+	<Hero />
+	<About />
+	<ProjectsGallery />
+	<Services />
+	<News />
+	<VisionMission />
 </Layout>
-
-<script>
-	import '../scripts/reveal.js';
-</script>

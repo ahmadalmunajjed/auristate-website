@@ -18,7 +18,7 @@ The theme lives in:
 - `src/components/*.astro` — one component per homepage section; the reference implementation of the style
 - `src/pages/index.astro` — the homepage, now composition only (imports + section order)
 - `src/styles/global.css` — brand color tokens (`gold*`, `charcoal`, `sand*`, …) as Tailwind v4 `@theme` values, plus the scroll/entrance animation utilities (`.animate-hero`, `.animate-float`, `.reveal`, all reduced-motion aware)
-- `src/layouts/Layout.astro` — loads the two theme fonts via Astro's Fonts API
+- `src/layouts/Layout.astro` — the page shell: theme fonts via Astro's Fonts API, plus the header, footer, `<main>`, and reveal script every page shares
 - `astro.config.mjs` — Fraunces as `--font-display` (headings) and Work Sans as `--font-body`
 
 Note on the fonts: both CSS variables are emitted into `:root` by Astro's `<Font>` component, *not* by Tailwind's `@theme`, so despite the `--font-*` naming there is no `font-display`/`font-body` utility class. `--font-body` is applied once to `body` in `global.css`; headings opt into the display font with inline `style="font-family: var(--font-display)"`. Follow that pattern on new pages.
@@ -58,10 +58,36 @@ Two knock-on rules, both measured rather than guessed:
   `gold-light` is the accessible gold (8.77:1) and `gold-deep` is not (3.04:1), while `ink` is unusable at
   1.23:1. Every text color in it is white at some opacity — `white/75` body copy measures 10.19:1.
 
+## The page shell
+
+`Layout.astro` owns everything a page shares, so **a new page is a `<Layout>` and its sections — nothing
+else**. It renders the header, wraps the default slot in the site's only `<main>`, renders the footer, and
+loads `scripts/reveal.js` once, which is why `.reveal` works on a new page without the page importing
+anything. `index.astro` is the worked example: seven imports, seven tags.
+
+Three things to know when writing one:
+
+- **`headerOver` is the only layout knob.** It switches the header to the white-on-media treatment and takes
+  it out of flow. Pass it only on pages that open on a full-bleed dark section — the homepage hero is the
+  one such page today. Omit it and the header renders on sand in normal flow, which is the default a
+  Contact or Projects page wants. The header pins to the top of the wrapper around `<main>`, so it overlays
+  whatever section the page opens with; nothing in the page has to cooperate.
+- **The shell gives no horizontal container.** `<main>` is bare, exactly as it was when the sections sat
+  directly in `index.astro`, so section backgrounds stay full-bleed and each section brings its own
+  `mx-auto max-w-page px-6`. Copy that from any existing component.
+- **The column is what keeps the footer down.** `body` sets no background, so on a page shorter than the
+  viewport a footer in normal flow would ride up mid-screen and leave bare white beneath it. The
+  `flex min-h-dvh flex-col` wrapper plus `flex-1` on the element before the footer is the whole fix; it
+  costs the tall homepage nothing, since column flex items keep `min-height: auto`.
+
+There is deliberately **no skip link** — `<main>` is a landmark, but nothing yet lets a keyboard user jump
+to it past the nav. Worth adding when the nav grows or a mobile menu lands.
+
 ## SEO and social previews
 
-`Layout.astro` takes `title`, plus optional `description`, `image`, and `noindex`. It emits the description,
-canonical, Open Graph, and Twitter card tags; the description and OG image default to the homepage's.
+`Layout.astro` takes `title`, plus optional `description`, `image`, `noindex`, and `headerOver`. It emits the
+description, canonical, Open Graph, and Twitter card tags; the description and OG image default to the
+homepage's.
 
 **`site` in `astro.config.mjs` is load-bearing.** Canonical and OG image URLs are built from it with
 `new URL()`, because social platforms reject relative image paths. It currently points at the Cloudflare
@@ -81,7 +107,8 @@ ships as the literal text "&amp;" in the tab and in every share preview.
 All homepage copy lives in `src/data/site.ts`. Section components import from it and never hardcode copy.
 Most nav entries are in-page anchors into the homepage sections — `/#about`, `/#projects`, `/#services`,
 `/#news` — so they are coupled to the `id` on each section's root element. Root-relative rather than bare
-`#about`, because `Footer.astro` renders the same array and will ship on pages other than `/`. `Contact Us`
+`#about`, because `Footer.astro` renders the same array and now ships on **every** page via the layout —
+those anchors stopped being anticipatory the moment the shell landed and are load-bearing off the homepage. `Contact Us`
 still points at `/contact`, which does not exist yet and 404s until built.
 
 A nav entry with a `children` array renders as a dropdown **in the header only** — `Footer.astro` reads the
@@ -160,7 +187,8 @@ Three things in it are load-bearing:
 is empty, so the section appears on its own the moment real entries land in `site.ts`, with no second edit
 and no empty heading shipping over a blank grid.
 
-The live page is therefore: Header → Hero → About → Projects → Services → News → Vision/Mission → Footer.
+The live page is therefore: Header → Hero → About → Projects → Services → News → Vision/Mission → Footer,
+with the header and footer coming from the layout rather than from `index.astro`.
 
 ### Projects data
 
@@ -295,8 +323,9 @@ which composites to that value; fading to the raw token leaves a visible seam.
 Re-encoding the source (faststart, drop audio, trim, ~1 MB) would let most of the playback JS go away, and a
 1080p master from the client would retire the disguise work entirely.
 
-The header takes an `over` prop that switches it to the white-on-media treatment and absolutely positions it;
-`index.astro` wraps `<Header over />` and `<Hero />` in a `relative` div so it overlays.
+The header takes an `over` prop that switches it to the white-on-media treatment and absolutely positions it.
+Pages do not pass it directly — `Layout.astro` does, from its own `headerOver`, and owns the positioned
+wrapper the header pins to. See "The page shell" above.
 
 ### Logo
 
