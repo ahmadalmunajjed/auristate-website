@@ -104,9 +104,14 @@ ships as the literal text "&amp;" in the tab and in every share preview.
 
 ## Content and assets
 
-All homepage copy lives in `src/data/site.ts`. Section components import from it and never hardcode copy.
-Most nav entries are in-page anchors into the homepage sections — `/#about`, `/#projects`, `/#services`,
-`/#news` — so they are coupled to the `id` on each section's root element. Root-relative rather than bare
+Static copy lives in `src/data/site.ts` — hero, about, services, vision/mission, nav, contact, social.
+Section components import from it and never hardcode copy. **Projects and blog posts are the exception: they
+live in Sanity** and are fetched at build time (see "Content: Sanity CMS").
+
+Most nav entries are in-page anchors into the homepage sections — `/#about`, `/#projects`, `/#services` — so
+they are coupled to the `id` on each section's root element. `News` is the exception: it keeps its label but
+points at `/blog`, the real index. The homepage section it used to scroll to still exists and is still called
+News. Root-relative rather than bare
 `#about`, because `Footer.astro` renders the same array and now ships on **every** page via the layout —
 those anchors stopped being anticipatory the moment the shell landed and are load-bearing off the homepage. `Contact Us`
 still points at `/contact`, which does not exist yet and 404s until built.
@@ -114,10 +119,11 @@ still points at `/contact`, which does not exist yet and 404s until built.
 A nav entry with a `children` array renders as a dropdown **in the header only** — `Footer.astro` reads the
 same array and stays flat. `About Us` uses it for `Who We Are` (`/#about`) and `Mission and Vision`
 (`/#vision-mission`), so it now depends on a third section id. `Projects` uses it for the three project
-types, which are the `tag` values on `projects` shortened for menu width — nothing derives that list, so a
-project with a new tag needs a matching entry. Those three are the only nav links pointing **off** the
-homepage besides `Contact Us`: they expect `/projects` to expose `#hospitality`, `#residential`, and
-`#luxury-villas`, and 404 with the rest of `/projects` until that page is built. Each trigger keeps its own
+types, shortened for menu width. Those hrefs are the `projectType` **values**, and `/projects` renders a
+section with each as its `id` — so `#hospitality`, `#residential`, and `#luxury-villas` now resolve. Nothing
+derives the list: a new project type means editing **three** places — the Studio schema's `PROJECT_TYPES`,
+the labels in `src/lib/sanity.ts`, and this menu. A project whose type matches none of them still appears on
+`/projects` under an "Other" heading rather than vanishing silently. Each trigger keeps its own
 `href`, so no item is a dead end. The panel opens on `:hover` and `:focus-within` in CSS; the small script in
 `Header.astro` covers touch, where neither fires — under `(hover: none)` the first tap opens the menu and the
 second follows the link. Below 768px the nav is hidden entirely and there is still no mobile menu.
@@ -184,27 +190,35 @@ Three things in it are load-bearing:
   logical value still floats it.
 
 `ProjectsGallery` works differently — it is **mounted but self-hiding**. It returns nothing while `projects`
-is empty, so the section appears on its own the moment real entries land in `site.ts`, with no second edit
-and no empty heading shipping over a blank grid.
+is empty, so the section appears on its own the moment something is published in Sanity, with no code change
+and no empty heading shipping over a blank grid. `News` behaves the same way for the latest post. Both now
+take their data as a **prop** from `index.astro`, which does the fetching — they import nothing themselves.
 
 The live page is therefore: Header → Hero → About → Projects → Services → News → Vision/Mission → Footer,
 with the header and footer coming from the layout rather than from `index.astro`.
 
 ### Projects data
 
-```ts
-interface Project {
-  name: string;
-  tag: string;       // 'Hospitality / Resort' — the gold eyebrow
-  image: string;     // cards crop to 4:3, so 4:3 or wider is best
-  href: string;      // '/projects/<slug>' once project pages exist
-  summary?: string;  // optional second line; renders in every layout
-}
-```
+Projects live in **Sanity**, not `site.ts` — see "Content: Sanity CMS" below for the schema and queries.
+`ProjectsGallery` and the `/projects` pages receive `ProjectSummary[]` from `src/lib/sanity.ts`.
 
-The fourth entry, `TEMP FOURTH`, is **PLACEHOLDER** and exists only to push the count past three so the
-carousel renders its arrows. Delete it, or replace it with a real project, and the section falls back to the
-static three-card coverflow.
+Two fields behave unlike the old hardcoded shape:
+
+- **There is no `image`. The card's photo is `gallery[0]`** — the first item of the project's photo array,
+  with no separate cover field. Reordering the gallery in the Studio changes the card. The schema requires at
+  least one photo for exactly this reason; `ProjectCard` still guards against its absence rather than
+  crashing the build on a document that predates the rule.
+- **There is no `tag`. `projectType` stores a slug** (`hospitality`, `residential`, `luxury-villas`), not
+  display text, because that value doubles as the section id on `/projects` that the header dropdown links
+  to. `projectTypeLabel()` in `src/lib/sanity.ts` maps it back for the card pill. Changing a value breaks
+  three menu links; changing a label is free.
+
+`href` is gone too — it is derived as `/projects/${slug}` at render, so it can never point somewhere stale.
+
+The old `TEMP FOURTH` placeholder was **dropped rather than migrated**. It existed only to push the count
+past three so the carousel would render its arrows, and a live project called TEMP FOURTH was never the
+intent. With the three real projects the carousel is a centred row with no arrows; publishing a genuine
+fourth brings them back on its own.
 
 `ProjectsGallery` picks its layout from the count, because one arrangement cannot serve every case — a
 coverflow needs a middle and two shoulders, and a lone card in a three-column grid reads as a loading

@@ -1,8 +1,9 @@
 ---
-import type { Project } from '../data/site';
+import type {ProjectSummary} from '../lib/sanity';
+import {urlFor, projectTypeLabel} from '../lib/sanity';
 
 interface Props {
-	project: Project;
+	project: ProjectSummary;
 	index: number;
 	/**
 	 * feature — the only project: full width, cinematic crop.
@@ -17,15 +18,30 @@ interface Props {
 	reveal?: boolean;
 }
 
-const { project, index, variant = 'default', reveal = true } = Astro.props;
+const {project, index, variant = 'default', reveal = true} = Astro.props;
 
 // Client renders are all 16:9. A taller default tile throws away most of the
 // frame, so 4:5 rather than the reference design's 9:10.
 const aspect = variant === 'feature' ? 'aspect-[16/9]' : 'aspect-[4/5]';
+
+// Ask the CDN for the crop we actually display, rather than shipping a full-size
+// original and letting object-cover hide the waste. The default tile is portrait
+// against 16:9 sources, so Sanity drops roughly half the width — the hotspot set
+// in the Studio decides which half.
+const [width, height] = variant === 'feature' ? [1600, 900] : [900, 1125];
+
+// The gallery's first photo IS the card; there is no separate cover field.
+// Studio validation requires at least one photo, but a document created before
+// that rule would crash urlFor(), so the card falls back to its dark ground
+// rather than failing the whole build.
+const cover = project.cover;
+const src = cover
+	? urlFor(cover).width(width).height(height).fit('crop').auto('format').quality(80).url()
+	: null;
 ---
 
 <a
-	href={project.href}
+	href={`/projects/${project.slug}`}
 	class:list={[
 		'project-card group relative block overflow-hidden bg-nearblack',
 		reveal && 'reveal',
@@ -33,13 +49,17 @@ const aspect = variant === 'feature' ? 'aspect-[16/9]' : 'aspect-[4/5]';
 	]}
 	style={reveal ? `--reveal-delay: ${index * 120}ms` : undefined}
 >
-	<img
-		src={project.image}
-		alt=""
-		loading="lazy"
-		decoding="async"
-		class="absolute inset-0 h-full w-full object-cover transition duration-700 ease-out group-hover:scale-115 group-focus-visible:scale-115"
-	/>
+	{
+		src && (
+			<img
+				src={src}
+				alt={cover?.alt ?? ''}
+				loading="lazy"
+				decoding="async"
+				class="absolute inset-0 h-full w-full object-cover transition duration-700 ease-out group-hover:scale-115 group-focus-visible:scale-115"
+			/>
+		)
+	}
 
 	{/* Scrim tuned by sampling the brightest pixel behind the title: holds white
 	    text above 9:1 on the current renders. Lightening it risks failing AA on
@@ -54,7 +74,7 @@ const aspect = variant === 'feature' ? 'aspect-[16/9]' : 'aspect-[4/5]';
 		<span
 			class="self-start bg-white px-4 py-2 text-[0.65rem] font-medium tracking-[0.12em] text-ink uppercase"
 		>
-			{project.tag}
+			{projectTypeLabel(project.projectType)}
 		</span>
 
 		<div>

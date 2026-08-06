@@ -1,0 +1,57 @@
+---
+interface Props {
+	faqs: {_key: string; question: string; answer: string}[];
+}
+
+const {faqs} = Astro.props;
+---
+
+{/* Native <details>: an accordion that works with no JavaScript, is keyboard
+    operable for free, and is announced correctly by screen readers. */}
+<div class="divide-y divide-sand-dark/50 border-y border-sand-dark/50">
+	{
+		faqs.map((faq, i) => (
+			<details class="faq reveal group" style={`--reveal-delay: ${i * 90}ms`}>
+				<summary
+					class="flex cursor-pointer list-none items-center justify-between gap-6 py-6 text-left"
+				>
+					<span
+						class="text-lg text-ink transition group-hover:text-gold-deep"
+						style="font-family: var(--font-display); font-weight: 600;"
+					>
+						{faq.question}
+					</span>
+					<span
+						class="faq-icon shrink-0 text-2xl leading-none text-gold-dark transition-transform duration-300"
+						aria-hidden="true"
+					>
+						+
+					</span>
+				</summary>
+				<p class="pb-6 leading-relaxed text-ink/75">{faq.answer}</p>
+			</details>
+		))
+	}
+</div>
+
+<style>
+	/* Safari still paints its own disclosure triangle without this. */
+	.faq summary::-webkit-details-marker {
+		display: none;
+	}
+
+	.faq[open] .faq-icon {
+		rotate: 45deg;
+	}
+
+	.faq summary:focus-visible {
+		outline: 2px solid var(--color-gold-dark);
+		outline-offset: 4px;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.faq-icon {
+			transition: none;
+		}
+	}
+</style>

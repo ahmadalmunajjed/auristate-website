@@ -9,10 +9,9 @@ export interface NavItem {
 }
 
 // Most of these are in-page anchors into the homepage sections, so they are
-// coupled to the `id` on each section's root element. Two of those sections
-// self-hide — `#projects` renders only while `projects` is non-empty and
-// `#news` only while `posts` is — so emptying either array leaves its menu
-// item scrolling nowhere. Renaming an id does the same, just as quietly.
+// coupled to the `id` on each section's root element. `#projects` self-hides
+// while nothing is published in Sanity, so an empty Projects list leaves that
+// menu item scrolling nowhere. Renaming an id does the same, just as quietly.
 // Root-relative, not bare `#about`: the footer renders this same array and
 // will ship on pages other than `/`.
 // `About Us` keeps its own href — the trigger is still a working link to the
@@ -26,12 +25,12 @@ export const nav: NavItem[] = [
 			{ label: 'Mission and Vision', href: '/#vision-mission' }
 		]
 	},
-	// The three children are the `tag` values on `projects` below, shortened for
-	// menu width ('Luxury Villas Compound' → 'Luxury Villas'), so the menu never
-	// advertises a type with nothing in it. Nothing derives this — a project with
-	// a new tag needs a new entry here. The trigger still points at the homepage
-	// section; only the types leave for `/projects`, which does not exist yet and
-	// 404s until built, along with the anchors these expect it to expose.
+	// The three children mirror PROJECT_TYPES in src/lib/sanity.ts (and the
+	// matching list in studio/schemaTypes/project.ts), shortened for menu width
+	// ('Luxury Villas Compound' → 'Luxury Villas'). The hrefs are the type
+	// *values*, which are also the section ids /projects renders — so a new
+	// project type means editing three places: the Studio schema, the labels in
+	// lib/sanity.ts, and this menu.
 	{
 		label: 'Projects',
 		href: '/#projects',
@@ -42,7 +41,9 @@ export const nav: NavItem[] = [
 		]
 	},
 	{ label: 'Our Services', href: '/#services' },
-	{ label: 'News', href: '/#news' },
+	// Keeps the 'News' label but points at the real index. The homepage section
+	// still exists at #news and still calls itself News.
+	{ label: 'News', href: '/blog' },
 	{ label: 'Contact Us', href: '/contact' }
 ];
 
@@ -79,67 +80,16 @@ export const about = {
 	statement: 'To establish high-end touristic destinations.'
 };
 
-export interface Project {
-	name: string;
-	/** Renders as the pill above the name. */
-	tag: string;
-	/** 16:9 or wider crops best. */
-	image: string;
-	/** '/projects/<slug>' once project pages exist. */
-	href: string;
-	/** Optional second line under the name. Renders in every layout. */
-	summary?: string;
-}
-
-// `tag` values are inferred from the renders, not given by the client — THE
-// MARK's gatehouse signage reads "luxury villas compound". Correct if wrong.
-export const projects: Project[] = [
-	{
-		name: '365',
-		tag: 'Hospitality / Venue',
-		image: '/images/projects/365-photo.jpg',
-		href: '/projects'
-	},
-	{
-		name: 'Hameh',
-		tag: 'Residential',
-		image: '/images/projects/hameh.jpg',
-		href: '/projects'
-	},
-	{
-		name: 'THE MARK',
-		tag: 'Luxury Villas Compound',
-		image: '/images/projects/the-mark.jpg',
-		href: '/projects'
-	},
-	// PLACEHOLDER — not a real development. It exists so the carousel crosses the
-	// three-project threshold and renders its arrows; its image is 365's, reused.
-	// Kept deliberately unshippable-looking: replace it with a real project or
-	// delete it, and the section falls back to the static three-card coverflow.
-	// Its `tag` has no entry in the Projects dropdown above, by design.
-	{
-		name: 'TEMP FOURTH',
-		tag: 'Temporary',
-		image: '/images/projects/365-photo.jpg',
-		href: '/projects'
-	}
-];
-
-export interface Post {
-	title: string;
-	/** Preview description shown on the card. */
-	excerpt: string;
-	/** 16:9 or wider crops best. */
-	image: string;
-	/** '/news/<slug>' once post pages exist. */
-	href: string;
-	/** Optional — omit on evergreen posts so they never look stale. */
-	date?: string;
-}
-
-// Renders nothing while empty. The homepage previews posts[0] only; the rest
-// are for /news. A real site photo is ready at /images/blog/post.jpeg.
-export const posts: Post[] = [{title:'Site Progress Update 1: Structural Works Advance',excerpt:'Our engineering team reviews the latest milestone on site, with the primary structure now complete and finishing works scheduled to begin.',image:'/images/blog/post.jpeg',href:'/news',date:'Jul 2026'},{title:'Site Progress Update 2: Structural Works Advance',excerpt:'Our engineering team reviews the latest milestone on site, with the primary structure now complete and finishing works scheduled to begin.',image:'/images/blog/post.jpeg',href:'/news',date:'Jul 2026'},{title:'Site Progress Update 3: Structural Works Advance',excerpt:'Our engineering team reviews the latest milestone on site, with the primary structure now complete and finishing works scheduled to begin.',image:'/images/blog/post.jpeg',href:'/news',date:'Jul 2026'}];
+// Projects and blog posts are no longer here — they live in Sanity and are
+// fetched at build time. See src/lib/sanity.ts for the queries and types, and
+// studio/schemaTypes/ for the shape the client edits.
+//
+// The three real projects (365, Hameh, THE MARK) were migrated with their
+// images by studio/scripts/seed-projects.mjs. The 'TEMP FOURTH' placeholder was
+// dropped rather than migrated: it existed only to push the carousel past three
+// so its arrows would render, and shipping a project called TEMP FOURTH was
+// never the intent. With three real projects the carousel is a centred row with
+// no arrows; publishing a real fourth brings them back.
 
 export interface Service {
 	title: string;

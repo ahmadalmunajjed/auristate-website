@@ -1,8 +1,17 @@
 ---
 import ProjectCard from './ProjectCard.astro';
-import { projects } from '../data/site';
+import type {ProjectSummary} from '../lib/sanity';
+
+interface Props {
+	/** Published projects, in the drag order set in the Studio. */
+	projects: ProjectSummary[];
+}
+
+const {projects} = Astro.props;
 
 // Renders nothing when empty, so index.astro can leave this mounted permanently.
+// The count is now admin-controlled: publishing or unpublishing a project moves
+// this through the layout thresholds below with no code change.
 const count = projects.length;
 
 // A coverflow needs a middle and two shoulders, so it starts at three. Below
