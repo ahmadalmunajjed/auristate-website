@@ -1,46 +1,66 @@
 ---
 import SectionHeading from './SectionHeading.astro';
-import { posts } from '../data/site';
+import type {PostSummary} from '../lib/sanity';
+import {urlFor} from '../lib/sanity';
 
-// The homepage previews a single post; the rest live on /news.
-const featured = posts[0];
+interface Props {
+	/** The most recent published post, or null when the blog is empty. */
+	post: PostSummary | null;
+}
+
+const {post} = Astro.props;
+
+// The section keeps its "News" heading and #news id — only the route moved to
+// /blog. Renders nothing until a first post is published.
+const dateLabel = post?.date
+	? new Date(post.date).toLocaleDateString('en-GB', {month: 'short', year: 'numeric'})
+	: null;
+
+const image = post?.cover
+	? urlFor(post.cover).width(1200).height(900).fit('crop').auto('format').quality(80).url()
+	: null;
 ---
 
 {
-	featured && (
+	post && (
 		<section id="news" class="bg-white/50 py-6">
 			<div class="mx-auto max-w-page px-6">
 				<div class="reveal mb-14 flex items-end justify-between gap-6">
 					<SectionHeading eyebrow="News" title="Latest from Auristate" />
 					<a
-						href="/news"
+						href="/blog"
 						class="hidden shrink-0 pb-1 text-sm text-ink/75 transition hover:text-gold-deep md:block"
 					>
 						All News →
 					</a>
 				</div>
 
-				<a href={featured.href} class="reveal group grid items-center gap-10 md:grid-cols-2 md:gap-14">
+				<a
+					href={`/blog/${post.slug}`}
+					class="reveal group grid items-center gap-10 md:grid-cols-2 md:gap-14"
+				>
 					<div class="aspect-[4/3] overflow-hidden rounded-3xl bg-sand">
-						<img
-							src={featured.image}
-							alt=""
-							loading="lazy"
-							decoding="async"
-							class="h-full w-full object-cover transition duration-700 ease-out group-hover:scale-105"
-						/>
+						{image && (
+							<img
+								src={image}
+								alt={post.cover?.alt ?? ''}
+								loading="lazy"
+								decoding="async"
+								class="h-full w-full object-cover transition duration-700 ease-out group-hover:scale-105"
+							/>
+						)}
 					</div>
 					<div>
-						{featured.date && (
-							<p class="mb-4 text-xs tracking-[0.2em] text-gold-deep uppercase">{featured.date}</p>
+						{dateLabel && (
+							<p class="mb-4 text-xs tracking-[0.2em] text-gold-deep uppercase">{dateLabel}</p>
 						)}
 						<h3
 							class="text-2xl leading-snug text-ink transition group-hover:text-gold-deep md:text-3xl"
 							style="font-family: var(--font-display); font-weight: 600;"
 						>
-							{featured.title}
+							{post.title}
 						</h3>
-						<p class="mt-5 leading-relaxed text-ink/75">{featured.excerpt}</p>
+						<p class="mt-5 leading-relaxed text-ink/75">{post.excerpt}</p>
 						<span class="mt-6 inline-block text-sm text-ink/75 transition group-hover:text-gold-deep">
 							Read More →
 						</span>
@@ -48,7 +68,7 @@ const featured = posts[0];
 				</a>
 
 				<a
-					href="/news"
+					href="/blog"
 					class="reveal mt-10 block text-sm text-ink/75 transition hover:text-gold-deep md:hidden"
 				>
 					All News →

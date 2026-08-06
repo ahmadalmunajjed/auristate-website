@@ -1,0 +1,213 @@
+---
+import {PortableText} from 'astro-portabletext';
+import Layout from '../../layouts/Layout.astro';
+import FaqList from '../../components/FaqList.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import {getAllProjects, getProject, projectTypeLabel, urlFor} from '../../lib/sanity';
+
+// Queries come from a utility module: Astro hoists getStaticPaths() into its own
+// module context, where module-scope consts in this file are not in scope.
+export async function getStaticPaths() {
+	const projects = await getAllProjects();
+	return projects.map((project) => ({params: {slug: project.slug}}));
+}
+
+const {slug} = Astro.params;
+const project = await getProject(slug!);
+
+if (!project) {
+	return Astro.redirect('/projects');
+}
+
+const gallery = project.gallery ?? [];
+const [cover, ...rest] = gallery;
+
+const heroImage = cover
+	? urlFor(cover).width(1920).height(1080).fit('crop').auto('format').quality(80).url()
+	: null;
+
+const shareImage = cover
+	? urlFor(cover).width(1200).height(630).fit('crop').auto('format').quality(80).url()
+	: undefined;
+
+// Only the fields the client actually filled in. Everything except the type is
+// optional in the schema, and an empty "Location: —" row is worse than no row.
+const meta = [
+	{label: 'Type', value: projectTypeLabel(project.projectType)},
+	project.location ? {label: 'Location', value: project.location} : null,
+	project.area ? {label: 'Area', value: project.area} : null
+].filter((entry): entry is {label: string; value: string} => entry !== null);
+
+const hasFaqs = (project.faqs?.length ?? 0) > 0;
+---
+
+<Layout
+	title={`${project.name} — Auristate`}
+	description={project.summary ?? `${projectTypeLabel(project.projectType)} by Auristate.`}
+	image={shareImage}
+>
+	<article>
+		{
+			heroImage && (
+				<div class="relative">
+					<div class="aspect-[16/9] max-h-[70vh] w-full overflow-hidden bg-nearblack">
+						<img
+							src={heroImage}
+							alt={cover?.alt ?? ''}
+							loading="eager"
+							decoding="async"
+							class="h-full w-full object-cover"
+						/>
+					</div>
+				</div>
+			)
+		}
+
+		<section class="py-20">
+			<div class="mx-auto max-w-page px-6">
+				<a
+					href="/projects"
+					class="reveal mb-10 inline-block text-sm text-ink/75 transition hover:text-gold-deep"
+				>
+					← All Projects
+				</a>
+
+				<div class="reveal">
+					<p class="mb-4 text-xs tracking-[0.3em] text-gold-deep uppercase">
+						{projectTypeLabel(project.projectType)}
+					</p>
+					<h1
+						class="text-3xl leading-tight text-ink md:text-5xl"
+						style="font-family: var(--font-display); font-weight: 600;"
+					>
+						{project.name}
+					</h1>
+					{project.summary && (
+						<p class="mt-6 max-w-2xl text-lg leading-relaxed text-ink/75">{project.summary}</p>
+					)}
+				</div>
+
+				<dl class="reveal mt-12 grid gap-8 border-t border-sand-dark/50 pt-8 sm:grid-cols-3">
+					{
+						meta.map((entry) => (
+							<div>
+								<dt class="text-xs tracking-[0.2em] text-charcoal uppercase">{entry.label}</dt>
+								<dd class="mt-2 text-lg text-ink">{entry.value}</dd>
+							</div>
+						))
+					}
+				</dl>
+
+				{
+					project.description && (
+						<div class="prose-auristate reveal mt-14 max-w-3xl">
+							<PortableText value={project.description as any} />
+						</div>
+					)
+				}
+			</div>
+		</section>
+
+		{
+			rest.length > 0 && (
+				<section class="bg-white/50 py-20">
+					<div class="mx-auto max-w-page px-6">
+						<SectionHeading eyebrow="Gallery" title="More from this project" class="reveal mb-12" />
+						<div class="grid gap-4 md:grid-cols-2">
+							{rest.map((image, i) => (
+								<div
+									class="reveal aspect-[4/3] overflow-hidden rounded-2xl bg-sand"
+									style={`--reveal-delay: ${i * 90}ms`}
+								>
+									<img
+										src={urlFor(image)
+											.width(1000)
+											.height(750)
+											.fit('crop')
+											.auto('format')
+											.quality(80)
+											.url()}
+										alt={image.alt ?? ''}
+										loading="lazy"
+										decoding="async"
+										class="h-full w-full object-cover"
+									/>
+								</div>
+							))}
+						</div>
+					</div>
+				</section>
+			)
+		}
+
+		{
+			hasFaqs && (
+				<section class="py-20">
+					<div class="mx-auto max-w-3xl px-6">
+						<SectionHeading eyebrow="Questions" title="Frequently asked" class="reveal mb-12" />
+						<FaqList faqs={project.faqs!} />
+					</div>
+				</section>
+			)
+		}
+	</article>
+</Layout>
+
+<style is:global>
+	/* Shared with the blog post body — no typography plugin in this project. */
+	.prose-auristate p,
+	.prose-auristate ul,
+	.prose-auristate ol {
+		margin-block: 1.25rem;
+		line-height: 1.75;
+		color: color-mix(in srgb, var(--color-ink) 80%, transparent);
+	}
+
+	.prose-auristate h2,
+	.prose-auristate h3 {
+		font-family: var(--font-display);
+		font-weight: 600;
+		color: var(--color-ink);
+		margin-block: 2.5rem 1rem;
+	}
+
+	.prose-auristate h2 {
+		font-size: 1.75rem;
+		line-height: 1.3;
+	}
+
+	.prose-auristate h3 {
+		font-size: 1.35rem;
+		line-height: 1.4;
+	}
+
+	.prose-auristate ul,
+	.prose-auristate ol {
+		padding-inline-start: 1.5rem;
+	}
+
+	.prose-auristate ul {
+		list-style: disc;
+	}
+
+	.prose-auristate ol {
+		list-style: decimal;
+	}
+
+	.prose-auristate li {
+		margin-block: 0.5rem;
+	}
+
+	.prose-auristate a {
+		color: var(--color-gold-deep);
+		text-decoration: underline;
+		text-underline-offset: 0.2em;
+	}
+
+	.prose-auristate img {
+		border-radius: 1.5rem;
+		margin-block: 2rem;
+		width: 100%;
+		height: auto;
+	}
+</style>

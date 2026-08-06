@@ -72,10 +72,10 @@ const ogImage = new URL(image, Astro.site);
 		<Font cssVariable="--font-display" preload />
 		<Font cssVariable="--font-body" />
 	</head>
-	{/* The column keeps the footer at the bottom on pages shorter than the
-	    viewport — `body` carries no background of its own, so without it a short
-	    page ends on bare white below the footer. */}
 	<body>
+		{/* The column keeps the footer at the bottom on pages shorter than the
+		    viewport — `body` carries no background of its own, so without it a short
+		    page ends on bare white below the footer. */}
 		<div class="flex min-h-dvh flex-col bg-sand text-ink">
 			{/* Positioned ancestor for the `headerOver` header, which is out of flow
 			    and pins to the top of this wrapper — i.e. over whatever section

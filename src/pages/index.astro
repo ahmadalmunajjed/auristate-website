@@ -2,12 +2,18 @@
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import About from '../components/About.astro';
-// Renders nothing while `projects` in site.ts is empty.
+// Renders nothing while no projects are published in Sanity.
 import ProjectsGallery from '../components/ProjectsGallery.astro';
 import Services from '../components/Services.astro';
-// Renders nothing while `posts` in site.ts is empty.
+// Renders nothing while no posts are published in Sanity.
 import News from '../components/News.astro';
 import VisionMission from '../components/VisionMission.astro';
+import {getAllProjects, getLatestPost} from '../lib/sanity';
+
+// Fetched once at build time. A publish in the Studio fires a webhook that
+// rebuilds the site, so this is as live as the deploy.
+const projects = await getAllProjects();
+const latestPost = await getLatestPost();
 ---
 
 {/* Plain "&" — Astro escapes prop values, so an &amp; entity here would ship
@@ -17,8 +23,8 @@ import VisionMission from '../components/VisionMission.astro';
 <Layout title="Auristate — Tourism & Real Estate Investment in Syria" headerOver>
 	<Hero />
 	<About />
-	<ProjectsGallery />
+	<ProjectsGallery projects={projects} />
 	<Services />
-	<News />
+	<News post={latestPost} />
 	<VisionMission />
 </Layout>

@@ -4,9 +4,9 @@ Auristate is a tourism and real estate investment company operating in Syria (co
 
 Intent for the finished site:
 - Bilingual, served under `/en` and `/ar` (Arabic as RTL) — not yet implemented
-- Static pages (e.g. About, Contact)
-- Blog: index + individual posts
-- Projects: index + individual project pages
+- Static pages (e.g. About, Contact) — `/contact` still 404s
+- Blog: index + individual posts — **done**, `/blog` and `/blog/[slug]`, content from Sanity
+- Projects: index + individual project pages — **done**, `/projects` and `/projects/[slug]`, content from Sanity
 
 ## Design direction
 
@@ -104,9 +104,14 @@ ships as the literal text "&amp;" in the tab and in every share preview.
 
 ## Content and assets
 
-All homepage copy lives in `src/data/site.ts`. Section components import from it and never hardcode copy.
-Most nav entries are in-page anchors into the homepage sections — `/#about`, `/#projects`, `/#services`,
-`/#news` — so they are coupled to the `id` on each section's root element. Root-relative rather than bare
+Static copy lives in `src/data/site.ts` — hero, about, services, vision/mission, nav, contact, social.
+Section components import from it and never hardcode copy. **Projects and blog posts are the exception: they
+live in Sanity** and are fetched at build time (see "Content: Sanity CMS").
+
+Most nav entries are in-page anchors into the homepage sections — `/#about`, `/#projects`, `/#services` — so
+they are coupled to the `id` on each section's root element. `News` is the exception: it keeps its label but
+points at `/blog`, the real index. The homepage section it used to scroll to still exists and is still called
+News. Root-relative rather than bare
 `#about`, because `Footer.astro` renders the same array and now ships on **every** page via the layout —
 those anchors stopped being anticipatory the moment the shell landed and are load-bearing off the homepage. `Contact Us`
 still points at `/contact`, which does not exist yet and 404s until built.
@@ -114,10 +119,11 @@ still points at `/contact`, which does not exist yet and 404s until built.
 A nav entry with a `children` array renders as a dropdown **in the header only** — `Footer.astro` reads the
 same array and stays flat. `About Us` uses it for `Who We Are` (`/#about`) and `Mission and Vision`
 (`/#vision-mission`), so it now depends on a third section id. `Projects` uses it for the three project
-types, which are the `tag` values on `projects` shortened for menu width — nothing derives that list, so a
-project with a new tag needs a matching entry. Those three are the only nav links pointing **off** the
-homepage besides `Contact Us`: they expect `/projects` to expose `#hospitality`, `#residential`, and
-`#luxury-villas`, and 404 with the rest of `/projects` until that page is built. Each trigger keeps its own
+types, shortened for menu width. Those hrefs are the `projectType` **values**, and `/projects` renders a
+section with each as its `id` — so `#hospitality`, `#residential`, and `#luxury-villas` now resolve. Nothing
+derives the list: a new project type means editing **three** places — the Studio schema's `PROJECT_TYPES`,
+the labels in `src/lib/sanity.ts`, and this menu. A project whose type matches none of them still appears on
+`/projects` under an "Other" heading rather than vanishing silently. Each trigger keeps its own
 `href`, so no item is a dead end. The panel opens on `:hover` and `:focus-within` in CSS; the small script in
 `Header.astro` covers touch, where neither fires — under `(hover: none)` the first tap opens the menu and the
 second follows the link. Below 768px the nav is hidden entirely and there is still no mobile menu.
@@ -184,27 +190,35 @@ Three things in it are load-bearing:
   logical value still floats it.
 
 `ProjectsGallery` works differently — it is **mounted but self-hiding**. It returns nothing while `projects`
-is empty, so the section appears on its own the moment real entries land in `site.ts`, with no second edit
-and no empty heading shipping over a blank grid.
+is empty, so the section appears on its own the moment something is published in Sanity, with no code change
+and no empty heading shipping over a blank grid. `News` behaves the same way for the latest post. Both now
+take their data as a **prop** from `index.astro`, which does the fetching — they import nothing themselves.
 
 The live page is therefore: Header → Hero → About → Projects → Services → News → Vision/Mission → Footer,
 with the header and footer coming from the layout rather than from `index.astro`.
 
 ### Projects data
 
-```ts
-interface Project {
-  name: string;
-  tag: string;       // 'Hospitality / Resort' — the gold eyebrow
-  image: string;     // cards crop to 4:3, so 4:3 or wider is best
-  href: string;      // '/projects/<slug>' once project pages exist
-  summary?: string;  // optional second line; renders in every layout
-}
-```
+Projects live in **Sanity**, not `site.ts` — see "Content: Sanity CMS" below for the schema and queries.
+`ProjectsGallery` and the `/projects` pages receive `ProjectSummary[]` from `src/lib/sanity.ts`.
 
-The fourth entry, `TEMP FOURTH`, is **PLACEHOLDER** and exists only to push the count past three so the
-carousel renders its arrows. Delete it, or replace it with a real project, and the section falls back to the
-static three-card coverflow.
+Two fields behave unlike the old hardcoded shape:
+
+- **There is no `image`. The card's photo is `gallery[0]`** — the first item of the project's photo array,
+  with no separate cover field. Reordering the gallery in the Studio changes the card. The schema requires at
+  least one photo for exactly this reason; `ProjectCard` still guards against its absence rather than
+  crashing the build on a document that predates the rule.
+- **There is no `tag`. `projectType` stores a slug** (`hospitality`, `residential`, `luxury-villas`), not
+  display text, because that value doubles as the section id on `/projects` that the header dropdown links
+  to. `projectTypeLabel()` in `src/lib/sanity.ts` maps it back for the card pill. Changing a value breaks
+  three menu links; changing a label is free.
+
+`href` is gone too — it is derived as `/projects/${slug}` at render, so it can never point somewhere stale.
+
+The old `TEMP FOURTH` placeholder was **dropped rather than migrated**. It existed only to push the count
+past three so the carousel would render its arrows, and a live project called TEMP FOURTH was never the
+intent. With the three real projects the carousel is a centred row with no arrows; publishing a genuine
+fourth brings them back on its own.
 
 `ProjectsGallery` picks its layout from the count, because one arrangement cannot serve every case — a
 coverflow needs a middle and two shoulders, and a lone card in a three-column grid reads as a loading
@@ -273,19 +287,22 @@ Consequences worth knowing before editing it:
 
 ### Imagery
 
+**Project and blog images now live in Sanity, not the repo.** They are uploaded through the Studio and served
+from Sanity's CDN with the crop baked into the URL. Nothing in `public/images/projects/` is referenced by the
+site any more — those three files were uploaded to Sanity by the seed script and are kept only as the source
+of that import.
+
 | Path | Status |
 | --- | --- |
+| `public/images/hero/placeholder.png` | The hero poster and LCP element. 1.3 MB — the largest thing the site ships |
 | `public/images/hero/hero-bg.svg` | Unused since the video hero landed; kept for non-video pages |
 | `public/images/hero/video-poster.svg` | Superseded by `placeholder.png` |
-| `public/images/projects/filler-{1,2,3}.svg` | Abstract brand-toned art; safe as a placeholder anywhere |
-| `public/images/projects/stock-*.jpg` | **Stock photos — never usable as a project.** See below |
+| `public/images/projects/*.jpg` | Migrated into Sanity. No longer referenced by any component |
+| `public/images/services/*.jpeg` | Still local — `services` remains in `site.ts` |
+| `public/og-image.png` | 1200×630 social card |
 
-The three `stock-*.jpg` files arrived as layout filler for the design concepts and depict no Auristate
-development. One was named `latakia-coastal.jpg` but is actually **Ortigia, Syracuse** — a stock photo of
-Sicily. They were renamed so the filenames stop asserting a location, and
-`public/images/projects/README.md` records the provenance. Use them for mockups; never caption them as a
-project. In a projects gallery a wrong image stops being a placeholder and becomes a false claim about what
-the company has built.
+An earlier version of this table listed `filler-*.svg` and `stock-*.jpg` files that **no longer exist**, along
+with a `README.md` recording their provenance. All were removed before the real client renders landed.
 
 The only genuine client imagery in the repo is the "365" venue render in `hero.mp4` and its poster frame.
 
@@ -347,6 +364,143 @@ white background.
 Images use raw `<img src="/...">`, not `astro:assets` `<Image>`. Stay consistent; migrating is a separate pass.
 
 Next up: About/Blog/Projects pages and i18n, built on this theme.
+
+## Content: Sanity CMS
+
+Projects and blog posts are edited in **Sanity Studio** by the client, not in this repo. Everything else
+(hero, about, services, vision/mission, nav, contact) is still static in `src/data/site.ts`.
+
+**The site stays fully static.** Content is fetched at *build* time — the browser never talks to Sanity, so
+pages load as fast as before and survive a Sanity outage. The cost is that publishing is not instant:
+
+```
+Publish in Studio → Sanity webhook → Cloudflare Pages deploy hook → rebuild (~1 min) → live
+```
+
+### Two apps, one repo
+
+| | |
+| --- | --- |
+| `studio/` | Standalone Sanity Studio. Own `package.json`, own `node_modules`, React + `sanity`. |
+| repo root | The Astro site. Reads Sanity with `@sanity/client`. **No React.** |
+
+They share a repo so a schema change and the query change that depends on it land in the same commit — the
+two are tightly coupled, and across two repos the site can deploy against a schema it no longer matches.
+
+Two things keep them from contaminating each other, both easy to undo by accident:
+
+- **`studio` is in `tsconfig.json`'s `exclude`.** Without it, `include: ["**/*"]` drags the Studio's
+  React/Sanity files into the site's typecheck under `astro/tsconfigs/strict` and produces a wall of errors
+  about dependencies the site does not have.
+- **There are no npm workspaces, deliberately.** Root `npm install` therefore never reads
+  `studio/package.json`, so Cloudflare never installs React or the Studio when building the site.
+
+`@sanity/astro` was tried and removed. It is the officially recommended integration, but it declares `react`,
+`react-dom`, `react-is`, `sanity`, and `styled-components` as **peerDependencies**, which npm auto-installs —
+852 packages in the site's tree, reinstalled on every content publish. Its two benefits are the
+`sanity:client` virtual module and Visual Editing, and a static site with a standalone Studio uses neither.
+Plain `@sanity/client` is ~25 packages. Reach for `@sanity/astro` only if Visual Editing is actually wanted,
+which needs on-demand rendering as well.
+
+### `src/lib/sanity.ts`
+
+The single entry point: client, `urlFor()`, `projectTypeLabel()`, types, GROQ queries, and fetch helpers.
+Four things in it are load-bearing and easy to regress:
+
+- **`perspective: 'published'` is set explicitly.** It is the only thing keeping unpublished drafts off the
+  live site.
+- **`apiVersion` is pinned and must stay ≥ `2025-02-19`.** Below that the client's default perspective is
+  `raw`, which returns drafts — so an innocent-looking version bump downward silently publishes every draft.
+- **`useCdn: false`.** The build is triggered *by* a publish webhook; the CDN can serve a stale response for
+  a short window afterwards, which would make the rebuild ship the very content it was fired to collect.
+- **Every list query filters `defined(slug.current)`.** A document without a slug produces a
+  `getStaticPaths` entry of `undefined`, which either fails the build or silently collides with another route.
+
+Missing env vars **throw at build** rather than degrading. Without that the client constructs fine, every
+query returns nothing, and the site builds "successfully" with an empty blog and no projects — which reads
+as a content problem, not a configuration one.
+
+`scripts/sanity-check.mjs` is the standalone diagnostic; it mirrors the same client config and reports
+whether drafts are being correctly excluded:
+
+```
+node --env-file=.env scripts/sanity-check.mjs
+```
+
+### Deploying the Studio
+
+```
+cd studio && npm run deploy      # → https://auristate.sanity.studio
+```
+
+Sanity hosts it free. `studioHost` is pinned in `sanity.cli.ts` so the deploy is non-interactive and
+repeatable — the name is claimed globally across all of Sanity, so if it ever conflicts, change it in that
+file rather than passing a one-off flag. `autoUpdates: true` means the hosted Studio pulls Sanity's own
+patches without a redeploy; a redeploy is only needed after **schema** changes.
+
+There is no custom-domain support on the free hosting without a reverse proxy. Self-hosting the output of
+`sanity build` would allow one, at the cost of a second deploy to maintain, manual Studio version bumps, and
+adding the new origin to the project's CORS allowlist by hand.
+
+`public/_redirects` gives the Studio a memorable address on the site's own domain — `/admin` and `/studio`
+both 302 to it, wildcards included so deep links survive. Two things about that file:
+
+- **It is a Cloudflare Pages feature, not an Astro one.** Astro copies it into `dist/` untouched and never
+  reads it, so `astro dev` returns 404 on `/admin`. That is expected. It also means the redirect silently
+  stops working if the site ever moves off Pages.
+- **302, not 301.** These point at a hosted Sanity URL that could move; a 301 is cached hard by browsers and
+  would keep sending people to a dead host long after the rule was fixed.
+
+**The Studio URL is publicly reachable but login-gated** — only project members get in. The client is invited
+at sanity.io/manage → project → Members, with the **Editor** role: create, edit, and publish content, but no
+project settings. That invite is what makes this a single-admin CMS.
+
+Schema changes need **two** commands, and forgetting the second is a common confusion — the Studio shows the
+new field while `sanity schemas deploy` is what makes it visible to the Content Lake tooling:
+
+```
+cd studio && npm run deploy      # the editing UI
+cd studio && npx sanity schemas deploy
+```
+
+### Rich text
+
+Bodies are **Portable Text**, rendered with `astro-portabletext`. It is structured JSON, not HTML, so an
+editor cannot inject a `<script>` and no sanitizer is needed. There is no typography plugin in this project,
+so the `.prose-auristate` block in the two `[slug].astro` pages supplies the rhythm.
+
+### Ordering
+
+Projects are dragged into order in the Studio via `@sanity/orderable-document-list`, which writes a
+`lexorank` string to `orderRank`. That order is **content, not a Studio convenience** — it decides which
+slide the carousel opens on and which project becomes the full-width feature at a count of one. Queries sort
+by `order(orderRank)`. (The older `sanity-plugin-orderable-document-list` is deprecated and peers React 17;
+do not install it.)
+
+### Env
+
+`PUBLIC_SANITY_PROJECT_ID` and `PUBLIC_SANITY_DATASET` are **optional**. `src/lib/sanity.ts` defaults to
+`s055z044` / `production` and logs a warning when it falls back, so a build never fails for want of them.
+Neither is a secret — both appear in every image URL the site serves.
+
+They default because Cloudflare Pages keeps **Production and Preview variables as separate sets**, and a new
+Pages project or a fresh Preview environment starts with neither. Requiring them turned a dashboard oversight
+into a hard build failure. Set them only to point a build at a different project or dataset.
+
+Verified both ways: with no `.env` and no environment variables the build produces all 7 pages and warns; with
+them set it builds silently. Astro does surface real `process.env` variables to `import.meta.env` as long as
+they carry the `PUBLIC_` prefix, so the dashboard route works — it is just no longer mandatory.
+
+`SANITY_WRITE_TOKEN` is **local only** and needed solely by the seed script. The site build never writes, so
+it must never reach Cloudflare.
+
+### Seeding
+
+`studio/scripts/seed-projects.mjs` imported the three original projects and their images. It lives under
+`studio/` because it needs `lexorank`, which the site has no reason to depend on. It is idempotent — it looks
+each project up by slug first — and it seeds **only** name, type, and photo. `location`, `area`,
+`description`, and `faqs` were left empty rather than invented; a page that shows nothing beats one that
+shows fiction.
 
 ## Development
 

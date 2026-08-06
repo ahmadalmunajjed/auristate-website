@@ -1,5 +1,9 @@
 {
   "extends": "astro/tsconfigs/strict",
   "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist"]
+  // `studio` is a standalone Sanity Studio with its own package.json, React,
+  // and tsconfig. Without excluding it here, `include: **/*` drags its .ts/.tsx
+  // into this project's typecheck under astro/tsconfigs/strict and it fails on
+  // dependencies the site does not have.
+  "exclude": ["dist", "studio"]
 }

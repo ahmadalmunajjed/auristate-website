@@ -1,0 +1,16 @@
+# Cloudflare Pages redirects. Copied verbatim into dist/ by Astro, then read by
+# Pages at the edge. Astro itself never sees this file, so `astro dev` will 404
+# on these paths — that is expected, not a bug.
+#
+# 302, not 301: these are convenience aliases for the Sanity Studio, which is a
+# hosted URL that could move. A 301 is cached hard by browsers and would keep
+# sending people to a dead host long after the redirect was corrected.
+#
+# Cloudflare docs: "Redirects are always followed, regardless of whether or not
+# an asset matches the incoming request" — so these win over any built page at
+# the same path.
+
+/admin      https://auristate.sanity.studio  302
+/admin/*    https://auristate.sanity.studio/:splat  302
+/studio     https://auristate.sanity.studio  302
+/studio/*   https://auristate.sanity.studio/:splat  302

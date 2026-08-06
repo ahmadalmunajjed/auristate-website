@@ -1,0 +1,100 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import {getAllProjects, PROJECT_TYPES} from '../../lib/sanity';
+
+const projects = await getAllProjects();
+
+// Grouped by type so the header dropdown's /projects#hospitality style links
+// have real anchors to land on. Groups keep PROJECT_TYPES order (not Studio
+// drag order) — the menu lists them in that order, and the two should agree.
+const known = new Set<string>(PROJECT_TYPES.map((type) => type.value));
+
+const groups = PROJECT_TYPES.map((type) => ({
+	...type,
+	items: projects.filter((project) => project.projectType === type.value)
+})).filter((group) => group.items.length > 0);
+
+// A project whose type is not in PROJECT_TYPES would otherwise silently vanish
+// from this page — visible in the Studio, absent from the site, with nothing to
+// explain why. It gets its own unanchored group instead.
+const ungrouped = projects.filter((project) => !known.has(project.projectType));
+---
+
+<Layout
+	title="Projects — Auristate"
+	description="Selected developments by Auristate Tourism Investment across Syria — hospitality, residential, and luxury villa compounds."
+>
+	<section class="bg-nearblack py-24">
+		{/* Heading inlined rather than SectionHeading: that component's text-ink
+		    title is invisible on this dark ground and its gold-deep eyebrow
+		    measures 3.04:1 here. Matches ProjectsGallery on the homepage. */}
+		<div class="mx-auto max-w-page px-6">
+			<div class="reveal mb-14">
+				<p class="mb-4 text-lg tracking-[0.3em] text-gold-light uppercase md:text-xl">
+					Our Projects
+				</p>
+				<h1
+					class="text-3xl text-white md:text-4xl"
+					style="font-family: var(--font-display); font-weight: 600;"
+				>
+					Selected Developments
+				</h1>
+			</div>
+		</div>
+
+		{
+			projects.length === 0 && (
+				<div class="mx-auto max-w-page px-6">
+					<p class="reveal max-w-xl leading-relaxed text-white/80">
+						Our developments will be published here shortly.
+					</p>
+				</div>
+			)
+		}
+
+		{
+			groups.map((group) => (
+				<div id={group.value} class="scroll-mt-24 pt-14 first:pt-0">
+					<div class="mx-auto max-w-page px-6">
+						<h2
+							class="reveal mb-8 text-xl text-gold-light md:text-2xl"
+							style="font-family: var(--font-display); font-weight: 600;"
+						>
+							{group.label}
+						</h2>
+					</div>
+					<div class="px-3">
+						<div class="grid items-start gap-3 md:grid-cols-2 lg:grid-cols-3">
+							{group.items.map((project, i) => (
+								<ProjectCard project={project} index={i} />
+							))}
+						</div>
+					</div>
+				</div>
+			))
+		}
+
+		{
+			ungrouped.length > 0 && (
+				<div class="pt-14">
+					<div class="mx-auto max-w-page px-6">
+						<h2
+							class="reveal mb-8 text-xl text-gold-light md:text-2xl"
+							style="font-family: var(--font-display); font-weight: 600;"
+						>
+							Other
+						</h2>
+					</div>
+					<div class="px-3">
+						<div class="grid items-start gap-3 md:grid-cols-2 lg:grid-cols-3">
+							{ungrouped.map((project, i) => (
+								<ProjectCard project={project} index={i} />
+							))}
+						</div>
+					</div>
+				</div>
+			)
+		}
+	</section>
+</Layout>
