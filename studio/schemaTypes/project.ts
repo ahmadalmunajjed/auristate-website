@@ -1,4 +1,5 @@
 import {defineArrayMember, defineField, defineType} from 'sanity'
+import {orderRankField, orderRankOrdering} from '@sanity/orderable-document-list'
 import {CaseIcon} from '@sanity/icons/Case'
 import {HelpCircleIcon} from '@sanity/icons/HelpCircle'
 import {ImageIcon} from '@sanity/icons/Image'
@@ -24,7 +25,12 @@ export const project = defineType({
   title: 'Project',
   type: 'document',
   icon: CaseIcon,
+  // Drag-to-reorder in the Studio. Order is load-bearing on the site: the
+  // homepage carousel opens on it, and with a single project the first one
+  // becomes the full-width feature.
+  orderings: [orderRankOrdering],
   fields: [
+    orderRankField({type: 'project'}),
     defineField({
       name: 'name',
       title: 'Project name',
