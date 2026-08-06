@@ -65,14 +65,18 @@ export const hero = {
 	]
 };
 
+// Client copy. `lead` is the standfirst under the heading, `paragraphs` the two
+// body columns, and `statement` the closing line — a fragment by design, so it
+// renders as its own display line rather than as a third paragraph.
 export const about = {
 	eyebrow: 'About Us',
 	title: 'Who We Are',
-	lead: 'We are a Syrian joint-stock company specialized in real estate and tourism investments, founded in 2025. We combine deep local expertise with a renewed global vision.',
+	lead: 'A Syrian joint-stock company specialized in real estate and tourism investments, founded in 2025.',
 	paragraphs: [
-		'We develop innovative projects that reflect authentic Syrian identity, while leveraging the latest global trends in design, construction, and building technologies.',
-		'Our team brings together accumulated experience in the local market, supported by a wide international network, to offer the high-end investor a partner who understands their ambition and masters its execution.'
-	]
+		'By combining deep local expertise with a renewed global vision, we develop innovative projects that reflect authentic Syrian identity, while leveraging the latest global trends in design, construction, and building technologies.',
+		'Our team brings together accumulated experience in the local market, supported by a wide international network.'
+	],
+	statement: 'To establish high-end touristic destinations.'
 };
 
 export interface Project {

@@ -10,10 +10,15 @@ const { eyebrow, title, align = 'left', class: className = '' } = Astro.props;
 ---
 
 <div class:list={[align === 'center' && 'text-center', className]}>
-	{/* gold-deep, not gold-dark: at 12px this is small text, and gold-dark
-	    measures 2.83:1 on sand. gold-deep clears 4.5:1. */}
-	<p class="mb-4 text-xs tracking-[0.3em] text-gold-deep uppercase">{eyebrow}</p>
-	<h2 class="text-3xl text-ink" style="font-family: var(--font-display); font-weight: 600;">
+	{/* gold-deep, not gold-dark: at 14px this is still small text by WCAG's
+	    measure, and gold-dark is 2.83:1 on sand. gold-deep clears 4.5:1. */}
+	<p class="mb-4 text-sm tracking-[0.3em] text-gold-deep uppercase">{eyebrow}</p>
+	{/* One step under About's text-4xl/5xl masthead, deliberately: that section
+	    is the page's opening statement and these are its peers, not its equals. */}
+	<h2
+		class="text-[2rem] text-ink md:text-[2.5rem]"
+		style="font-family: var(--font-display); font-weight: 600;"
+	>
 		{title}
 	</h2>
 </div>
