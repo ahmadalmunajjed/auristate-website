@@ -25,17 +25,16 @@ const ungrouped = projects.filter((project) => !known.has(project.projectType));
 	title="Projects — Auristate"
 	description="Selected developments by Auristate Tourism Investment across Syria — hospitality, residential, and luxury villa compounds."
 >
-	<section class="bg-nearblack py-24">
-		{/* Heading inlined rather than SectionHeading: that component's text-ink
-		    title is invisible on this dark ground and its gold-deep eyebrow
-		    measures 3.04:1 here. Matches ProjectsGallery on the homepage. */}
+	<section class="bg-white/50 py-24">
+		{/* Heading inlined rather than SectionHeading: this page needs a real h1,
+		    not the h2 that component renders. */}
 		<div class="mx-auto max-w-page px-6">
 			<div class="reveal mb-14">
-				<p class="mb-4 text-lg tracking-[0.3em] text-gold-light uppercase md:text-xl">
+				<p class="mb-4 text-lg tracking-[0.3em] text-gold-deep uppercase md:text-xl">
 					Our Projects
 				</p>
 				<h1
-					class="text-3xl text-white md:text-4xl"
+					class="text-3xl text-ink md:text-4xl"
 					style="font-family: var(--font-display); font-weight: 600;"
 				>
 					All Projects
@@ -46,7 +45,7 @@ const ungrouped = projects.filter((project) => !known.has(project.projectType));
 		{
 			projects.length === 0 && (
 				<div class="mx-auto max-w-page px-6">
-					<p class="reveal max-w-xl leading-relaxed text-white/80">
+					<p class="reveal max-w-xl leading-relaxed text-ink/75">
 						Our developments will be published here shortly.
 					</p>
 				</div>
@@ -58,7 +57,7 @@ const ungrouped = projects.filter((project) => !known.has(project.projectType));
 				<div id={group.value} class="scroll-mt-24 pt-14 first:pt-0">
 					<div class="mx-auto max-w-page px-6">
 						<h2
-							class="reveal mb-8 text-xl text-gold-light md:text-2xl"
+							class="reveal mb-8 text-xl text-gold-deep md:text-2xl"
 							style="font-family: var(--font-display); font-weight: 600;"
 						>
 							{group.label}
@@ -80,7 +79,7 @@ const ungrouped = projects.filter((project) => !known.has(project.projectType));
 				<div class="pt-14">
 					<div class="mx-auto max-w-page px-6">
 						<h2
-							class="reveal mb-8 text-xl text-gold-light md:text-2xl"
+							class="reveal mb-8 text-xl text-gold-deep md:text-2xl"
 							style="font-family: var(--font-display); font-weight: 600;"
 						>
 							Other
