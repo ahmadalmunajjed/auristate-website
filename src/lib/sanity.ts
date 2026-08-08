@@ -185,6 +185,12 @@ export const PROJECT_SLUGS_QUERY = defineQuery(`
 	*[_type == "project" && defined(slug.current)]{"slug": slug.current}
 `);
 
+// Feeds the header's Projects dropdown, which shows a type only once a project
+// of that type is published.
+export const USED_PROJECT_TYPES_QUERY = defineQuery(`
+	array::unique(*[_type == "project" && defined(slug.current)].projectType)
+`);
+
 // ---------------------------------------------------------------------------
 // Fetch helpers
 // ---------------------------------------------------------------------------
@@ -195,3 +201,4 @@ export const getPost = (slug: string) => client.fetch<Post | null>(POST_BY_SLUG_
 export const getAllProjects = () => client.fetch<ProjectSummary[]>(ALL_PROJECTS_QUERY);
 export const getProject = (slug: string) =>
 	client.fetch<Project | null>(PROJECT_BY_SLUG_QUERY, {slug});
+export const getUsedProjectTypes = () => client.fetch<string[]>(USED_PROJECT_TYPES_QUERY);

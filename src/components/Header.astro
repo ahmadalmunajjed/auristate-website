@@ -1,5 +1,6 @@
 ---
 import { nav } from '../data/site';
+import { getUsedProjectTypes } from '../lib/sanity';
 
 interface Props {
 	// `over` lifts the header onto the hero media (white-on-video). Pages
@@ -8,6 +9,22 @@ interface Props {
 }
 
 const { over = false } = Astro.props;
+
+// Projects children are `/projects#<type>` anchors — the Projects entry hides
+// any type with nothing published under it, so the menu never opens on a
+// dead section. `All Projects` has no `#`, so it always stays.
+const usedProjectTypes = new Set(await getUsedProjectTypes());
+const navItems = nav.map((item) =>
+	item.label === 'Projects'
+		? {
+				...item,
+				children: item.children?.filter((child) => {
+					const hash = child.href.split('#')[1];
+					return !hash || usedProjectTypes.has(hash);
+				})
+			}
+		: item
+);
 ---
 
 {/* Both branches need a stacking context — without one, the dropdown panel
@@ -43,8 +60,8 @@ const { over = false } = Astro.props;
 		</a>
 		<nav class="hidden items-center gap-8 md:flex">
 			{
-				nav.map((item) =>
-					item.children ? (
+				navItems.map((item) =>
+					item.children?.length ? (
 						<div class="group relative" data-dropdown>
 							{/* The trigger stays a real link to the section — hover or focus
 							    opens the menu, but the item is never a dead end. */}
