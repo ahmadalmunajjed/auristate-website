@@ -115,6 +115,25 @@ const { showreel, poster, showreelRate, showreelStart } = hero;
 </section>
 
 <style>
+	/* Pins the hero so the sections below rise over it. Its travel is scoped by
+	   the wrapper in index.astro — with <main> as the containing block it would
+	   stay pinned for the whole document and the video would never stop decoding.
+
+	   Gated on height, not width: a sticky element taller than the viewport has
+	   its offset clamped so its top stays at 0, which puts everything below the
+	   fold permanently out of reach. On a rotated phone (844x390) this section's
+	   content runs ~440px — min-h-[88svh] is only 290px there, so the content
+	   binds rather than the floor — and both CTAs would be unreachable. */
+	@media (prefers-reduced-motion: no-preference) and (min-height: 640px) {
+		.hero {
+			position: sticky;
+			top: 0;
+			/* Explicit rather than left to `isolate`, so the layer order in the
+			   stack reads off the source: hero 0, About 10, Projects 20. */
+			z-index: 0;
+		}
+	}
+
 	.hero-media {
 		/* Takes the edge off the cyan pool and the blown-out sky before the
 		   gradient layers land. Kept mild — heavy sepia flattens the render. */

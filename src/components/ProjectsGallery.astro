@@ -36,9 +36,12 @@ const focusIndex = 1;
 const initialActive = scrolls ? 0 : Math.floor(count / 2);
 ---
 
+{/* Top layer of the homepage scroll stack: this section scrolls normally and
+    rises over the pinned hero and About, so it carries the highest z-index of
+    the three. bg-nearblack is already the opaque ground that needs. */}
 {
 	count > 0 && (
-		<section id="projects" class="bg-nearblack py-24">
+		<section id="projects" class="relative z-20 bg-nearblack py-24">
 			{/* Heading is inlined, not SectionHeading: that component's text-ink
 			    title is invisible on this dark ground and its gold-deep eyebrow
 			    measures 3.04:1 here. */}

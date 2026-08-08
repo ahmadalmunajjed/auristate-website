@@ -3,10 +3,12 @@ import SectionHeading from './SectionHeading.astro';
 import { about } from '../data/site';
 ---
 
-{/* bg-white/50 is load-bearing: the hero's bottom scrim fades to #f7f1e6, which
-    is what white/50 composites to over sand. Keep id="about" — the header's
-    About Us dropdown and the footer both anchor here. */}
-<section id="about" class="bg-white/50 py-20">
+{/* bg-parchment is that same #f7f1e6 the hero's bottom scrim fades to, which is
+    also what the old bg-white/50 composited to over sand — an identical color,
+    but opaque, which this section now needs: it slides over the pinned hero and
+    a translucent ground would show the video through it. Keep id="about" — the
+    header's About Us dropdown and the footer both anchor here. */}
+<section id="about" class="relative z-10 bg-parchment py-20">
 	<div class="mx-auto max-w-page px-6">
 		<div class="grid gap-x-16 gap-y-8 md:grid-cols-[minmax(0,4fr)_minmax(0,6fr)]">
 			<div class="reveal">
@@ -34,6 +36,18 @@ import { about } from '../data/site';
 </section>
 
 <style>
+	/* Held at the top of the viewport, above the pinned hero, while the projects
+	   section rises over it in turn. Gated on width because below 768px the grid
+	   collapses to one column and this section grows past a phone viewport —
+	   pinning it there would freeze its last paragraph below the fold, where no
+	   amount of scrolling reaches it. Two columns at md+ keep it ~400px tall. */
+	@media (prefers-reduced-motion: no-preference) and (min-width: 768px) and (min-height: 600px) {
+		#about {
+			position: sticky;
+			top: 0;
+		}
+	}
+
 	.ab-rule {
 		height: 1px;
 		width: 4rem;

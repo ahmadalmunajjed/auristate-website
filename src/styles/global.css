@@ -28,6 +28,10 @@
 
   --color-offwhite: #faf9f6;
   --color-nearblack: #1a1a1a;
+  /* Not a brand color: what bg-white/50 composites to over sand, and the value
+     the hero's bottom scrim fades to. The sections that slide over the pinned
+     hero need this as an opaque fill — translucent, the video shows through. */
+  --color-parchment: #f7f1e6;
 
   /* Substrate, not accents: the warm ground the palette sits on. */
   --color-sand: #efe3ce;

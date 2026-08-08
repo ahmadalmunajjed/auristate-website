@@ -22,9 +22,17 @@ const latestPost = await getLatestPost();
 {/* headerOver: this page opens on the full-bleed hero video, so the header
     rides over it. Pages without a media hero omit it. */}
 <Layout title="Auristate — Tourism & Real Estate Investment in Syria" headerOver>
-	<Hero />
-	<About />
-	<ProjectsGallery projects={projects} />
+	{/* Scopes the sticky stack: Hero and About pin to the top of the viewport
+	    while Our Projects rises over them, and all three release once this
+	    wrapper's bottom passes — behind the opaque projects section, so the
+	    handoff is never seen. Projects has to be inside it: sticky travel is
+	    bounded by the containing block, so with Hero and About alone About's
+	    bottom would be the wrapper's and it would have nowhere to hold. */}
+	<div>
+		<Hero />
+		<About />
+		<ProjectsGallery projects={projects} />
+	</div>
 	<Services />
 	<News post={latestPost} />
 	<VisionMission />
