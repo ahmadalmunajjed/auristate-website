@@ -4,7 +4,7 @@ Auristate is a tourism and real estate investment company operating in Syria (co
 
 Intent for the finished site:
 - Bilingual, served under `/en` and `/ar` (Arabic as RTL) — not yet implemented
-- Static pages (e.g. About, Contact) — `/contact` still 404s
+- Static pages (e.g. About, Contact) — contact is a homepage section (`/#contact`), not yet its own page
 - Blog: index + individual posts — **done**, `/blog` and `/blog/[slug]`, content from Sanity
 - Projects: index + individual project pages — **done**, `/projects` and `/projects/[slug]`, content from Sanity
 
@@ -114,7 +114,7 @@ points at `/blog`, the real index. The homepage section it used to scroll to sti
 News. Root-relative rather than bare
 `#about`, because `Footer.astro` renders the same array and now ships on **every** page via the layout —
 those anchors stopped being anticipatory the moment the shell landed and are load-bearing off the homepage. `Contact Us`
-still points at `/contact`, which does not exist yet and 404s until built.
+points at `/#contact`, the homepage section — it pointed at `/contact` and 404'd until that section landed.
 
 A nav entry with a `children` array renders as a dropdown **in the header only** — `Footer.astro` reads the
 same array and stays flat. `About Us` uses it for `Who We Are` (`/#about`) and `Mission and Vision`
@@ -129,9 +129,9 @@ the labels in `src/lib/sanity.ts`, and this menu. A project whose type matches n
 `Header.astro` covers touch, where neither fires — under `(hover: none)` the first tap opens the menu and the
 second follows the link. Below 768px the nav is hidden entirely and there is still no mobile menu.
 
-**Only `hero` and `about` are client copy.** `contact`, `social`, and `footerTagline` are placeholders
-marked as such in the file — the phone number and email in particular are invented and must be replaced
-before launch.
+**Only `hero`, `about`, and `contact.email` are client copy.** `social` and `footerTagline` are placeholders
+marked as such in the file, as are `contact.phone` and `contact.address` — the phone number is invented and
+must be replaced before launch.
 
 The footer's `social` entries render as **icons only**, so `label` never appears on screen and serves as the
 link's `aria-label`. `icon` selects a glyph from `SocialIcon.astro`, whose path table is typed
@@ -195,8 +195,30 @@ is empty, so the section appears on its own the moment something is published in
 and no empty heading shipping over a blank grid. `News` behaves the same way for the latest post. Both now
 take their data as a **prop** from `index.astro`, which does the fetching — they import nothing themselves.
 
-The live page is therefore: Header → Hero → About → Projects → Services → News → Vision/Mission → Footer,
-with the header and footer coming from the layout rather than from `index.astro`.
+`Contact` closes the page. Its ground is `bg-white/50`, not `bg-sand` — VisionMission above it is bare sand,
+and that alternation is the only thing separating the two sections.
+
+**There is no server, so the form does not submit anywhere.** It composes a `mailto:` to `contact.email` in
+JS and assigns `location.href`; `action="mailto:"` was avoided because browser behaviour varies and Chrome
+fronts it with a warning dialog. Three consequences:
+
+- Newlines are normalised to CRLF before `encodeURIComponent`. A bare `%0A` collapses into one run of text
+  in Outlook.
+- The textarea is capped at 1200 chars so the assembled URL stays inside the ~2000 the strictest clients
+  accept.
+- **The form can never be the only route to the inbox** — it needs both JS and a configured mail client. The
+  plain `mailto:`, `tel:`, and WhatsApp links beside it are the fallback, not decoration.
+
+Real server-side delivery means a Cloudflare Pages Function plus an email API key (Resend or similar), which
+is a separate change: it would be the site's first non-static piece.
+
+Form controls set their own convention, since nothing else in the repo has any. Two measured constraints:
+input borders are **full-opacity `gold-dark`** (3.19:1 — the border is the control's only boundary, and
+VisionMission's `/20` hairline is 1.6:1), and the submit button is **`bg-gold-deep`**, not the hero's
+`gold-dark`: white on it is 5.73:1 against 3.59:1, so the hero's primary CTA is itself under AA at 14px.
+
+The live page is therefore: Header → Hero → About → Projects → Services → News → Vision/Mission → Contact →
+Footer, with the header and footer coming from the layout rather than from `index.astro`.
 
 ### Projects data
 
