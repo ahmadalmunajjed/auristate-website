@@ -222,6 +222,47 @@ VisionMission's `/20` hairline is 1.6:1), and the submit button is **`bg-gold-de
 The live page is therefore: Header → Hero → About → Projects → Services → News → Vision/Mission → Contact →
 Footer, with the header and footer coming from the layout rather than from `index.astro`.
 
+### The scroll stack
+
+The homepage opens on a three-layer parallax: **Hero and About pin to the top of the viewport while
+Projects rises over them.** It is `position: sticky` and nothing else — no scroll handler, no
+`transform`. That is deliberate: `.reveal` owns `transform` on nearly every element in those
+sections, so anything transform-driven here would be wiped by `.reveal.is-visible`.
+
+`index.astro` wraps exactly those three sections in a bare `<div>`, which is the one thing in that
+file that is not a section tag. **It must include Projects.** Sticky travel is bounded by the
+containing block, so with Hero and About alone About's bottom would *be* the wrapper's bottom and it
+would have nowhere to hold. All three max out at the wrapper's bottom edge, which is why the release
+is invisible — the opaque projects section is covering them at the moment they unpin.
+
+Four things it depends on:
+
+- **Layer order is explicit**: hero `z-0` (set by hand rather than left to its `isolate`), About
+  `relative z-10`, Projects `relative z-20`. Without it About slides *under* the hero, since sticky
+  creates a stacking context that paints above later siblings.
+- **Anything over the hero must be opaque, or the video shows through it.** About's `bg-white/50`
+  became `bg-parchment`, a new `--color-parchment: #f7f1e6` in `global.css` — the same value
+  `white/50` composited to over sand, and the same value the hero's bottom scrim fades to, so the
+  at-rest seam is unchanged. `Contact` still uses `bg-white/50` and is fine; it never overlaps the
+  hero. Projects was already `bg-nearblack`.
+- **Both pins carry their own `prefers-reduced-motion: no-preference` guard.** The global reduce
+  block in `global.css` only covers `.reveal` and `.animate-*`.
+- **The two size gates are measured, not defensive.** A sticky element taller than the viewport has
+  its offset clamped at `top: 0`, so everything below the fold becomes permanently unreachable — no
+  amount of scrolling gets to it. The hero is gated on `min-height: 640px` because at 844×390 it
+  measures 473px against a 390px viewport and both CTAs would be lost. About is gated on
+  `min-width: 768px` because below that its grid collapses to one column and it grows to ~740px,
+  which is where its last paragraph would go. Under either gate the effect drops a layer rather
+  than breaking.
+
+No ancestor between `<html>` and the wrapper may clip overflow or sticky silently stops working;
+`Layout.astro`'s wrappers and `<main>` set none today.
+
+One accepted cost: **the hero video keeps decoding while pinned.** Its IntersectionObserver pauses
+playback when the video leaves the viewport, and a sticky element never leaves — so it now plays
+behind About and Projects instead of stopping after roughly one viewport of scroll. Pausing once
+the hero is fully covered is the fix if that ever shows up on mobile battery.
+
 ### Projects data
 
 Projects live in **Sanity**, not `site.ts` — see "Content: Sanity CMS" below for the schema and queries.
@@ -513,7 +554,7 @@ They default because Cloudflare Pages keeps **Production and Preview variables a
 Pages project or a fresh Preview environment starts with neither. Requiring them turned a dashboard oversight
 into a hard build failure. Set them only to point a build at a different project or dataset.
 
-Verified both ways: with no `.env` and no environment variables the build produces all 7 pages and warns; with
+Verified both ways: with no `.env` and no environment variables the build produces every page and warns; with
 them set it builds silently. Astro does surface real `process.env` variables to `import.meta.env` as long as
 they carry the `PUBLIC_` prefix, so the dashboard route works — it is just no longer mandatory.
 
