@@ -118,10 +118,11 @@ still points at `/contact`, which does not exist yet and 404s until built.
 
 A nav entry with a `children` array renders as a dropdown **in the header only** — `Footer.astro` reads the
 same array and stays flat. `About Us` uses it for `Who We Are` (`/#about`) and `Mission and Vision`
-(`/#vision-mission`), so it now depends on a third section id. `Projects` uses it for the three project
-types, shortened for menu width. Those hrefs are the `projectType` **values**, and `/projects` renders a
-section with each as its `id` — so `#hospitality`, `#residential`, and `#luxury-villas` now resolve. Nothing
-derives the list: a new project type means editing **three** places — the Studio schema's `PROJECT_TYPES`,
+(`/#vision-mission`), so it now depends on a third section id. `Projects` uses it for `All Projects` (`/projects`)
+plus the six project types. Those type hrefs are the `projectType` **values**, and `/projects` renders a
+section with each as its `id` — so `#tourism-hospitality`, `#residential`, `#education`, `#commercial-leisure`,
+`#retail-entertainment`, and `#commercial` now resolve. Nothing derives the list: a new project type means
+editing **three** places — the Studio schema's `PROJECT_TYPES`,
 the labels in `src/lib/sanity.ts`, and this menu. A project whose type matches none of them still appears on
 `/projects` under an "Other" heading rather than vanishing silently. Each trigger keeps its own
 `href`, so no item is a dead end. The panel opens on `:hover` and `:focus-within` in CSS; the small script in
@@ -208,10 +209,11 @@ Two fields behave unlike the old hardcoded shape:
   with no separate cover field. Reordering the gallery in the Studio changes the card. The schema requires at
   least one photo for exactly this reason; `ProjectCard` still guards against its absence rather than
   crashing the build on a document that predates the rule.
-- **There is no `tag`. `projectType` stores a slug** (`hospitality`, `residential`, `luxury-villas`), not
-  display text, because that value doubles as the section id on `/projects` that the header dropdown links
-  to. `projectTypeLabel()` in `src/lib/sanity.ts` maps it back for the card pill. Changing a value breaks
-  three menu links; changing a label is free.
+- **There is no `tag`. `projectType` stores a slug** (`tourism-hospitality`, `residential`, `education`,
+  `commercial-leisure`, `retail-entertainment`, `commercial`), not display text, because that value doubles
+  as the section id on `/projects` that the header dropdown links to. `projectTypeLabel()` in
+  `src/lib/sanity.ts` maps it back for the card pill. Changing a value breaks three menu links; changing a
+  label is free.
 
 `href` is gone too — it is derived as `/projects/${slug}` at render, so it can never point somewhere stale.
 

@@ -55,9 +55,12 @@ export function urlFor(source: SanityImageSource) {
  * a type means editing both.
  */
 export const PROJECT_TYPES = [
-	{value: 'hospitality', label: 'Hospitality / Venue'},
+	{value: 'tourism-hospitality', label: 'Tourism & Hospitality'},
 	{value: 'residential', label: 'Residential'},
-	{value: 'luxury-villas', label: 'Luxury Villas Compound'}
+	{value: 'education', label: 'Education'},
+	{value: 'commercial-leisure', label: 'Commercial & Leisure'},
+	{value: 'retail-entertainment', label: 'Retail & Entertainment'},
+	{value: 'commercial', label: 'Commercial'}
 ] as const;
 
 export type ProjectTypeValue = (typeof PROJECT_TYPES)[number]['value'];

@@ -54,9 +54,9 @@ const client = createClient({
  * /projects anchor ids. They are not display text.
  */
 const PROJECTS = [
-  {name: '365', slug: '365', projectType: 'hospitality', file: '365-photo.jpg'},
+  {name: '365', slug: '365', projectType: 'tourism-hospitality', file: '365-photo.jpg'},
   {name: 'Hameh', slug: 'hameh', projectType: 'residential', file: 'hameh.jpg'},
-  {name: 'THE MARK', slug: 'the-mark', projectType: 'luxury-villas', file: 'the-mark.jpg'},
+  {name: 'THE MARK', slug: 'the-mark', projectType: 'residential', file: 'the-mark.jpg'},
 ]
 
 let rank = LexoRank.middle()

@@ -25,19 +25,18 @@ export const nav: NavItem[] = [
 			{ label: 'Mission and Vision', href: '/#vision-mission' }
 		]
 	},
-	// The three children mirror PROJECT_TYPES in src/lib/sanity.ts (and the
-	// matching list in studio/schemaTypes/project.ts), shortened for menu width
-	// ('Luxury Villas Compound' → 'Luxury Villas'). The hrefs are the type
-	// *values*, which are also the section ids /projects renders — so a new
-	// project type means editing three places: the Studio schema, the labels in
-	// lib/sanity.ts, and this menu.
+	// Mirrors PROJECT_TYPES in src/lib/sanity.ts and studio/schemaTypes/project.ts.
 	{
 		label: 'Projects',
 		href: '/#projects',
 		children: [
-			{ label: 'Hospitality', href: '/projects#hospitality' },
+			{ label: 'All Projects', href: '/projects' },
+			{ label: 'Tourism & Hospitality', href: '/projects#tourism-hospitality' },
 			{ label: 'Residential', href: '/projects#residential' },
-			{ label: 'Luxury Villas', href: '/projects#luxury-villas' }
+			{ label: 'Education', href: '/projects#education' },
+			{ label: 'Commercial & Leisure', href: '/projects#commercial-leisure' },
+			{ label: 'Retail & Entertainment', href: '/projects#retail-entertainment' },
+			{ label: 'Commercial', href: '/projects#commercial' }
 		]
 	},
 	{ label: 'Our Services', href: '/#services' },
@@ -161,4 +160,4 @@ export const social: { label: string; href: string; icon: SocialIconName }[] = [
 ];
 
 // PLACEHOLDER
-export const footerTagline = 'Tourism & real estate investment across Syria.';
+export const footerTagline = 'INVESTING IN VISION';

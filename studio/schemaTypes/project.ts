@@ -6,14 +6,17 @@ import {ImageIcon} from '@sanity/icons/Image'
 
 /**
  * The `value` of each type doubles as the anchor id on /projects
- * (#hospitality, #residential, #luxury-villas), which the site's Projects
- * dropdown links to directly. Changing a value breaks those menu links, so
- * edit the `title` freely but leave `value` alone.
+ * (#tourism-hospitality, #residential, #education, ...), which the site's
+ * Projects dropdown links to directly. Changing a value breaks those menu
+ * links, so edit the `title` freely but leave `value` alone.
  */
 export const PROJECT_TYPES = [
-  {title: 'Hospitality / Venue', value: 'hospitality'},
+  {title: 'Tourism & Hospitality', value: 'tourism-hospitality'},
   {title: 'Residential', value: 'residential'},
-  {title: 'Luxury Villas Compound', value: 'luxury-villas'},
+  {title: 'Education', value: 'education'},
+  {title: 'Commercial & Leisure', value: 'commercial-leisure'},
+  {title: 'Retail & Entertainment', value: 'retail-entertainment'},
+  {title: 'Commercial', value: 'commercial'},
 ]
 
 const TYPE_TITLES: Record<string, string> = Object.fromEntries(
