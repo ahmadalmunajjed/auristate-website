@@ -206,8 +206,10 @@ fronts it with a warning dialog. Three consequences:
   in Outlook.
 - The textarea is capped at 1200 chars so the assembled URL stays inside the ~2000 the strictest clients
   accept.
-- **The form can never be the only route to the inbox** — it needs both JS and a configured mail client. The
-  plain `mailto:`, `tel:`, and WhatsApp links beside it are the fallback, not decoration.
+- **The form can never be the only route to the inbox** — it needs a configured mail client, which a visitor
+  on a shared machine or a webmail-only browser does not have. The plain `mailto:`, `tel:`, and WhatsApp
+  links beside it are that fallback, not decoration. They do *not* cover a JS-less visitor: they sit in a
+  `.reveal`, so like every other section on the site they stay at `opacity: 0` until the reveal script runs.
 
 Real server-side delivery means a Cloudflare Pages Function plus an email API key (Resend or similar), which
 is a separate change: it would be the site's first non-static piece.

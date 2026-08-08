@@ -21,5 +21,8 @@ export default defineCliConfig({
      * Learn more at https://www.sanity.io/docs/studio/latest-version-of-sanity#k47faf43faf56
      */
     autoUpdates: true,
+    // Pinned for the same reason as studioHost above — avoids an application-id
+    // prompt on a future non-interactive deploy.
+    appId: 'uiahyaw0cbern59v0nwtphnk',
   },
 })
