@@ -64,7 +64,7 @@ const ungrouped = projects.filter((project) => !known.has(project.projectType));
 							{group.label}
 						</h2>
 					</div>
-					<div class="px-3">
+					<div class="mx-auto max-w-page px-3">
 						<div class="grid items-start gap-3 md:grid-cols-2 lg:grid-cols-3">
 							{group.items.map((project, i) => (
 								<ProjectCard project={project} index={i} />
@@ -86,7 +86,7 @@ const ungrouped = projects.filter((project) => !known.has(project.projectType));
 							Other
 						</h2>
 					</div>
-					<div class="px-3">
+					<div class="mx-auto max-w-page px-3">
 						<div class="grid items-start gap-3 md:grid-cols-2 lg:grid-cols-3">
 							{ungrouped.map((project, i) => (
 								<ProjectCard project={project} index={i} />
