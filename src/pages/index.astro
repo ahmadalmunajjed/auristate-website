@@ -8,6 +8,7 @@ import Services from '../components/Services.astro';
 // Renders nothing while no posts are published in Sanity.
 import News from '../components/News.astro';
 import VisionMission from '../components/VisionMission.astro';
+import Contact from '../components/Contact.astro';
 import {getAllProjects, getLatestPost} from '../lib/sanity';
 
 // Fetched once at build time. A publish in the Studio fires a webhook that
@@ -27,4 +28,5 @@ const latestPost = await getLatestPost();
 	<Services />
 	<News post={latestPost} />
 	<VisionMission />
+	<Contact />
 </Layout>

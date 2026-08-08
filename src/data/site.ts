@@ -43,7 +43,7 @@ export const nav: NavItem[] = [
 	// Keeps the 'News' label but points at the real index. The homepage section
 	// still exists at #news and still calls itself News.
 	{ label: 'News', href: '/blog' },
-	{ label: 'Contact Us', href: '/contact' }
+	{ label: 'Contact Us', href: '/#contact' }
 ];
 
 export const hero = {
@@ -61,7 +61,7 @@ export const hero = {
 	showreelStart: 2.4,
 	ctas: [
 		{ label: 'Explore Our Projects', href: '/projects', primary: true },
-		{ label: 'Get in Touch', href: '/contact', primary: false }
+		{ label: 'Get in Touch', href: '/#contact', primary: false }
 	]
 };
 
@@ -132,10 +132,20 @@ export const visionMission = [
 	'The company brings this vision to life through its commitment to developing high-quality investment opportunities and sustainable projects that create added value for investors and communities, support economic growth, and strengthen Syria’s position as a promising destination for investment and tourism.'
 ];
 
+// `email` is client-confirmed and is where the contact form delivers. `phone`
+// and `address` are still PLACEHOLDER, and the number feeds both WhatsApp links.
 export const contact = {
 	email: 'Info@auristate.com',
 	phone: '+963 960 702 163',
 	address: 'Kafarsousa, Damascus, Syria'
+};
+
+export const contactSection = {
+	eyebrow: 'Contact Us',
+	title: 'Start a Conversation',
+	lead: 'Tell us about your project or investment interest and our team will come back to you.',
+	/** Prefixes the mailto subject, so enquiries are filterable in the inbox. */
+	subjectPrefix: 'Website enquiry'
 };
 
 // The footer renders these as icons only, so `label` never appears on screen —
